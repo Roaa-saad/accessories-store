@@ -1,0 +1,100 @@
+/* ================= ADMIN PREVIEW CONTROLS ================= */
+
+.admin-preview-controls {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(201,171,122,.35);
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* LABELS */
+.admin-preview-controls label {
+  font-size: 11px;
+  letter-spacing: .4px;
+  color: #9a8f86;
+  margin-top: 4px;
+}
+
+/* TEXT INPUT */
+.admin-preview-controls input[type="text"],
+.admin-preview-controls textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(201,171,122,.35);
+  background: #fff;
+
+  font-size: 13px;
+  font-family: inherit;
+  color: #3f3a36;
+
+  outline: none;
+  transition: border .2s ease, box-shadow .2s ease;
+}
+
+.admin-preview-controls textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+.admin-preview-controls input:focus,
+.admin-preview-controls textarea:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(201,171,122,.18);
+}
+
+/* RANGE SLIDERS */
+.admin-preview-controls input[type="range"] {
+  width: 100%;
+  accent-color: var(--gold);
+  cursor: pointer;
+}
+
+/* SAVE BUTTON */
+.admin-preview-controls .save-btn {
+  margin-top: 8px;
+  padding: 9px;
+  border-radius: 14px;
+  border: none;
+
+  background: var(--gold);
+  color: #fff;
+
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+
+  transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+}
+
+.admin-preview-controls .save-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(201,171,122,.35);
+}
+
+.admin-preview-controls .save-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* REMOVE BUTTON */
+.admin-preview-controls .remove-btn {
+  margin-top: 4px;
+  padding: 8px;
+  border-radius: 12px;
+  border: none;
+
+  background: #f3e3dc;
+  color: #a44;
+
+  font-size: 13px;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+
+.admin-preview-controls .remove-btn:hover {
+  background: #f0d5cc;
+}
