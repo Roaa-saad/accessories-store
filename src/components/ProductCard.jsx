@@ -17,7 +17,7 @@ const ProductCard = ({ product, addToCart }) => {
             src={mainImage.image_url}
             alt={product.name}
             style={{
-              objectFit: "cover", // ✅ تملى المكان
+              objectFit: "cover",
               objectPosition: `${product.image_pos_x ?? 50}% ${
                 product.image_pos_y ?? 50
               }%`,
