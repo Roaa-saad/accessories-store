@@ -35,23 +35,6 @@ body {
   background: #f9f4f0;
 }
 
-/* ================= PRODUCT CARDS ================= */
-
-.product-card img {
-  width: 100%;
-  height: auto;       
-  max-height: 200px;         
-  background: #f9f4f0;
-  display: flex;
-  align-items: flex-start;
-}
-
-/* desktop */
-@media (min-width: 1024px) {
-  .product-card img {
-    height: 220px;
-  }
-}
 
 
 /* =========================
@@ -94,7 +77,6 @@ REORDER IMAGES
 /* الصورة نفسها */
 .product-image-wrapper img {
   width: 100%;
-  height: 100%;
   display: block;
   object-fit: cover;        
   object-position: center;
@@ -796,23 +778,26 @@ REORDER IMAGES
   align-self: start;
 }
 
-
-
 .product-card img {
   width: 100%;
-  height: 250px;
   object-fit: cover;
-  display: block;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   pointer-events: none;
 }
+
+.product-image-wrapper {
+  height: 150px;
+  width: 170px;
+  display: flex;
+  align-items: flex-end;
+}
+
 
 .product-card h3 {
   font-size: 16px;
   font-weight: 500;
   margin: 12px 10px 6px;
 }
-
 /* PRODUCT INFO (name + cart) */
 .product-info {
   display: flex;
@@ -1336,11 +1321,6 @@ HERO TEXT
 
 /* ================================================= */
 
-.product-image-wrapper {
-  position: relative;
-  display: block;
-}
-
 /* SOLD OUT OVERLAY */
 /* ===== SOLD OUT BADGE ===== */
 .sold-out-overlay {
@@ -1563,6 +1543,11 @@ HERO TEXT
   line-height: 1.65;
   color: #6f6258;
 }
+
+.product-description {
+  white-space: pre-line;
+}
+
 
 
 /* ================= GIFT (EXACT IMAGE STYLE) ================= */
@@ -2029,11 +2014,6 @@ background: linear-gradient(
     flex-direction: column;
   }
 
-  .product-card img {
-    height: 220px;
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  }
-
   .product-card h3 {
     font-size: 18px;
     font-weight: 500;
@@ -2236,11 +2216,17 @@ background: linear-gradient(
 
 .product-card img {
   width: 100%;
-  height: auto;       
-  max-height: 200px;         
-  background: #f9f4f0;
-  display: flex;
-  align-items: flex-start;
+  object-fit: cover;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  pointer-events: none;
+}
+
+.product-image-wrapper {
+        display: flex;
+        align-items: flex-end;
+        height: 250px;
+        width: 100%;
+        overflow: hidden;
 }
 
 }

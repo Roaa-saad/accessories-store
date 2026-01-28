@@ -98,3 +98,16 @@
 .admin-preview-controls .remove-btn:hover {
   background: #f0d5cc;
 }
+
+
+.product-image-wrapper img {
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: all;
+}
+
+
+
+.product-image-wrapper:active {
+  cursor: grabbing;
+}

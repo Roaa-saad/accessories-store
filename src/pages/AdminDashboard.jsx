@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import ProductCard from "../components/ProductCard";
 import AdminSidebar from "../components/AdminSidebar";
 import ReorderImages from "../components/ReorderImages";
@@ -7,6 +7,8 @@ import "../styles/admin-dashboard.css";
 const AdminDashboard = () => {
   const [products, setProducts] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeProductId, setActiveProductId] = useState(null);
+  const wrapperRef = useRef(null);
   const token = localStorage.getItem("admin_token");
 
   /* ================= LOAD PRODUCTS ================= */
@@ -28,6 +30,38 @@ const AdminDashboard = () => {
   useEffect(() => {
     loadProducts();
   }, []);
+
+  /* ================= WHEEL ZOOM (PASSIVE FIX) ================= */
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el || activeProductId === null) return;
+
+    const handleWheel = (e) => {
+      e.preventDefault();
+
+      const delta = e.deltaY > 0 ? -0.05 : 0.05;
+
+      setProducts((prev) =>
+        prev.map((p) =>
+          p.id === activeProductId
+            ? {
+                ...p,
+                scale: Math.min(
+                  2,
+                  Math.max(0.6, (p.scale ?? 1) + delta)
+                ),
+              }
+            : p
+        )
+      );
+    };
+
+    el.addEventListener("wheel", handleWheel, { passive: false });
+
+    return () => {
+      el.removeEventListener("wheel", handleWheel);
+    };
+  }, [activeProductId]);
 
   /* ================= UPDATE LOCAL ================= */
   const updateProduct = (id, changes) => {
@@ -119,7 +153,6 @@ const AdminDashboard = () => {
       return;
     }
 
-    /* UPDATE PRODUCT */
     await fetch(
       `http://127.0.0.1:8000/admin/products/${product.id}`,
       {
@@ -140,7 +173,6 @@ const AdminDashboard = () => {
       }
     );
 
-    /* REORDER + COVER */
     await fetch(
       `http://127.0.0.1:8000/admin/products/${product.id}/images/reorder`,
       {
@@ -164,7 +196,6 @@ const AdminDashboard = () => {
 
   return (
     <>
-      {/* SIDEBAR TOGGLE */}
       <button
         className="sidebar-toggle"
         onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -185,7 +216,6 @@ const AdminDashboard = () => {
 
             return (
               <div key={p.id} className="admin-editor-card">
-                {/* COVER PREVIEW */}
                 {cover && (
                   <div className="cover-preview">
                     <span>Cover preview</span>
@@ -193,7 +223,6 @@ const AdminDashboard = () => {
                   </div>
                 )}
 
-                {/* EDIT FIELDS */}
                 <div className="admin-fields">
                   <input
                     value={p.name}
@@ -237,7 +266,6 @@ const AdminDashboard = () => {
                   </div>
                 </div>
 
-                {/* ADD IMAGE */}
                 <label className="add-image-box">
                   + Add image
                   <input
@@ -250,60 +278,12 @@ const AdminDashboard = () => {
                   />
                 </label>
 
-                {/* IMAGE CONTROL (DRAG + ZOOM) */}
+                {/* IMAGE CONTROL */}
                 <div
+                  ref={wrapperRef}
                   className="product-image-wrapper"
-                  onWheel={(e) => {
-                    e.preventDefault();
-                    const delta = e.deltaY > 0 ? -0.05 : 0.05;
-
-                    updateProduct(p.id, {
-                      scale: Math.min(
-                        2,
-                        Math.max(0.6, (p.scale ?? 1) + delta)
-                      ),
-                    });
-                  }}
-                  onMouseDown={(e) => {
-                    const startX = e.clientX;
-                    const startY = e.clientY;
-                    const startPosX = p.posX;
-                    const startPosY = p.posY;
-                    const rect =
-                      e.currentTarget.getBoundingClientRect();
-
-                    const onMove = (ev) => {
-                      const dx = ev.clientX - startX;
-                      const dy = ev.clientY - startY;
-
-                      updateProduct(p.id, {
-                        posX: Math.min(
-                          100,
-                          Math.max(
-                            0,
-                            startPosX +
-                              (dx / rect.width) * 100
-                          )
-                        ),
-                        posY: Math.min(
-                          100,
-                          Math.max(
-                            0,
-                            startPosY +
-                              (dy / rect.height) * 100
-                          )
-                        ),
-                      });
-                    };
-
-                    const stop = () => {
-                      window.removeEventListener("mousemove", onMove);
-                      window.removeEventListener("mouseup", stop);
-                    };
-
-                    window.addEventListener("mousemove", onMove);
-                    window.addEventListener("mouseup", stop);
-                  }}
+                  onMouseEnter={() => setActiveProductId(p.id)}
+                  onMouseLeave={() => setActiveProductId(null)}
                 >
                   <ProductCard
                     product={{
@@ -311,12 +291,62 @@ const AdminDashboard = () => {
                       image_pos_x: p.posX,
                       image_pos_y: p.posY,
                       image_scale: p.scale,
+                      onDragStart: (e) => {
+                        e.preventDefault();
+
+                        const startX = e.clientX;
+                        const startY = e.clientY;
+                        const startPosX = p.posX;
+                        const startPosY = p.posY;
+                        const rect =
+                          e.currentTarget.getBoundingClientRect();
+
+                        const onMove = (ev) => {
+                          const dx = ev.clientX - startX;
+                          const dy = ev.clientY - startY;
+
+                          updateProduct(p.id, {
+                            posX: Math.min(
+                              100,
+                              Math.max(
+                                0,
+                                startPosX +
+                                  (dx / rect.width) * 100
+                              )
+                            ),
+                            posY: Math.min(
+                              100,
+                              Math.max(
+                                0,
+                                startPosY +
+                                  (dy / rect.height) * 100
+                              )
+                            ),
+                          });
+                        };
+
+                        const stop = () => {
+                          window.removeEventListener(
+                            "mousemove",
+                            onMove
+                          );
+                          window.removeEventListener(
+                            "mouseup",
+                            stop
+                          );
+                        };
+
+                        window.addEventListener(
+                          "mousemove",
+                          onMove
+                        );
+                        window.addEventListener("mouseup", stop);
+                      },
                     }}
                     addToCart={null}
                   />
                 </div>
 
-                {/* REORDER IMAGES */}
                 <ReorderImages
                   images={p.images}
                   onDelete={deleteImage}
@@ -325,7 +355,6 @@ const AdminDashboard = () => {
                   }
                 />
 
-                {/* ACTIONS */}
                 <div className="admin-actions">
                   <button
                     className="save-btn"
