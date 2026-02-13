@@ -17,6 +17,25 @@ const CartItem = ({ item }) => {
     image = `${apiUrl}/uploads/${item.images[0]}`;
   }
 
+  const handleAddToCart = async () => {
+    try {
+        const response = await fetch('https://your-railway-url/client/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ itemId: item.id }),
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        console.log('Item added to cart:', data);
+    } catch (error) {
+        console.error('Error adding item to cart:', error);
+    }
+};
+
   return (
     <div
       className="cart-item"
@@ -73,6 +92,8 @@ const CartItem = ({ item }) => {
           Qty: {item.quantity}
         </span>
       </div>
+
+      <button onClick={handleAddToCart}>Add to Cart</button>
     </div>
   );
 };
