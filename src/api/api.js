@@ -6,10 +6,40 @@ const API = axios.create({
   baseURL: API_URL,
 });
 
+// ================= UTILITY: Fix HTTP to HTTPS =================
+const ensureHttps = (url) => {
+  if (!url) return url;
+  if (typeof url === 'string' && url.startsWith('http://')) {
+    return url.replace('http://', 'https://');
+  }
+  return url;
+};
+
+// ================= UTILITY: Fix Image URLs in Product =================
+const fixProductImageUrls = (product) => {
+  if (!product) return product;
+  
+  if (product.images && Array.isArray(product.images)) {
+    product.images = product.images.map(img => ({
+      ...img,
+      image_url: ensureHttps(img.image_url)
+    }));
+  }
+  
+  return product;
+};
+
 // ================= PRODUCTS =================
 export const getProducts = async () => {
   const res = await API.get("/client/products");
-  return res.data;
+  const products = res.data;
+  
+  // Fix all image URLs to use HTTPS
+  if (Array.isArray(products)) {
+    return products.map(fixProductImageUrls);
+  }
+  
+  return products;
 };
 
 // ================= ADD TO CART =================
@@ -17,7 +47,7 @@ export const addToCart = async (product_id, quantity = 1) => {
   const body = `product_id=${product_id}&quantity=${quantity}`;
 
   const res = await fetch(
-    "https://accessories-backend-production.up.railway.app/client/products",
+    "https://accessories-backend-production.up.railway.app/client/cart/add",
     {
       method: "POST",
       headers: {
@@ -39,7 +69,14 @@ export const addToCart = async (product_id, quantity = 1) => {
 // ================= GET CART =================
 export const getCart = async () => {
   const res = await API.get("/client/cart");
-  return res.data;
+  const cart = res.data;
+  
+  // Fix image URLs in cart items
+  if (cart && Array.isArray(cart.items)) {
+    cart.items = cart.items.map(item => fixProductImageUrls(item));
+  }
+  
+  return cart;
 };
 
 // ================= CHECKOUT =================

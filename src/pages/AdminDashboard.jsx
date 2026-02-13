@@ -6,6 +6,15 @@ import "../styles/admin-dashboard.css";
 
 const apiUrl = 'https://accessories-backend-production.up.railway.app';
 
+// Utility to ensure HTTPS URLs
+const ensureHttps = (url) => {
+  if (!url) return url;
+  if (typeof url === 'string' && url.startsWith('http://')) {
+    return url.replace('http://', 'https://');
+  }
+  return url;
+};
+
 const AdminDashboard = () => {
   const [products, setProducts] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -22,6 +31,10 @@ const AdminDashboard = () => {
     setProducts(
       data.map((p) => ({
         ...p,
+        images: p.images?.map(img => ({
+          ...img,
+          image_url: ensureHttps(img.image_url)
+        })),
         posX: p.image_pos_x ?? 50,
         posY: p.image_pos_y ?? 50,
         scale: p.image_scale ?? 1,
