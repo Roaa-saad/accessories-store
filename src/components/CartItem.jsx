@@ -1,5 +1,7 @@
 import React from "react";
 
+const apiUrl = 'https://accessories-backend-production.up.railway.app';
+
 const CartItem = ({ item }) => {
   if (!item) return null;
 
@@ -12,7 +14,7 @@ const CartItem = ({ item }) => {
     item.images.length > 0 &&
     item.images[0]
   ) {
-    image = `http://127.0.0.1:8000/uploads/${item.images[0]}`;
+    image = `${apiUrl}/uploads/${item.images[0]}`;
   }
 
   return (

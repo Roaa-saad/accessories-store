@@ -18,6 +18,8 @@ const AdminAddProduct = () => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const apiUrl = 'https://accessories-backend-production.up.railway.app';
+
   /* ================= HANDLE CHANGE ================= */
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -63,7 +65,7 @@ const AdminAddProduct = () => {
       data.append("images", img);
     });
 
-    const res = await fetch("http://127.0.0.1:8000/admin/add", {
+    const res = await fetch(`${apiUrl}/admin/add`, {
       method: "POST",
       body: data,
     });

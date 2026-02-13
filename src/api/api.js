@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const API_URL = 'https://accessories-backend-production.up.railway.app';
+
 const API = axios.create({
-  baseURL: "https://accessories-backend-production.up.railway.app",
+  baseURL: API_URL,
 });
 
 // ================= PRODUCTS =================
@@ -15,7 +17,7 @@ export const addToCart = async (product_id, quantity = 1) => {
   const body = `product_id=${product_id}&quantity=${quantity}`;
 
   const res = await fetch(
-    "http://127.0.0.1:8000/client/cart/add",
+    "https://accessories-backend-production.up.railway.app/client/products",
     {
       method: "POST",
       headers: {
@@ -49,7 +51,7 @@ export const checkout = async (data) => {
     `&customer_address=${encodeURIComponent(data.address)}`;
 
   const res = await fetch(
-    "http://127.0.0.1:8000/client/checkout",
+    "https://accessories-backend-production.up.railway.app/client/checkout",
     {
       method: "POST",
       headers: {
@@ -71,5 +73,11 @@ export const checkout = async (data) => {
 // ================= REMOVE FROM CART =================
 export const removeFromCart = async (product_id) => {
   const res = await API.delete(`/client/cart/remove/${product_id}`);
+  return res.data;
+};
+
+// ================= CATEGORIES =================
+export const getCategories = async () => {
+  const res = await API.get("/client/categories");
   return res.data;
 };

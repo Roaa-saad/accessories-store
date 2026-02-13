@@ -4,6 +4,8 @@ import AdminSidebar from "../components/AdminSidebar";
 import ReorderImages from "../components/ReorderImages";
 import "../styles/admin-dashboard.css";
 
+const apiUrl = 'https://accessories-backend-production.up.railway.app';
+
 const AdminDashboard = () => {
   const [products, setProducts] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -14,7 +16,7 @@ const AdminDashboard = () => {
   /* ================= LOAD PRODUCTS ================= */
   const loadProducts = async () => {
     const data = await fetch(
-      "http://127.0.0.1:8000/client/products"
+      `${apiUrl}/client/products`
     ).then((r) => r.json());
 
     setProducts(
@@ -77,7 +79,7 @@ const AdminDashboard = () => {
     formData.append("image", file);
 
     const res = await fetch(
-      `http://127.0.0.1:8000/admin/products/${productId}/images`,
+      `${apiUrl}/admin/products/${productId}/images`,
       {
         method: "POST",
         headers: {
@@ -100,7 +102,7 @@ const AdminDashboard = () => {
     if (!window.confirm("مسح الصورة؟")) return;
 
     const res = await fetch(
-      `http://127.0.0.1:8000/admin/images/${imageId}`,
+      `${apiUrl}/admin/images/${imageId}`,
       {
         method: "DELETE",
         headers: {
@@ -122,7 +124,7 @@ const AdminDashboard = () => {
     if (!window.confirm("مسح المنتج بالكامل؟ ❌")) return;
 
     const res = await fetch(
-      `http://127.0.0.1:8000/admin/delete/${productId}`,
+      `${apiUrl}/admin/delete/${productId}`,
       {
         method: "DELETE",
         headers: {
@@ -153,7 +155,7 @@ const AdminDashboard = () => {
     }
 
     await fetch(
-      `http://127.0.0.1:8000/admin/products/${product.id}`,
+      `${apiUrl}/admin/products/${product.id}`,
       {
         method: "PUT",
         headers: {
@@ -175,7 +177,7 @@ const AdminDashboard = () => {
     );
 
     await fetch(
-      `http://127.0.0.1:8000/admin/products/${product.id}/images/reorder`,
+      `${apiUrl}/admin/products/${product.id}/images/reorder`,
       {
         method: "PUT",
         headers: {

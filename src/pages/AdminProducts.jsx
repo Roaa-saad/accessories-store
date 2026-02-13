@@ -3,6 +3,8 @@ import { getProducts, deleteProduct } from "../api/api";
 import AdminSidebar from "../components/AdminSidebar";
 import "../styles/admin-dashboard.css";
 
+const apiUrl = 'https://accessories-backend-production.up.railway.app';
+
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
   const token = localStorage.getItem("admin_token");
@@ -30,7 +32,7 @@ const AdminProducts = () => {
 
   const saveChanges = async (product) => {
     const res = await fetch(
-      `http://127.0.0.1:8000/admin/products/${product.id}`,
+      `${apiUrl}/admin/products/${product.id}`,
       {
         method: "PUT",
         headers: {
@@ -116,7 +118,7 @@ const AdminProducts = () => {
               }}
             >
               <img
-                src={`http://127.0.0.1:8000/uploads/${
+                src={`https://accessories-backend-production.up.railway.app/uploads/${
                   p.images[p.main_image_index]
                 }`}
                 draggable={false}

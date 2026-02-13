@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 import AdminSidebar from "../components/AdminSidebar";
 import "../styles/admin-dashboard.css";
 
+const apiUrl = 'https://accessories-backend-production.up.railway.app';
+
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/admin/orders")
+    fetch(`${apiUrl}/admin/orders`)
       .then((res) => res.json())
       .then((data) => {
         setOrders(data);
@@ -26,7 +28,7 @@ const AdminOrders = () => {
       const body = `delivered=${!currentStatus}`;
 
       const res = await fetch(
-        `http://127.0.0.1:8000/admin/orders/${orderId}/deliver`,
+        `${apiUrl}/admin/orders/${orderId}/deliver`,
         {
           method: "PUT",
           headers: {
@@ -141,7 +143,7 @@ const AdminOrders = () => {
                   <img
                     src={
                       item.images?.length
-                        ? `http://127.0.0.1:8000/uploads/${item.images[0]}`
+                        ? `https://accessories-backend-production.up.railway.app/uploads/${item.images[0]}`
                         : "/placeholder.jpg"
                     }
                     alt={item.product_name}
