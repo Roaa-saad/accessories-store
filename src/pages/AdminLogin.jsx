@@ -10,7 +10,7 @@ const AdminLogin = () => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    const res = await fetch("http://127.0.0.1:8000/admin/login", {
+    const res = await fetch("https://accessories-backend-production.up.railway.app/admin/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form), // { email, password }
