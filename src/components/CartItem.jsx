@@ -2,11 +2,14 @@ import React from "react";
 
 const apiUrl = 'https://accessories-backend-production.up.railway.app';
 
+// Simple SVG placeholder
+const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' fill='%23f4ebe6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%23999'%3ENo Image%3C/text%3E%3C/svg%3E";
+
 const CartItem = ({ item }) => {
   if (!item) return null;
 
   // 🖼️ build image url safely
-  let image = "/placeholder.png";
+  let image = PLACEHOLDER_IMAGE;
 
   if (
     item.images &&
@@ -35,7 +38,7 @@ const CartItem = ({ item }) => {
         src={image}
         alt={item.name}
         onError={(e) => {
-          e.currentTarget.src = "/placeholder.png";
+          e.currentTarget.src = PLACEHOLDER_IMAGE;
         }}
         style={{
           width: "80px",

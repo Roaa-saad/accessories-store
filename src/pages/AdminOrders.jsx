@@ -4,6 +4,9 @@ import "../styles/admin-dashboard.css";
 
 const apiUrl = 'https://accessories-backend-production.up.railway.app';
 
+// Simple SVG placeholder for missing images
+const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='%23f4ebe6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='10' fill='%23999'%3ENo Image%3C/text%3E%3C/svg%3E";
+
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -144,7 +147,7 @@ const AdminOrders = () => {
                     src={
                       item.images?.length
                         ? `https://accessories-backend-production.up.railway.app/uploads/${item.images[0]}`
-                        : "/placeholder.jpg"
+                        : PLACEHOLDER_IMAGE
                     }
                     alt={item.product_name}
                   />
