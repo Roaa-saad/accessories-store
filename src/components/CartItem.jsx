@@ -73,10 +73,6 @@ const CartItem = ({ item }) => {
           Qty: {item.quantity}
         </span>
       </div>
-
-      <button onClick={handleAddToCart}>Add to Cart</button>
-
-      {/* Add any additional functionality or features here */}
     </div>
   );
 };
