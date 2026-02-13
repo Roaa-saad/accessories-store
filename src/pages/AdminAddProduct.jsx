@@ -9,28 +9,36 @@ const AdminAddProduct = () => {
     name: "",
     description: "",
     price: "",
+    discount_price: "",
     quantity: "",
     category_name: "",
+    featured: false, // ⭐ الجديد
   });
 
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  /* ================= HANDLE CHANGE ================= */
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+
+    setForm({
+      ...form,
+      [name]: type === "checkbox" ? checked : value,
+    });
   };
 
-  // ✅ add images
+  /* ================= ADD IMAGES ================= */
   const handleImages = (e) => {
     const files = Array.from(e.target.files);
     setImages((prev) => [...prev, ...files]);
   };
 
-  // ❌ remove image
   const removeImage = (index) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
+  /* ================= SUBMIT ================= */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -38,9 +46,18 @@ const AdminAddProduct = () => {
     const data = new FormData();
     data.append("name", form.name);
     data.append("description", form.description);
-    data.append("price", form.price);
-    data.append("quantity", form.quantity);
+    data.append("price", Number(form.price));
+    data.append("quantity", Number(form.quantity));
     data.append("category_name", form.category_name);
+    data.append("featured", form.featured); // ⭐ الجديد
+
+    // ✅ discount (optional)
+    if (form.discount_price !== "") {
+      data.append(
+        "discount_price",
+        Number(form.discount_price)
+      );
+    }
 
     images.forEach((img) => {
       data.append("images", img);
@@ -63,8 +80,10 @@ const AdminAddProduct = () => {
       name: "",
       description: "",
       price: "",
+      discount_price: "",
       quantity: "",
       category_name: "",
+      featured: false,
     });
     setImages([]);
     setLoading(false);
@@ -105,13 +124,23 @@ const AdminAddProduct = () => {
             onChange={handleChange}
           />
 
+          {/* 💰 ORIGINAL PRICE */}
           <input
             type="number"
             name="price"
-            placeholder="Price"
+            placeholder="Original Price"
             value={form.price}
             onChange={handleChange}
             required
+          />
+
+          {/* 🔥 DISCOUNT PRICE */}
+          <input
+            type="number"
+            name="discount_price"
+            placeholder="Discounted Price (optional)"
+            value={form.discount_price}
+            onChange={handleChange}
           />
 
           <input
@@ -131,6 +160,17 @@ const AdminAddProduct = () => {
             required
           />
 
+          {/* ⭐ FEATURED */}
+          <label className="featured-checkbox">
+            <input
+              type="checkbox"
+              name="featured"
+              checked={form.featured}
+              onChange={handleChange}
+            />
+            Featured piece
+          </label>
+
           {/* 📸 Upload */}
           <input
             type="file"
@@ -148,7 +188,6 @@ const AdminAddProduct = () => {
                     src={URL.createObjectURL(img)}
                     alt="preview"
                   />
-
                   <button
                     type="button"
                     className="remove-image-btn"

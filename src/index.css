@@ -70,20 +70,76 @@ REORDER IMAGES
 
 
 /* ================= IMAGE WRAPPER ================= */
-.product-image-wrapper:active {
+/* ================= PRODUCT CARD ================= */
+
+.product-card .product-image-wrapper {
+  height: 170px;   /* أو أي height ثابت */
+  overflow: hidden;
+}
+
+/* الوضع الطبيعي (كلاينت) */
+.product-card .product-image-wrapper img {
+  width: 100%;
+  height: 190px;
+  display: block;
+  object-fit: cover;
+  user-select: none;
+  pointer-events: none;
+  transition: object-position 0.2s ease, transform 0.2s ease;
+}
+
+
+/* ================= ADMIN EDIT MODE ================= */
+
+.product-card .product-image-wrapper.drag-enabled {
+  outline: 2px dashed #c9ab7a;
+  cursor: grab;
+}
+
+.product-card .product-image-wrapper.drag-enabled:active {
   cursor: grabbing;
 }
 
-/* الصورة نفسها */
-.product-image-wrapper img {
-  width: 100%;
-  display: block;
-  object-fit: cover;        
-  object-position: center;
-  transition: object-position .15s ease, transform .15s ease;
-  user-select: none;
-  pointer-events: none;     
+/* خلي الصورة تسمع في الأدمن */
+.product-card .product-image-wrapper.drag-enabled img {
+  pointer-events: auto;
+  cursor: grab;
+  transition: none;
 }
+
+/* أثناء السحب */
+.product-card .product-image-wrapper.drag-enabled.dragging {
+  cursor: grabbing;
+}
+
+/* ================= PRODUCT DETAILS ================= */
+
+.product-details-page .main-image-wrapper {
+  overflow: visible;
+}
+
+.product-details-page .main-image {
+  transform: none !important;
+}
+
+.price-with-discount {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 14px;
+}
+
+.new-price {
+  color: #c9ab7a; /* gold vibe */
+  font-weight: 600;
+  font-size: 16px;
+}
+
 
 /* ================================
    ADMIN EDITOR CARD

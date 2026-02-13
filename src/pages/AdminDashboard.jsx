@@ -8,7 +8,7 @@ const AdminDashboard = () => {
   const [products, setProducts] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeProductId, setActiveProductId] = useState(null);
-  const wrapperRef = useRef(null);
+  const wrapperRefs = useRef({});
   const token = localStorage.getItem("admin_token");
 
   /* ================= LOAD PRODUCTS ================= */
@@ -23,6 +23,8 @@ const AdminDashboard = () => {
         posX: p.image_pos_x ?? 50,
         posY: p.image_pos_y ?? 50,
         scale: p.image_scale ?? 1,
+        discount_price: p.discount_price ?? null,
+        featured: p.featured ?? false, // ⭐ الجديد
       }))
     );
   };
@@ -31,14 +33,14 @@ const AdminDashboard = () => {
     loadProducts();
   }, []);
 
-  /* ================= WHEEL ZOOM (PASSIVE FIX) ================= */
+  /* ================= WHEEL ZOOM ================= */
   useEffect(() => {
-    const el = wrapperRef.current;
-    if (!el || activeProductId === null) return;
+    if (activeProductId === null) return;
+    const el = wrapperRefs.current[activeProductId];
+    if (!el) return;
 
     const handleWheel = (e) => {
       e.preventDefault();
-
       const delta = e.deltaY > 0 ? -0.05 : 0.05;
 
       setProducts((prev) =>
@@ -57,10 +59,7 @@ const AdminDashboard = () => {
     };
 
     el.addEventListener("wheel", handleWheel, { passive: false });
-
-    return () => {
-      el.removeEventListener("wheel", handleWheel);
-    };
+    return () => el.removeEventListener("wheel", handleWheel);
   }, [activeProductId]);
 
   /* ================= UPDATE LOCAL ================= */
@@ -165,7 +164,9 @@ const AdminDashboard = () => {
           name: product.name,
           description: product.description,
           price: product.price,
+          discount_price: product.discount_price,
           quantity: product.quantity,
+          featured: product.featured, // ⭐ الجديد
           image_pos_x: product.posX,
           image_pos_y: product.posY,
           image_scale: product.scale,
@@ -223,130 +224,57 @@ const AdminDashboard = () => {
                   </div>
                 )}
 
-                <div className="admin-fields">
-                  <input
-                    value={p.name}
-                    onChange={(e) =>
-                      updateProduct(p.id, { name: e.target.value })
-                    }
-                    placeholder="Product name"
-                  />
-
-                  <textarea
-                    value={p.description || ""}
-                    onChange={(e) =>
-                      updateProduct(p.id, {
-                        description: e.target.value,
-                      })
-                    }
-                    placeholder="Description"
-                  />
-
-                  <div className="admin-inline">
-                    <input
-                      type="number"
-                      value={p.price}
-                      onChange={(e) =>
-                        updateProduct(p.id, {
-                          price: Number(e.target.value),
-                        })
-                      }
-                      placeholder="Price"
-                    />
-                    <input
-                      type="number"
-                      value={p.quantity}
-                      onChange={(e) =>
-                        updateProduct(p.id, {
-                          quantity: Number(e.target.value),
-                        })
-                      }
-                      placeholder="Quantity"
-                    />
-                  </div>
-                </div>
-
-                <label className="add-image-box">
-                  + Add image
-                  <input
-                    type="file"
-                    accept="image/*"
-                    hidden
-                    onChange={(e) =>
-                      addImage(p.id, e.target.files[0])
-                    }
-                  />
-                </label>
-
-                {/* IMAGE CONTROL */}
+                {/* IMAGE PREVIEW + DRAG */}
                 <div
-                  ref={wrapperRef}
-                  className="product-image-wrapper"
+                  className="product-image-wrapper drag-enabled"
+                  ref={(el) => (wrapperRefs.current[p.id] = el)}
                   onMouseEnter={() => setActiveProductId(p.id)}
                   onMouseLeave={() => setActiveProductId(null)}
                 >
                   <ProductCard
                     product={{
                       ...p,
-                      image_pos_x: p.posX,
-                      image_pos_y: p.posY,
-                      image_scale: p.scale,
-                      onDragStart: (e) => {
-                        e.preventDefault();
-
-                        const startX = e.clientX;
-                        const startY = e.clientY;
-                        const startPosX = p.posX;
-                        const startPosY = p.posY;
-                        const rect =
-                          e.currentTarget.getBoundingClientRect();
-
-                        const onMove = (ev) => {
-                          const dx = ev.clientX - startX;
-                          const dy = ev.clientY - startY;
-
-                          updateProduct(p.id, {
-                            posX: Math.min(
-                              100,
-                              Math.max(
-                                0,
-                                startPosX +
-                                  (dx / rect.width) * 100
-                              )
-                            ),
-                            posY: Math.min(
-                              100,
-                              Math.max(
-                                0,
-                                startPosY +
-                                  (dy / rect.height) * 100
-                              )
-                            ),
-                          });
-                        };
-
-                        const stop = () => {
-                          window.removeEventListener(
-                            "mousemove",
-                            onMove
-                          );
-                          window.removeEventListener(
-                            "mouseup",
-                            stop
-                          );
-                        };
-
-                        window.addEventListener(
-                          "mousemove",
-                          onMove
-                        );
-                        window.addEventListener("mouseup", stop);
-                      },
+                      images: p.images?.map((img) =>
+                        img.is_cover
+                          ? {
+                              ...img,
+                              pos_x: p.posX,
+                              pos_y: p.posY,
+                              scale: p.scale,
+                            }
+                          : img
+                      ),
                     }}
                     addToCart={null}
                   />
                 </div>
 
+                {/* FEATURED */}
+                <label className="featured-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={p.featured}
+                    onChange={(e) =>
+                      updateProduct(p.id, {
+                        featured: e.target.checked,
+                      })
+                    }
+                  />
+                  Featured piece
+                </label>
+
+                {/* ADD IMAGE */}
+                <div className="add-image">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) =>
+                      addImage(p.id, e.target.files[0])
+                    }
+                  />
+                </div>
+
+                {/* REORDER */}
                 <ReorderImages
                   images={p.images}
                   onDelete={deleteImage}
@@ -355,6 +283,64 @@ const AdminDashboard = () => {
                   }
                 />
 
+                {/* EDIT FIELDS */}
+                <div className="admin-fields">
+                  <input
+                    type="text"
+                    value={p.name}
+                    placeholder="Product name"
+                    onChange={(e) =>
+                      updateProduct(p.id, { name: e.target.value })
+                    }
+                  />
+
+                  <textarea
+                    value={p.description}
+                    placeholder="Description"
+                    onChange={(e) =>
+                      updateProduct(p.id, {
+                        description: e.target.value,
+                      })
+                    }
+                  />
+
+                  <input
+                    type="number"
+                    value={p.price}
+                    placeholder="Price"
+                    onChange={(e) =>
+                      updateProduct(p.id, {
+                        price: Number(e.target.value),
+                      })
+                    }
+                  />
+
+                  <input
+                    type="number"
+                    value={p.discount_price ?? ""}
+                    placeholder="Discount Price (optional)"
+                    onChange={(e) =>
+                      updateProduct(p.id, {
+                        discount_price: e.target.value
+                          ? Number(e.target.value)
+                          : null,
+                      })
+                    }
+                  />
+
+                  <input
+                    type="number"
+                    value={p.quantity}
+                    placeholder="Quantity"
+                    onChange={(e) =>
+                      updateProduct(p.id, {
+                        quantity: Number(e.target.value),
+                      })
+                    }
+                  />
+                </div>
+
+                {/* ACTIONS */}
                 <div className="admin-actions">
                   <button
                     className="save-btn"

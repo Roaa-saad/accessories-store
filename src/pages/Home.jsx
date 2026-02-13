@@ -52,35 +52,34 @@ const Home = () => {
     }
   };
 
+  // ⭐ Featured products فقط
+  const featuredProducts = products.filter((p) => p.featured);
+
   return (
     <>
       <Navbar />
 
       {/* HERO */}
       <div className="hero">
-        {/* <div className="hero-text">
-          <h1>
-            Delicate pieces,<br />
-            wrapped with love <span className="sparkle">✧</span>
-          </h1>
-          <p>Hand-picked jewelry for everyday softness</p>
-        </div> */}
-
         <img src="/hero.jpg" alt="Lumie Hero" />
       </div>
 
       {/* FEATURED PRODUCTS */}
-      <h2 className="section-title">Featured Pieces</h2>
+      {featuredProducts.length > 0 && (
+        <>
+          <h2 className="section-title">Featured Pieces</h2>
 
-      <div className="products-scroll">
-        {products.map((p) => (
-          <ProductCard
-            key={p.id}
-            product={p}
-            addToCart={handleAddToCart}
-          />
-        ))}
-      </div>
+          <div className="products-scroll">
+            {featuredProducts.map((p) => (
+              <ProductCard
+                key={p.id}
+                product={p}
+                addToCart={handleAddToCart}
+              />
+            ))}
+          </div>
+        </>
+      )}
 
       {/* VIEW ALL */}
       <Link to="/products" className="view-all">

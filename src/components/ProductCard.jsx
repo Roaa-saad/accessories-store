@@ -6,6 +6,17 @@ const ProductCard = ({ product, addToCart }) => {
     product.images?.find((img) => img.is_cover) ||
     product.images?.[0];
 
+  const posX = mainImage?.pos_x ?? 50;
+  const posY = mainImage?.pos_y ?? 50;
+  const scale = mainImage?.scale ?? 1;
+
+  const price = Number(product.price);
+  const discountPrice = Number(product.discount_price);
+
+  const hasDiscount =
+    discountPrice &&
+    discountPrice < price;
+
   const ImageContent = (
     <>
       {mainImage ? (
@@ -16,12 +27,12 @@ const ProductCard = ({ product, addToCart }) => {
           onMouseDown={product.onDragStart}
           style={{
             objectFit: "cover",
-            objectPosition: `${product.image_pos_x ?? 50}% ${
-              product.image_pos_y ?? 50
-            }%`,
-            transform: `scale(${product.image_scale ?? 1})`,
+            objectPosition: `${posX}% ${posY}%`,
+            transform: `scale(${scale})`,
+            transformOrigin: "center",
             cursor: product.onDragStart ? "grab" : "pointer",
             userSelect: "none",
+            pointerEvents: product.onDragStart ? "auto" : "none",
           }}
         />
       ) : (
@@ -36,12 +47,11 @@ const ProductCard = ({ product, addToCart }) => {
 
   return (
     <div className={`product-card ${product.sold_out ? "sold-out" : ""}`}>
-      {/* IMAGE */}
       {product.onDragStart ? (
-        // 👈 ADMIN (drag enabled – no Link)
-        <div className="product-image-wrapper">{ImageContent}</div>
+        <div className="product-image-wrapper drag-enabled">
+          {ImageContent}
+        </div>
       ) : (
-        // 👈 CLIENT (normal Link)
         <Link
           to={`/product/${product.id}`}
           className="product-image-wrapper"
@@ -50,7 +60,6 @@ const ProductCard = ({ product, addToCart }) => {
         </Link>
       )}
 
-      {/* INFO */}
       <div className="product-info">
         <h3>{product.name}</h3>
 
@@ -58,7 +67,6 @@ const ProductCard = ({ product, addToCart }) => {
           <button
             className="cart-icon"
             onClick={() => addToCart(product.id)}
-            aria-label="Add to cart"
             disabled={product.sold_out}
           >
             <FaShoppingBag />
@@ -66,7 +74,20 @@ const ProductCard = ({ product, addToCart }) => {
         )}
       </div>
 
-      <div className="price">{product.price} EGP</div>
+      <div className="price">
+        {hasDiscount ? (
+          <div className="price-with-discount">
+            <span className="old-price">
+              {price} 
+            </span>
+            <span className="new-price">
+              {discountPrice} EGP
+            </span>
+          </div>
+        ) : (
+          <span>{price} EGP</span>
+        )}
+      </div>
     </div>
   );
 };

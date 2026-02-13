@@ -7,7 +7,6 @@ const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
 
-  // 👑 خليه index الصورة الحالية
   const [activeIndex, setActiveIndex] = useState(0);
   const [qty, setQty] = useState(1);
 
@@ -16,7 +15,6 @@ const ProductDetails = () => {
       const found = data.find((p) => p.id === Number(id));
       if (!found) return;
 
-      // 👑 خلّي الكافر هو الصورة الأولى
       const coverIndex = found.images?.findIndex(
         (img) => img.is_cover
       );
@@ -31,6 +29,14 @@ const ProductDetails = () => {
   const isSoldOut = product.sold_out;
   const images = product.images || [];
   const activeImage = images[activeIndex];
+
+  /* ================= PRICE LOGIC ================= */
+  const price = Number(product.price);
+  const discountPrice = Number(product.discount_price);
+
+  const hasDiscount =
+    discountPrice &&
+    discountPrice < price;
 
   return (
     <>
@@ -57,7 +63,6 @@ const ProductDetails = () => {
               <div className="no-image">No image</div>
             )}
 
-            {/* SOLD OUT BADGE */}
             {isSoldOut && (
               <div className="sold-out-badge">Sold out</div>
             )}
@@ -80,7 +85,22 @@ const ProductDetails = () => {
         {/* ===== البيانات ===== */}
         <div className="product-info-box">
           <h1>{product.name}</h1>
-          <p className="details-price">{product.price} EGP</p>
+
+          {/* 💰 PRICE */}
+          <div className="details-price">
+            {hasDiscount ? (
+              <div className="price-with-discount">
+                <span className="old-price">
+                  {price} 
+                </span>
+                <span className="new-price">
+                  {discountPrice} EGP
+                </span>
+              </div>
+            ) : (
+              <span>{price} EGP</span>
+            )}
+          </div>
 
           <div className="description-box">
             <h3 className="description-title">Description</h3>

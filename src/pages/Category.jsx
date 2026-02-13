@@ -4,14 +4,32 @@ import Navbar from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
 import { getProducts, addToCart } from "../api/api";
 
-/* mapping ثابت */
-const CATEGORY_MAP = {
-  necklaces: 2,
-  bracelets: 4,
-  rings: 1,
-  earrings: 6,
-  "hair-clips": 2,   // ✅ كده صح
-  sale: 5
+/* ================= CATEGORY CONFIG ================= */
+const CATEGORY_CONFIG = {
+  necklaces: {
+    id: 2,
+    label: "Necklaces",
+  },
+  bracelets: {
+    id: 3,
+    label: "Bracelets",
+  },
+  rings: {
+    id: 1,
+    label: "Rings",
+  },
+  earrings: {
+    id: 6,
+    label: "Earrings",
+  },
+  "hair-clips": {
+    id: 4,
+    label: "Hair Clips",
+  },
+  sale: {
+    id: 5,
+    label: "Bundles", // 👈 بدل SALE
+  },
 };
 
 const Category = () => {
@@ -19,13 +37,13 @@ const Category = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
+    const category = CATEGORY_CONFIG[name];
+    if (!category) return;
+
     getProducts().then((data) => {
-      const categoryId = CATEGORY_MAP[name];
-
       const filtered = data.filter(
-        (p) => p.category?.id === categoryId
+        (p) => p.category?.id === category.id
       );
-
       setProducts(filtered);
     });
   }, [name]);
@@ -43,7 +61,7 @@ const Category = () => {
       <Navbar />
 
       <h2 className="section-title">
-        {name.replace("-", " ")}
+        {CATEGORY_CONFIG[name]?.label}
       </h2>
 
       <div className="products-page">
