@@ -118,9 +118,10 @@ const AdminProducts = () => {
               }}
             >
               <img
-                src={`https://accessories-backend-production.up.railway.app/uploads/${
-                  p.images[p.main_image_index]
-                }`}
+                src={
+                  p.images?.[p.main_image_index]?.image_url ||
+                  `https://accessories-backend-production.up.railway.app/uploads/${p.images?.[p.main_image_index]}`
+                }
                 draggable={false}
                 style={{
                   objectFit: "cover",

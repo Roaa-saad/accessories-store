@@ -8,16 +8,20 @@ const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/20
 const CartItem = ({ item }) => {
   if (!item) return null;
 
-  // 🖼️ build image url safely
+  // 🖼️ build image url safely - handle both string and object formats
   let image = PLACEHOLDER_IMAGE;
 
-  if (
-    item.images &&
-    Array.isArray(item.images) &&
-    item.images.length > 0 &&
-    item.images[0]
-  ) {
-    image = `${apiUrl}/uploads/${item.images[0]}`;
+  if (item.images && Array.isArray(item.images) && item.images.length > 0) {
+    const firstImage = item.images[0];
+    
+    // If image is an object with image_url property
+    if (firstImage && typeof firstImage === 'object' && firstImage.image_url) {
+      image = firstImage.image_url;
+    }
+    // If image is a string (filename)
+    else if (typeof firstImage === 'string') {
+      image = `${apiUrl}/uploads/${firstImage}`;
+    }
   }
 
   return (
