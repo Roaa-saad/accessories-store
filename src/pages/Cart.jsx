@@ -205,7 +205,7 @@ const Cart = () => {
                   margin: '4px 0 12px 0',
                   fontStyle: 'italic'
                 }}>
-                  📱 Please provide a WhatsApp number
+                  Please provide a WhatsApp number
                 </p>
                 {errors.phone && (
                   <span className="form-error">{errors.phone}</span>
