@@ -37,10 +37,38 @@ const Cart = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!form.name.trim()) newErrors.name = "Name is required";
-    if (!form.email.trim()) newErrors.email = "Email is required";
-    if (!form.address.trim()) newErrors.address = "Address is required";
-    if (!form.phone.trim()) newErrors.phone = "Phone number is required";
+    // Name validation: minimum 3 characters, only letters and spaces
+    if (!form.name.trim()) {
+      newErrors.name = "Name is required";
+    } else if (form.name.trim().length < 3) {
+      newErrors.name = "Name must be at least 3 characters";
+    } else if (!/^[a-zA-Z\u0600-\u06FF\s]+$/.test(form.name)) {
+      newErrors.name = "Name can only contain letters and spaces";
+    }
+
+    // Email validation: valid email format
+    if (!form.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    // Phone validation: 10-15 digits (can include +, spaces, dashes, parentheses)
+    if (!form.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else {
+      const phoneDigits = form.phone.replace(/[\s\-+()]/g, '');
+      if (!/^\d{10,15}$/.test(phoneDigits)) {
+        newErrors.phone = "Phone number must be 10-15 digits";
+      }
+    }
+
+    // Address validation: minimum 10 characters
+    if (!form.address.trim()) {
+      newErrors.address = "Address is required";
+    } else if (form.address.trim().length < 10) {
+      newErrors.address = "Address must be at least 10 characters";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -71,6 +99,9 @@ const Cart = () => {
       setErrors({});
     } catch (err) {
       console.error(err);
+      // Display backend error message if available
+      const errorMessage = err.message || "Failed to place order. Please try again.";
+      alert(errorMessage);
     }
   };
 
