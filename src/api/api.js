@@ -87,8 +87,12 @@ export const getCart = async () => {
   const cart = res.data;
   
   // Fix image URLs in cart items
+  // Handle both cart.items array and direct array response
   if (cart && Array.isArray(cart.items)) {
     cart.items = cart.items.map(item => fixProductImageUrls(item));
+    return cart;
+  } else if (Array.isArray(cart)) {
+    return cart.map(item => fixProductImageUrls(item));
   }
   
   return cart;

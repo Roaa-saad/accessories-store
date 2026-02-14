@@ -18,9 +18,15 @@ const CartItem = ({ item }) => {
     if (firstImage && typeof firstImage === 'object' && firstImage.image_url) {
       image = firstImage.image_url;
     }
-    // If image is a string (filename)
+    // If image is a string
     else if (typeof firstImage === 'string') {
-      image = `${apiUrl}/uploads/${firstImage}`;
+      // Check if it's already a full URL (starts with http/https)
+      if (firstImage.startsWith('http://') || firstImage.startsWith('https://')) {
+        image = firstImage;
+      } else {
+        // Otherwise it's a filename, prepend the uploads path
+        image = `${apiUrl}/uploads/${firstImage}`;
+      }
     }
   }
 

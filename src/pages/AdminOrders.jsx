@@ -148,7 +148,9 @@ const AdminOrders = () => {
                       item.images?.length
                         ? (typeof item.images[0] === 'object' && item.images[0].image_url)
                           ? item.images[0].image_url
-                          : `https://accessories-backend-production.up.railway.app/uploads/${item.images[0]}`
+                          : (typeof item.images[0] === 'string' && (item.images[0].startsWith('http://') || item.images[0].startsWith('https://')))
+                            ? item.images[0]
+                            : `https://accessories-backend-production.up.railway.app/uploads/${item.images[0]}`
                         : PLACEHOLDER_IMAGE
                     }
                     alt={item.product_name}

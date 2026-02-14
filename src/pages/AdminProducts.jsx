@@ -119,8 +119,21 @@ const AdminProducts = () => {
             >
               <img
                 src={
-                  p.images?.[p.main_image_index]?.image_url ||
-                  `https://accessories-backend-production.up.railway.app/uploads/${p.images?.[p.main_image_index]}`
+                  (() => {
+                    const img = p.images?.[p.main_image_index];
+                    if (!img) return '';
+                    
+                    // If image is object with image_url
+                    if (typeof img === 'object' && img.image_url) return img.image_url;
+                    
+                    // If image is string URL
+                    if (typeof img === 'string') {
+                      if (img.startsWith('http://') || img.startsWith('https://')) return img;
+                      return `https://accessories-backend-production.up.railway.app/uploads/${img}`;
+                    }
+                    
+                    return '';
+                  })()
                 }
                 draggable={false}
                 style={{
