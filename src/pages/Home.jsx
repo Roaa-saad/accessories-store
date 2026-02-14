@@ -3,6 +3,7 @@ import { getProducts, addToCart } from "../api/api";
 import Navbar from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
 import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 
 const CATEGORIES = [
   {
@@ -39,14 +40,16 @@ const CATEGORIES = [
 
 const Home = () => {
   const [products, setProducts] = useState([]);
+  const { updateCartCount, showAddedNotification } = useCart();
 
   useEffect(() => {
     getProducts().then(setProducts);
   }, []);
 
   const handleAddToCart = async (productId) => {
-    try {
-      await addToCart(productId, 1);
+    try {\n      await addToCart(productId, 1);
+      updateCartCount();
+      showAddedNotification();
     } catch (err) {
       console.error(err);
     }

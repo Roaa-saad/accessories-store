@@ -28,35 +28,41 @@ const AdminDashboard = () => {
       `${apiUrl}/client/products`
     ).then((r) => r.json());
 
-    setProducts(
-      data.map((p) => ({
-        ...p,
-        images: p.images?.map((img, index) => {
-          // If image is already an object with image_url
-          if (typeof img === 'object' && img.image_url) {
-            return {
-              ...img,
-              image_url: ensureHttps(img.image_url)
-            };
-          }
-          // If image is a string URL, convert to object format
-          if (typeof img === 'string') {
-            return {
-              id: index,
-              image_url: ensureHttps(img),
-              is_cover: index === 0,
-              sort_order: index
-            };
-          }
-          return img;
-        }),
-        posX: p.image_pos_x ?? 50,
-        posY: p.image_pos_y ?? 50,
-        scale: p.image_scale ?? 1,
-        discount_price: p.discount_price ?? null,
-        featured: p.featured ?? false, // ⭐ الجديد
-      }))
-    );
+    const processedProducts = data.map((p) => ({
+      ...p,
+      images: p.images?.map((img, index) => {
+        // If image is already an object with image_url
+        if (typeof img === 'object' && img.image_url) {
+          return {
+            ...img,
+            image_url: ensureHttps(img.image_url)
+          };
+        }
+        // If image is a string URL, convert to object format
+        if (typeof img === 'string') {
+          return {
+            id: index,
+            image_url: ensureHttps(img),
+            is_cover: index === 0,
+            sort_order: index
+          };
+        }
+        return img;
+      }),
+      posX: p.image_pos_x ?? 50,
+      posY: p.image_pos_y ?? 50,
+      scale: p.image_scale ?? 1,
+      discount_price: p.discount_price ?? null,
+      featured: p.featured ?? false, // ⭐ الجديد
+    }));
+
+    console.log('Processed products with images:', processedProducts.map(p => ({ 
+      id: p.id, 
+      name: p.name,
+      images: p.images 
+    })));
+
+    setProducts(processedProducts);
   };
 
   useEffect(() => {
@@ -243,11 +249,11 @@ const AdminDashboard = () => {
 
         <div className="products-scroll">
           {products.map((p) => {
-            const cover = p.images?.find((i) => i.is_cover);
+            const cover = p.images?.find((i) => i.is_cover) || p.images?.[0];
 
             return (
               <div key={p.id} className="admin-editor-card">
-                {cover && (
+                {cover && cover.image_url && (
                   <div className="cover-preview">
                     <span>Cover preview</span>
                     <img src={cover.image_url} alt="" />

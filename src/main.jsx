@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
+import { CartProvider } from "./context/CartContext";
 import "./index.css";
 
 const API_URL = 'https://accessories-backend-production.up.railway.app';
@@ -9,7 +10,9 @@ const API_URL = 'https://accessories-backend-production.up.railway.app';
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <CartProvider>
+        <App />
+      </CartProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

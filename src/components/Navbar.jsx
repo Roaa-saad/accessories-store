@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { FaShoppingBag } from "react-icons/fa";
+import { useCart } from "../context/CartContext";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
+  const { cartCount } = useCart();
 
   return (
     <>
@@ -41,8 +43,27 @@ const Navbar = () => {
         </div>
 
         {/* Cart */}
-        <Link to="/cart" className="nav-cart">
+        <Link to="/cart" className="nav-cart" style={{ position: 'relative' }}>
           <FaShoppingBag />
+          {cartCount > 0 && (
+            <span style={{
+              position: 'absolute',
+              top: '-8px',
+              right: '-8px',
+              backgroundColor: '#8b7355',
+              color: 'white',
+              borderRadius: '50%',
+              width: '20px',
+              height: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '11px',
+              fontWeight: 'bold'
+            }}>
+              {cartCount}
+            </span>
+          )}
         </Link>
       </div>
 

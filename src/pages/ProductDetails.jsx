@@ -2,10 +2,12 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { getProducts, addToCart } from "../api/api";
+import { useCart } from "../context/CartContext";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const { updateCartCount, showAddedNotification } = useCart();
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [qty, setQty] = useState(1);
@@ -135,6 +137,8 @@ const ProductDetails = () => {
               if (isSoldOut) return;
               try {
                 await addToCart(product.id, qty);
+                updateCartCount();
+                showAddedNotification();
               } catch (err) {
                 console.error(err);
               }

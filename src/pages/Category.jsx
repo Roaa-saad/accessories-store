@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
 import { getProducts, addToCart } from "../api/api";
+import { useCart } from "../context/CartContext";
 
 /* ================= CATEGORY CONFIG ================= */
 const CATEGORY_CONFIG = {
@@ -35,6 +36,7 @@ const CATEGORY_CONFIG = {
 const Category = () => {
   const { name } = useParams();
   const [products, setProducts] = useState([]);
+  const { updateCartCount, showAddedNotification } = useCart();
 
   useEffect(() => {
     const category = CATEGORY_CONFIG[name];
@@ -51,6 +53,8 @@ const Category = () => {
   const handleAddToCart = async (productId) => {
     try {
       await addToCart(productId, 1);
+      updateCartCount();
+      showAddedNotification();
     } catch (err) {
       console.error(err);
     }

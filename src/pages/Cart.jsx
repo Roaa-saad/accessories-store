@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { getCart, checkout, removeFromCart } from "../api/api";
 import CartItem from "../components/CartItem";
 import Navbar from "../components/Navbar";
+import { useCart } from "../context/CartContext";
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { updateCartCount } = useCart();
 
   const [form, setForm] = useState({
     name: "",
@@ -31,6 +33,7 @@ const Cart = () => {
   const handleRemove = async (id) => {
     await removeFromCart(id);
     setCart((prev) => prev.filter((item) => item.product_id !== id));
+    updateCartCount();
   };
 
   // ✅ VALIDATION
@@ -85,11 +88,12 @@ const Cart = () => {
 
     try {
       await checkout(form);
-
       // ✅ SAVE TOTAL + SHOW THANK YOU
       setOrderSuccess(true);
 
       setCart([]);
+      updateCartCount();
+      setForm({]);
       setForm({
         name: "",
         email: "",
