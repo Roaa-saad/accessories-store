@@ -20,10 +20,25 @@ const fixProductImageUrls = (product) => {
   if (!product) return product;
   
   if (product.images && Array.isArray(product.images)) {
-    product.images = product.images.map(img => ({
-      ...img,
-      image_url: ensureHttps(img.image_url)
-    }));
+    product.images = product.images.map((img, index) => {
+      // If image is already an object with image_url, just ensure HTTPS
+      if (typeof img === 'object' && img.image_url) {
+        return {
+          ...img,
+          image_url: ensureHttps(img.image_url)
+        };
+      }
+      // If image is a string URL, convert to object format
+      if (typeof img === 'string') {
+        return {
+          id: index,
+          image_url: ensureHttps(img),
+          is_cover: index === 0, // First image is cover by default
+          sort_order: index
+        };
+      }
+      return img;
+    });
   }
   
   return product;
