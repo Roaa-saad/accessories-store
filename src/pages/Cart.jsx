@@ -37,11 +37,11 @@ const Cart = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    // Name validation: minimum 3 characters, only letters and spaces
+    // Name validation: minimum 2 characters, only letters and spaces
     if (!form.name.trim()) {
       newErrors.name = "Name is required";
-    } else if (form.name.trim().length < 3) {
-      newErrors.name = "Name must be at least 3 characters";
+    } else if (form.name.trim().length < 2) {
+      newErrors.name = "Name must be at least 2 characters";
     } else if (!/^[a-zA-Z\u0600-\u06FF\s]+$/.test(form.name)) {
       newErrors.name = "Name can only contain letters and spaces";
     }
@@ -53,13 +53,13 @@ const Cart = () => {
       newErrors.email = "Please enter a valid email address";
     }
 
-    // Phone validation: 10-15 digits (can include +, spaces, dashes, parentheses)
+    // Phone validation: exactly 11 digits (can include +, spaces, dashes, parentheses)
     if (!form.phone.trim()) {
       newErrors.phone = "Phone number is required";
     } else {
       const phoneDigits = form.phone.replace(/[\s\-+()]/g, '');
-      if (!/^\d{10,15}$/.test(phoneDigits)) {
-        newErrors.phone = "Phone number must be 10-15 digits";
+      if (!/^\d{11}$/.test(phoneDigits)) {
+        newErrors.phone = "Phone number must be exactly 11 digits";
       }
     }
 
