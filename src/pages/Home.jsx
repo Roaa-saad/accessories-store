@@ -47,7 +47,8 @@ const Home = () => {
   }, []);
 
   const handleAddToCart = async (productId) => {
-    try {\n      await addToCart(productId, 1);
+    try {
+      await addToCart(productId, 1);
       updateCartCount();
       showAddedNotification();
     } catch (err) {

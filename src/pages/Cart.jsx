@@ -93,7 +93,6 @@ const Cart = () => {
 
       setCart([]);
       updateCartCount();
-      setForm({]);
       setForm({
         name: "",
         email: "",
