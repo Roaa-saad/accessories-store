@@ -24,12 +24,12 @@ const CATEGORY_CONFIG = {
     label: "Earrings",
   },
   "hair-clips": {
-    id: 4,
+    id: 7,
     label: "Hair Clips",
   },
   sale: {
-    id: 5,
-    label: "Bundles", // 👈 بدل SALE
+    id: 4,
+    label: "Bundles",
   },
 };
 
