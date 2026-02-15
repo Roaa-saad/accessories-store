@@ -28,7 +28,7 @@ const CATEGORY_CONFIG = {
     label: "Hair Clips",
   },
   sale: {
-    id: 5,
+    id: 4,
     label: "Bundles", // 👈 بدل SALE
   },
 };
