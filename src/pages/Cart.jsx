@@ -279,30 +279,6 @@ const Cart = () => {
                 {errors.city && (
                   <span className="form-error">{errors.city}</span>
                 )}
-                
-                {/* Shipping Info */}
-                <div style={{
-                  backgroundColor: '#f4ebe6',
-                  padding: '12px',
-                  borderRadius: '8px',
-                  marginTop: '8px',
-                  marginBottom: '16px'
-                }}>
-                  <p style={{
-                    fontSize: '13px',
-                    color: '#8b7355',
-                    margin: '0 0 8px 0',
-                    fontWeight: '600'
-                  }}>
-                    Shipping Charges:
-                  </p>
-                  <div style={{ fontSize: '12px', color: '#8b7355', lineHeight: '1.6' }}>
-                    <p style={{ margin: '4px 0' }}>• Cairo & Giza: 65 EGP</p>
-                    <p style={{ margin: '4px 0' }}>• New Cities & Suburbs: 70 EGP</p>
-                    <p style={{ margin: '4px 0' }}>• Delta, Alexandria & Canal Cities: 80 EGP</p>
-                    <p style={{ margin: '4px 0' }}>• Upper Egypt (Fayoum - Aswan): 90 EGP</p>
-                  </div>
-                </div>
 
                 <input
                   placeholder="Phone Number"
