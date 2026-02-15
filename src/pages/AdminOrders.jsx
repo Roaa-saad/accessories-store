@@ -153,7 +153,8 @@ const AdminOrders = () => {
                             : `https://accessories-backend-production.up.railway.app/uploads/${item.images[0]}`
                         : PLACEHOLDER_IMAGE
                     }
-                    alt={item.product_name}
+                    alt={item.name}
+                    loading="lazy"
                   />
 
                   <div className="order-item-info">

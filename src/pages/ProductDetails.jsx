@@ -53,6 +53,7 @@ const ProductDetails = () => {
                 className="main-image"
                 src={activeImage.image_url}
                 alt={product.name}
+                loading="eager"
                 style={{
                   objectFit: "cover",
                   objectPosition: `${product.image_pos_x ?? 50}% ${
@@ -77,6 +78,7 @@ const ProductDetails = () => {
                 key={img.id ?? index}
                 src={img.image_url}
                 alt=""
+                loading="lazy"
                 className={index === activeIndex ? "active" : ""}
                 onClick={() => setActiveIndex(index)}
               />

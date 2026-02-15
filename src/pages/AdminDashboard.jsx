@@ -256,7 +256,7 @@ const AdminDashboard = () => {
                 {cover && cover.image_url && (
                   <div className="cover-preview">
                     <span>Cover preview</span>
-                    <img src={cover.image_url} alt="" />
+                    <img src={cover.image_url} alt="" loading="lazy" />
                   </div>
                 )}
 
