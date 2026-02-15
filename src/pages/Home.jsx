@@ -101,7 +101,7 @@ const Home = () => {
             to={`/category/${cat.slug}`}
             className="product-card category-card"
           >
-            <img src={cat.image} alt={cat.name} loading="lazy" />
+            <img src={cat.image} alt={cat.name} />
 
             <div className="category-overlay">
               <span>Shop now</span>
@@ -123,7 +123,7 @@ const Home = () => {
 
       {/* GIFT */}
       <div className="gift-banner">
-        <img src="/gift.jpg" alt="Gift" loading="lazy" />
+        <img src="/gift.jpg" alt="Gift" />
         <span>Every order is carefully wrapped, just for you.</span>
       </div>
     </>

@@ -154,7 +154,6 @@ const AdminOrders = () => {
                         : PLACEHOLDER_IMAGE
                     }
                     alt={item.name}
-                    loading="lazy"
                   />
 
                   <div className="order-item-info">

@@ -78,7 +78,6 @@ const ProductDetails = () => {
                 key={img.id ?? index}
                 src={img.image_url}
                 alt=""
-                loading="lazy"
                 className={index === activeIndex ? "active" : ""}
                 onClick={() => setActiveIndex(index)}
               />

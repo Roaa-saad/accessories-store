@@ -135,7 +135,6 @@ const AdminProducts = () => {
                     return '';
                   })()
                 }
-                loading="lazy"
                 draggable={false}
                 style={{
                   objectFit: "cover",

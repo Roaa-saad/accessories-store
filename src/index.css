@@ -839,14 +839,6 @@ REORDER IMAGES
   object-fit: cover;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   pointer-events: none;
-  opacity: 0;
-  animation: fadeIn 0.3s ease-in forwards;
-}
-
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
 }
 
 .product-image-wrapper {
@@ -2283,22 +2275,12 @@ background: linear-gradient(
   object-fit: cover;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   pointer-events: none;
-  opacity: 0;
-  animation: fadeIn 0.3s ease-in forwards;
 }
 
-/* Add smooth loading for all images */
+/* Optimize image rendering */
 img {
   image-rendering: auto;
-}
-
-img[loading="lazy"] {
-  opacity: 0;
-  transition: opacity 0.3s ease-in;
-}
-
-img[loading="lazy"].loaded {
-  opacity: 1;
+  content-visibility: auto;
 }
 
 .product-image-wrapper {
