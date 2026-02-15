@@ -23,7 +23,6 @@ const ProductCard = ({ product, addToCart }) => {
         <img
           src={mainImage.image_url}
           alt={product.name}
-          loading="lazy"
           draggable={false}
           onMouseDown={product.onDragStart}
           style={{
