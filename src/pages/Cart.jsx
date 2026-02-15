@@ -14,6 +14,7 @@ const Cart = () => {
     email: "",
     address: "",
     phone: "",
+    city: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -73,14 +74,63 @@ const Cart = () => {
       newErrors.address = "Address must be at least 10 characters";
     }
 
+    // City validation
+    if (!form.city.trim()) {
+      newErrors.city = "City is required";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  // Shipping charges based on city
+  const getShippingCharge = () => {
+    const city = form.city.trim().toLowerCase();
+    
+    // Cairo and Giza
+    if (city.includes('قاهر') || city.includes('جيز') || 
+        city.includes('cairo') || city.includes('giza')) {
+      return 65;
+    }
+    
+    // New cities and suburbs
+    if (city.includes('شيخ زايد') || city.includes('6 اكتوبر') || city.includes('اكتوبر') ||
+        city.includes('تجمع') || city.includes('شروق') || city.includes('عبور') ||
+        city.includes('sheikh zayed') || city.includes('october') || city.includes('tagamoa') ||
+        city.includes('shorouk') || city.includes('obour')) {
+      return 70;
+    }
+    
+    // Delta cities including Alexandria and Canal cities
+    if (city.includes('اسكندر') || city.includes('اسماعيل') || city.includes('سويس') ||
+        city.includes('بورسعيد') || city.includes('دمياط') || city.includes('منصور') ||
+        city.includes('طنط') || city.includes('زقازيق') || city.includes('شبين') ||
+        city.includes('alexandria') || city.includes('ismailia') || city.includes('suez') ||
+        city.includes('port said') || city.includes('damietta') || city.includes('mansoura') ||
+        city.includes('tanta') || city.includes('zagazig') || city.includes('shebin')) {
+      return 80;
+    }
+    
+    // Upper Egypt (Fayoum to Aswan)
+    if (city.includes('فيوم') || city.includes('بنى سويف') || city.includes('مني') ||
+        city.includes('اسيوط') || city.includes('سوهاج') || city.includes('قنا') ||
+        city.includes('اقصر') || city.includes('اسوان') ||
+        city.includes('fayoum') || city.includes('beni suef') || city.includes('minya') ||
+        city.includes('assiut') || city.includes('sohag') || city.includes('qena') ||
+        city.includes('luxor') || city.includes('aswan')) {
+      return 90;
+    }
+    
+    // Default to new cities rate
+    return 70;
+  };
+
+  const shippingCharge = getShippingCharge();
   const total = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+  const grandTotal = total + shippingCharge;
 
   const handleCheckout = async () => {
     if (!cart.length) return;
@@ -98,6 +148,7 @@ const Cart = () => {
         email: "",
         address: "",
         phone: "",
+        city: "",
       });
       setErrors({});
     } catch (err) {
@@ -152,8 +203,31 @@ const Cart = () => {
             {/* TOTAL */}
             {cart.length > 0 && (
               <div className="cart-total">
-                <span>Total</span>
-                <strong>{total} EGP</strong>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <span>Subtotal</span>
+                  <span>{total} EGP</span>
+                </div>
+                {form.city && (
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    marginBottom: '8px',
+                    fontSize: '14px',
+                    color: '#8b7355'
+                  }}>
+                    <span>Shipping ({form.city})</span>
+                    <span>{shippingCharge} EGP</span>
+                  </div>
+                )}
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between',
+                  paddingTop: '8px',
+                  borderTop: '1px solid #e0d5cc'
+                }}>
+                  <strong>Total</strong>
+                  <strong>{form.city ? grandTotal : total} EGP</strong>
+                </div>
               </div>
             )}
 
@@ -194,6 +268,41 @@ const Cart = () => {
                 {errors.address && (
                   <span className="form-error">{errors.address}</span>
                 )}
+
+                <input
+                  placeholder="City / المدينة"
+                  value={form.city}
+                  onChange={(e) =>
+                    setForm({ ...form, city: e.target.value })
+                  }
+                />
+                {errors.city && (
+                  <span className="form-error">{errors.city}</span>
+                )}
+                
+                {/* Shipping Info */}
+                <div style={{
+                  backgroundColor: '#f4ebe6',
+                  padding: '12px',
+                  borderRadius: '8px',
+                  marginTop: '8px',
+                  marginBottom: '16px'
+                }}>
+                  <p style={{
+                    fontSize: '13px',
+                    color: '#8b7355',
+                    margin: '0 0 8px 0',
+                    fontWeight: '600'
+                  }}>
+                    Shipping Charges:
+                  </p>
+                  <div style={{ fontSize: '12px', color: '#8b7355', lineHeight: '1.6' }}>
+                    <p style={{ margin: '4px 0' }}>• Cairo & Giza: 65 EGP</p>
+                    <p style={{ margin: '4px 0' }}>• New Cities & Suburbs: 70 EGP</p>
+                    <p style={{ margin: '4px 0' }}>• Delta, Alexandria & Canal Cities: 80 EGP</p>
+                    <p style={{ margin: '4px 0' }}>• Upper Egypt (Fayoum - Aswan): 90 EGP</p>
+                  </div>
+                </div>
 
                 <input
                   placeholder="Phone Number"

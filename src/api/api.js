@@ -103,8 +103,9 @@ export const checkout = async (data) => {
   const body =
     `customer_name=${encodeURIComponent(data.name)}` +
     `&customer_email=${encodeURIComponent(data.email)}` +
-    `&customer_phone=${encodeURIComponent(data.phone)}` + // ✅ ADDED
-    `&customer_address=${encodeURIComponent(data.address)}`;
+    `&customer_phone=${encodeURIComponent(data.phone)}` +
+    `&customer_address=${encodeURIComponent(data.address)}` +
+    `&customer_city=${encodeURIComponent(data.city)}`;
 
   const res = await fetch(
     "https://accessories-backend-production.up.railway.app/client/checkout",
