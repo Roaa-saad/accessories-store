@@ -2287,6 +2287,8 @@ background: linear-gradient(
 img {
   image-rendering: auto;
   content-visibility: auto;
+  decoding: async;
+  will-change: auto;
 }
 
 .product-image-wrapper {
