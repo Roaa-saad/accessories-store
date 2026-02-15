@@ -47,6 +47,7 @@ const CartItem = ({ item }) => {
       <img
         src={image}
         alt={item.name}
+        loading="lazy"
         onError={(e) => {
           e.currentTarget.src = PLACEHOLDER_IMAGE;
         }}

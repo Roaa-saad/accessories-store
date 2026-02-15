@@ -71,7 +71,9 @@ const AdminAddProduct = () => {
     });
 
     if (!res.ok) {
-      alert("Something went wrong 😢");
+      const errorText = await res.text();
+      console.error("Backend error:", errorText);
+      alert(`Error: ${errorText || "Something went wrong 😢"}`);
       setLoading(false);
       return;
     }
