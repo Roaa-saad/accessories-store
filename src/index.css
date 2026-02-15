@@ -19,11 +19,17 @@
   box-sizing: border-box;
 }
 
+html {
+  font-display: swap;
+}
+
 body {
   margin: 0;
   background: #f9f4f0;
   font-family: "Cormorant Garamond", serif;
   color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeSpeed;
 }
 
 /* ================= CATEGORY CARDS ================= */
