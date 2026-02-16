@@ -85,44 +85,19 @@ const Cart = () => {
 
   // Shipping charges based on city
   const getShippingCharge = () => {
-    const city = form.city.trim().toLowerCase();
+    const city = form.city;
     
-    // Cairo and Giza
-    if (city.includes('قاهر') || city.includes('جيز') || 
-        city.includes('cairo') || city.includes('giza')) {
+    if (city === 'القاهرة والجيزة') {
       return 65;
-    }
-    
-    // New cities and suburbs
-    if (city.includes('شيخ زايد') || city.includes('6 اكتوبر') || city.includes('اكتوبر') ||
-        city.includes('تجمع') || city.includes('شروق') || city.includes('عبور') ||
-        city.includes('sheikh zayed') || city.includes('october') || city.includes('tagamoa') ||
-        city.includes('shorouk') || city.includes('obour')) {
+    } else if (city === 'المدن الجديدة والضواحي') {
       return 70;
-    }
-    
-    // Delta cities including Alexandria and Canal cities
-    if (city.includes('اسكندر') || city.includes('اسماعيل') || city.includes('سويس') ||
-        city.includes('بورسعيد') || city.includes('دمياط') || city.includes('منصور') ||
-        city.includes('طنط') || city.includes('زقازيق') || city.includes('شبين') ||
-        city.includes('alexandria') || city.includes('ismailia') || city.includes('suez') ||
-        city.includes('port said') || city.includes('damietta') || city.includes('mansoura') ||
-        city.includes('tanta') || city.includes('zagazig') || city.includes('shebin')) {
+    } else if (city === 'الدلتا والإسكندرية ومدن القناة') {
       return 80;
-    }
-    
-    // Upper Egypt (Fayoum to Aswan)
-    if (city.includes('فيوم') || city.includes('بنى سويف') || city.includes('مني') ||
-        city.includes('اسيوط') || city.includes('سوهاج') || city.includes('قنا') ||
-        city.includes('اقصر') || city.includes('اسوان') ||
-        city.includes('fayoum') || city.includes('beni suef') || city.includes('minya') ||
-        city.includes('assiut') || city.includes('sohag') || city.includes('qena') ||
-        city.includes('luxor') || city.includes('aswan')) {
+    } else if (city === 'الصعيد (الفيوم - أسوان)') {
       return 90;
     }
     
-    // Default to new cities rate
-    return 70;
+    return 0;
   };
 
   const handleCheckout = async () => {
@@ -277,13 +252,28 @@ const Cart = () => {
                   <span className="form-error">{errors.address}</span>
                 )}
 
-                <input
-                  placeholder="City / المدينة"
+                <select
                   value={form.city}
                   onChange={(e) =>
                     setForm({ ...form, city: e.target.value })
                   }
-                />
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    borderRadius: '8px',
+                    border: '1px solid #d4c4b4',
+                    fontSize: '14px',
+                    color: '#8b7355',
+                    backgroundColor: '#fff',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value="">اختر المدينة / Choose City</option>
+                  <option value="القاهرة والجيزة">القاهرة والجيزة (65 EGP)</option>
+                  <option value="المدن الجديدة والضواحي">المدن الجديدة والضواحي (70 EGP)</option>
+                  <option value="الدلتا والإسكندرية ومدن القناة">الدلتا والإسكندرية ومدن القناة (80 EGP)</option>
+                  <option value="الصعيد (الفيوم - أسوان)">الصعيد - الفيوم إلى أسوان (90 EGP)</option>
+                </select>
                 {errors.city && (
                   <span className="form-error">{errors.city}</span>
                 )}
