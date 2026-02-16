@@ -14,12 +14,12 @@ const CATEGORIES = [
   {
     name: "Bracelets",
     slug: "bracelets",
-    image: "/categories/bracelets.jpg",
+    image: "/categories/bracelets.jpg?v=20260216",
   },
   {
     name: "Rings",
     slug: "rings",
-    image: "/categories/rings-new.jpg",
+    image: "/categories/rings.jpg?v=20260216",
   },
   {
     name: "Earrings",
