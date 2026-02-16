@@ -84,117 +84,91 @@ const saveCartToStorage = (cart) => {
 
 // ================= ADD TO CART =================
 export const addToCart = async (product_id, quantity = 1) => {
-  const cart = getCartFromStorage();
-  
-  // Check if product already exists in cart
-  const existingItemIndex = cart.findIndex(item => item.product_id === product_id);
-  
-  if (existingItemIndex > -1) {
-    // Update quantity
-    cart[existingItemIndex].quantity += quantity;
-  } else {
-    // Add new item
-    cart.push({
-      product_id,
-      quantity,
-      added_at: new Date().toISOString()
-    });
+  try {
+    // Fetch product details
+    const allProducts = await getProducts();
+    const product = allProducts.find(p => p.product_id === product_id);
+    
+    if (!product) {
+      throw new Error('Product not found');
+    }
+    
+    const cart = getCartFromStorage();
+    
+    // Check if product already exists in cart
+    const existingItemIndex = cart.findIndex(item => item.product_id === product_id);
+    
+    if (existingItemIndex > -1) {
+      // Update quantity
+      cart[existingItemIndex].quantity += quantity;
+    } else {
+      // Add new item with full product details
+      cart.push({
+        product_id: product.product_id,
+        quantity: quantity,
+        name: product.name,
+        price: product.price,
+        images: product.images,
+        description: product.description
+      });
+    }
+    
+    saveCartToStorage(cart);
+    return { success: true, cart };
+  } catch (error) {
+    console.error('Error adding to cart:', error);
+    throw error;
   }
-  
-  saveCartToStorage(cart);
-  return { success: true, cart };
 };
 
 // ================= GET CART =================
 export const getCart = async () => {
   const cart = getCartFromStorage();
   
-  // If cart is empty, return empty array
-  if (cart.length === 0) {
-    return [];
-  }
-  
-  // Fetch all products once and match by ID
-  try {
-    const allProducts = await getProducts();
-    
-    // Combine cart quantities with product details
-    const cartWithDetails = cart.map((item) => {
-      const product = allProducts.find(p => p.product_id === item.product_id);
-      if (!product) {
-        console.warn(`Product ${item.product_id} not found`);
-        return null;
-      }
-      
-      return {
-        ...product,
-        quantity: item.quantity,
-        cart_item_id: item.product_id
-      };
-    }).filter(Boolean);
-    
-    // Clean up cart - remove items that no longer exist
-    if (cartWithDetails.length < cart.length) {
-      const validProductIds = cartWithDetails.map(item => item.product_id);
-      const cleanedCart = cart.filter(item => validProductIds.includes(item.product_id));
-      saveCartToStorage(cleanedCart);
-    }
-    
-    return cartWithDetails;
-  } catch (error) {
-    console.error('Error fetching cart details:', error);
-    return [];
-  }
+  // Return cart with proper structure
+  return cart.map(item => ({
+    ...item,
+    cart_item_id: item.product_id
+  }));
 };
 
 // ================= CHECKOUT =================
 export const checkout = async (data) => {
   const cart = getCartFromStorage();
   
-  // Prepare order data
-  const orderData = {
-    customer_name: data.name,
-    customer_email: data.email,
-    customer_phone: data.phone,
-    customer_address: data.address,
-    customer_city: data.city,
-    discount_code: data.discount_code || '',
-    note: data.note || '',
-    items: cart,
-    order_date: new Date().toISOString()
-  };
-
-  const body =
-    `customer_name=${encodeURIComponent(data.name)}` +
-    `&customer_email=${encodeURIComponent(data.email)}` +
-    `&customer_phone=${encodeURIComponent(data.phone)}` +
-    `&customer_address=${encodeURIComponent(data.address)}` +
-    `&customer_city=${encodeURIComponent(data.city)}` +
-    (data.discount_code ? `&discount_code=${encodeURIComponent(data.discount_code)}` : '') +
-    (data.note ? `&note=${encodeURIComponent(data.note)}` : '') +
-    `&items=${encodeURIComponent(JSON.stringify(cart))}`;
-
-  const res = await fetch(
+  const response = await fetch(
     "https://accessories-backend-production.up.railway.app/client/checkout",
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body,
+      body: JSON.stringify({
+        customer_name: data.name,
+        customer_email: data.email,
+        customer_phone: data.phone,
+        customer_address: data.address,
+        customer_city: data.city,
+        discount_code: data.discount_code || null,
+        notes: data.note || null,
+        cart_items: cart.map(item => ({
+          product_id: item.product_id,
+          quantity: item.quantity
+        }))
+      }),
     }
   );
 
-  if (!res.ok) {
-    const err = await res.text();
+  if (!response.ok) {
+    const err = await response.text();
     throw new Error(err);
   }
 
   // Clear cart after successful checkout
   localStorage.removeItem(CART_KEY);
   
-  return res.json();
+  return response.json();
 };
 
 // ================= REMOVE FROM CART =================
