@@ -2,35 +2,12 @@ import axios from "axios";
 
 const API_URL = 'https://accessories-backend-production.up.railway.app';
 
-// ================= SESSION MANAGEMENT =================
-const getSessionId = () => {
-  let sessionId = localStorage.getItem('sessionId');
-  if (!sessionId) {
-    sessionId = crypto.randomUUID();
-    localStorage.setItem('sessionId', sessionId);
-  }
-  return sessionId;
-};
-
 const API = axios.create({
   baseURL: API_URL,
-  timeout: 10000,
-  withCredentials: true,
+  timeout: 30000,
   headers: {
     'Cache-Control': 'public, max-age=300'
   }
-});
-
-// Add session ID only to cart-related requests
-API.interceptors.request.use((config) => {
-  // Only add session ID to cart endpoints
-  if (config.url && (
-    config.url.includes('/cart') || 
-    config.url.includes('/checkout')
-  )) {
-    config.headers['X-Session-ID'] = getSessionId();
-  }
-  return config;
 });
 
 // ================= UTILITY: Fix HTTP to HTTPS =================
@@ -84,60 +61,102 @@ export const getProducts = async () => {
   return products;
 };
 
+// ================= CART - LOCAL STORAGE =================
+const CART_KEY = 'lumiie_cart';
+
+const getCartFromStorage = () => {
+  try {
+    const cart = localStorage.getItem(CART_KEY);
+    return cart ? JSON.parse(cart) : [];
+  } catch (error) {
+    console.error('Error reading cart from localStorage:', error);
+    return [];
+  }
+};
+
+const saveCartToStorage = (cart) => {
+  try {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  } catch (error) {
+    console.error('Error saving cart to localStorage:', error);
+  }
+};
+
 // ================= ADD TO CART =================
 export const addToCart = async (product_id, quantity = 1) => {
-  const body = `product_id=${product_id}&quantity=${quantity}`;
-
-  console.log('Adding to cart:', product_id, quantity);
-
-  const res = await fetch(
-    "https://accessories-backend-production.up.railway.app/client/cart/add",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Accept: "application/json",
-        "X-Session-ID": getSessionId(),
-      },
-      body,
-      credentials: "include",
-    }
-  );
-
-  console.log('Add to cart response status:', res.status);
-
-  if (!res.ok) {
-    const err = await res.text();
-    console.error('Add to cart error:', err);
-    throw new Error(err);
+  const cart = getCartFromStorage();
+  
+  // Check if product already exists in cart
+  const existingItemIndex = cart.findIndex(item => item.product_id === product_id);
+  
+  if (existingItemIndex > -1) {
+    // Update quantity
+    cart[existingItemIndex].quantity += quantity;
+  } else {
+    // Add new item
+    cart.push({
+      product_id,
+      quantity,
+      added_at: new Date().toISOString()
+    });
   }
-
-  const result = await res.json();
-  console.log('Add to cart result:', result);
-  return result;
+  
+  saveCartToStorage(cart);
+  return { success: true, cart };
 };
 
 // ================= GET CART =================
 export const getCart = async () => {
-  console.log('Fetching cart...');
-  const res = await API.get("/client/cart");
-  console.log('Cart response:', res.data);
-  const cart = res.data;
+  const cart = getCartFromStorage();
   
-  // Fix image URLs in cart items
-  // Handle both cart.items array and direct array response
-  if (cart && Array.isArray(cart.items)) {
-    cart.items = cart.items.map(item => fixProductImageUrls(item));
-    return cart;
-  } else if (Array.isArray(cart)) {
-    return cart.map(item => fixProductImageUrls(item));
+  // If cart is empty, return empty array
+  if (cart.length === 0) {
+    return [];
   }
   
-  return cart;
+  // Fetch full product details for each cart item
+  try {
+    const productIds = cart.map(item => item.product_id);
+    const products = await Promise.all(
+      productIds.map(id => getProduct(id).catch(() => null))
+    );
+    
+    // Combine cart quantities with product details
+    const cartWithDetails = cart.map((item, index) => {
+      const product = products[index];
+      if (!product) return null;
+      
+      return {
+        ...product,
+        quantity: item.quantity,
+        cart_item_id: item.product_id
+      };
+    }).filter(Boolean);
+    
+    return cartWithDetails;
+  } catch (error) {
+    console.error('Error fetching cart details:', error);
+    return [];
+  }
 };
 
 // ================= CHECKOUT =================
 export const checkout = async (data) => {
+  const cart = getCartFromStorage();
+  
+  // Prepare order data
+  const orderData = {
+    customer_name: data.name,
+    customer_email: data.email,
+    customer_phone: data.phone,
+    customer_address: data.address,
+    customer_city: data.city,
+    discount_code: data.discount_code || '',
+    note: data.note || '',
+    items: cart,
+    order_date: new Date().toISOString()
+  };
+
   const body =
     `customer_name=${encodeURIComponent(data.name)}` +
     `&customer_email=${encodeURIComponent(data.email)}` +
@@ -145,7 +164,8 @@ export const checkout = async (data) => {
     `&customer_address=${encodeURIComponent(data.address)}` +
     `&customer_city=${encodeURIComponent(data.city)}` +
     (data.discount_code ? `&discount_code=${encodeURIComponent(data.discount_code)}` : '') +
-    (data.note ? `&note=${encodeURIComponent(data.note)}` : '');
+    (data.note ? `&note=${encodeURIComponent(data.note)}` : '') +
+    `&items=${encodeURIComponent(JSON.stringify(cart))}`;
 
   const res = await fetch(
     "https://accessories-backend-production.up.railway.app/client/checkout",
@@ -154,10 +174,8 @@ export const checkout = async (data) => {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Accept: "application/json",
-        "X-Session-ID": getSessionId(),
       },
       body,
-      credentials: "include",
     }
   );
 
@@ -166,13 +184,18 @@ export const checkout = async (data) => {
     throw new Error(err);
   }
 
+  // Clear cart after successful checkout
+  localStorage.removeItem(CART_KEY);
+  
   return res.json();
 };
 
 // ================= REMOVE FROM CART =================
 export const removeFromCart = async (product_id) => {
-  const res = await API.delete(`/client/cart/remove/${product_id}`);
-  return res.data;
+  const cart = getCartFromStorage();
+  const updatedCart = cart.filter(item => item.product_id !== product_id);
+  saveCartToStorage(updatedCart);
+  return { success: true, cart: updatedCart };
 };
 
 // ================= CATEGORIES =================
