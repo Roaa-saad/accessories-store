@@ -1726,6 +1726,23 @@ HERO TEXT
   border-radius: 12px;
   border: 1px solid var(--border);
   font-family: inherit;
+  font-size: 15px;
+  color: #3f3a36;
+  background-color: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.checkout-box textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.5;
+}
+
+.checkout-box input:focus,
+.checkout-box textarea:focus {
+  outline: none;
+  border-color: #c9ab7a;
+  box-shadow: 0 0 0 3px rgba(201, 171, 122, 0.1);
 }
 
 .checkout-box select {
@@ -2203,7 +2220,7 @@ background: linear-gradient(
   .checkout-box input,
   .checkout-box textarea {
     padding: 12px 16px;
-    font-size: 15px;
+    font-size: 16px;
   }
 
   /* ============== POLICY PAGE ============== */

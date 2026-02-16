@@ -333,12 +333,6 @@ const Cart = () => {
                     setForm({ ...form, note: e.target.value })
                   }
                   rows="3"
-                  style={{
-                    resize: 'vertical',
-                    minHeight: '60px',
-                    fontFamily: 'inherit',
-                    padding: '12px',
-                  }}
                 />
 
                 <button className="confirm-btn" onClick={handleCheckout}>
