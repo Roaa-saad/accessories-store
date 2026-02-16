@@ -259,20 +259,23 @@ const Cart = () => {
                   }
                   style={{
                     width: '100%',
-                    padding: '10px',
-                    borderRadius: '8px',
-                    border: '1px solid #d4c4b4',
-                    fontSize: '14px',
+                    padding: '12px 16px',
+                    borderRadius: '14px',
+                    border: '1.5px solid #d4c4b4',
+                    fontSize: '15px',
+                    fontFamily: '"Cormorant Garamond", serif',
                     color: '#8b7355',
-                    backgroundColor: '#fff',
-                    cursor: 'pointer'
+                    backgroundColor: '#f9f4f0',
+                    cursor: 'pointer',
+                    outline: 'none',
+                    transition: 'all 0.2s ease'
                   }}
                 >
-                  <option value="">اختر المدينة / Choose City</option>
-                  <option value="القاهرة والجيزة">القاهرة والجيزة (65 EGP)</option>
-                  <option value="المدن الجديدة والضواحي">المدن الجديدة والضواحي (70 EGP)</option>
-                  <option value="الدلتا والإسكندرية ومدن القناة">الدلتا والإسكندرية ومدن القناة (80 EGP)</option>
-                  <option value="الصعيد (الفيوم - أسوان)">الصعيد - الفيوم إلى أسوان (90 EGP)</option>
+                  <option value="" disabled>Select your city</option>
+                  <option value="القاهرة والجيزة">Cairo & Giza</option>
+                  <option value="المدن الجديدة والضواحي">New Cities & Suburbs</option>
+                  <option value="الدلتا والإسكندرية ومدن القناة">Delta, Alexandria & Canal Cities</option>
+                  <option value="الصعيد (الفيوم - أسوان)">Upper Egypt (Fayoum - Aswan)</option>
                 </select>
                 {errors.city && (
                   <span className="form-error">{errors.city}</span>
