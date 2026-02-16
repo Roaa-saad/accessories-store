@@ -61,6 +61,11 @@ export const getProducts = async () => {
   return products;
 };
 
+export const getProduct = async (id) => {
+  const res = await API.get(`/client/products/${id}`);
+  return fixProductImageUrls(res.data);
+};
+
 // ================= CART - LOCAL STORAGE =================
 const CART_KEY = 'lumiie_cart';
 
