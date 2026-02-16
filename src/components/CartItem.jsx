@@ -80,9 +80,30 @@ const CartItem = ({ item }) => {
           {item.name}
         </h4>
 
-        <span style={{ fontSize: "14px", color: "#555" }}>
-          {item.price} EGP
-        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          {item.discount_price && item.discount_price > 0 ? (
+            <>
+              <span style={{ 
+                fontSize: "14px", 
+                color: "#d4633f",
+                fontWeight: 600
+              }}>
+                {item.discount_price} EGP
+              </span>
+              <span style={{ 
+                fontSize: "13px", 
+                color: "#999",
+                textDecoration: "line-through"
+              }}>
+                {item.price} EGP
+              </span>
+            </>
+          ) : (
+            <span style={{ fontSize: "14px", color: "#555" }}>
+              {item.price} EGP
+            </span>
+          )}
+        </div>
 
         <span style={{ fontSize: "13px", color: "#888" }}>
           Qty: {item.quantity}
