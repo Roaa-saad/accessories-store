@@ -5,6 +5,7 @@ const API_URL = 'https://accessories-backend-production.up.railway.app';
 const API = axios.create({
   baseURL: API_URL,
   timeout: 10000,
+  withCredentials: true,
   headers: {
     'Cache-Control': 'public, max-age=300'
   }
@@ -74,6 +75,7 @@ export const addToCart = async (product_id, quantity = 1) => {
         Accept: "application/json",
       },
       body,
+      credentials: "include",
     }
   );
 
@@ -109,7 +111,9 @@ export const checkout = async (data) => {
     `&customer_email=${encodeURIComponent(data.email)}` +
     `&customer_phone=${encodeURIComponent(data.phone)}` +
     `&customer_address=${encodeURIComponent(data.address)}` +
-    `&customer_city=${encodeURIComponent(data.city)}`;
+    `&customer_city=${encodeURIComponent(data.city)}` +
+    (data.discount_code ? `&discount_code=${encodeURIComponent(data.discount_code)}` : '') +
+    (data.note ? `&note=${encodeURIComponent(data.note)}` : '');
 
   const res = await fetch(
     "https://accessories-backend-production.up.railway.app/client/checkout",
@@ -120,6 +124,7 @@ export const checkout = async (data) => {
         Accept: "application/json",
       },
       body,
+      credentials: "include",
     }
   );
 
