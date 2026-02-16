@@ -66,6 +66,8 @@ export const getProducts = async () => {
 export const addToCart = async (product_id, quantity = 1) => {
   const body = `product_id=${product_id}&quantity=${quantity}`;
 
+  console.log('Adding to cart:', product_id, quantity);
+
   const res = await fetch(
     "https://accessories-backend-production.up.railway.app/client/cart/add",
     {
@@ -79,17 +81,24 @@ export const addToCart = async (product_id, quantity = 1) => {
     }
   );
 
+  console.log('Add to cart response status:', res.status);
+
   if (!res.ok) {
     const err = await res.text();
+    console.error('Add to cart error:', err);
     throw new Error(err);
   }
 
-  return res.json();
+  const result = await res.json();
+  console.log('Add to cart result:', result);
+  return result;
 };
 
 // ================= GET CART =================
 export const getCart = async () => {
+  console.log('Fetching cart...');
   const res = await API.get("/client/cart");
+  console.log('Cart response:', res.data);
   const cart = res.data;
   
   // Fix image URLs in cart items
