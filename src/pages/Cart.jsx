@@ -199,7 +199,7 @@ const Cart = () => {
                 
                 {form.city && shippingCharge > 0 && (
                   <div style={{ marginBottom: '10px', paddingBottom: '10px', fontSize: '18px', color: '#8b7355' }}>
-                    Shipping ({form.city}): {shippingCharge} EGP
+                    Shipping: {shippingCharge} EGP
                   </div>
                 )}
                 
