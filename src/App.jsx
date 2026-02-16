@@ -6,6 +6,7 @@ import Category from "./pages/Category";
 import Products from "./pages/Products";
 import Cart from "./pages/Cart";
 import ProductDetails from "./pages/ProductDetails";
+import ReturnPolicy from "./pages/ReturnPolicy";
 
 /* ===== ADMIN PAGES ===== */
 import AdminLogin from "./pages/AdminLogin";
@@ -25,6 +26,7 @@ const App = () => {
       <Route path="/category/:name" element={<Category />} />
       <Route path="/product/:id" element={<ProductDetails />} />
       <Route path="/cart" element={<Cart />} />
+      <Route path="/return-policy" element={<ReturnPolicy />} />
 
       {/* ================= ADMIN LOGIN ================= */}
       <Route path="/admin/login" element={<AdminLogin />} />

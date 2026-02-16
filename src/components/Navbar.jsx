@@ -127,6 +127,16 @@ const Navbar = () => {
             Sets on sale ✨
           </Link>
         </nav>
+
+        {/* ===== DIVIDER ===== */}
+        <div className="side-menu-divider" />
+
+        {/* ===== POLICY LINK ===== */}
+        <nav className="side-menu-links main-links">
+          <Link to="/return-policy" onClick={() => setOpen(false)}>
+            Return & Exchange Policy ✨
+          </Link>
+        </nav>
       </div>
     </>
   );

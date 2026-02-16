@@ -15,6 +15,9 @@ const Cart = () => {
     address: "",
     phone: "",
     city: "",
+    cityDisplay: "",
+    discount_code: "",
+    note: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -117,6 +120,9 @@ const Cart = () => {
         address: "",
         phone: "",
         city: "",
+        cityDisplay: "",
+        discount_code: "",
+        note: "",
       });
       setErrors({});
     } catch (err) {
@@ -253,16 +259,41 @@ const Cart = () => {
                 )}
 
                 <select
-                  value={form.city}
-                  onChange={(e) =>
-                    setForm({ ...form, city: e.target.value })
-                  }
+                  value={form.cityDisplay}
+                  onChange={(e) => {
+                    const selectedOption = e.target.options[e.target.selectedIndex];
+                    const backendValue = selectedOption.getAttribute('data-value');
+                    setForm({ 
+                      ...form, 
+                      city: backendValue,
+                      cityDisplay: e.target.value
+                    });
+                  }}
                 >
                   <option value="" disabled>Select your city</option>
-                  <option value="القاهرة والجيزة">Cairo & Giza</option>
-                  <option value="المدن الجديدة والضواحي">New Cities & Suburbs</option>
-                  <option value="الدلتا والإسكندرية ومدن القناة">Delta, Alexandria & Canal Cities</option>
-                  <option value="الصعيد (الفيوم - أسوان)">Upper Egypt (Fayoum - Aswan)</option>
+                  <option value="Cairo" data-value="القاهرة والجيزة">Cairo</option>
+                  <option value="Giza" data-value="القاهرة والجيزة">Giza</option>
+                  <option value="6th October" data-value="المدن الجديدة والضواحي">6th October</option>
+                  <option value="Sheikh Zayed" data-value="المدن الجديدة والضواحي">Sheikh Zayed</option>
+                  <option value="New Cairo" data-value="المدن الجديدة والضواحي">New Cairo</option>
+                  <option value="Shorouk" data-value="المدن الجديدة والضواحي">Shorouk</option>
+                  <option value="Obour" data-value="المدن الجديدة والضواحي">Obour</option>
+                  <option value="Alexandria" data-value="الدلتا والإسكندرية ومدن القناة">Alexandria</option>
+                  <option value="Mansoura" data-value="الدلتا والإسكندرية ومدن القناة">Mansoura</option>
+                  <option value="Tanta" data-value="الدلتا والإسكندرية ومدن القناة">Tanta</option>
+                  <option value="Zagazig" data-value="الدلتا والإسكندرية ومدن القناة">Zagazig</option>
+                  <option value="Damietta" data-value="الدلتا والإسكندرية ومدن القناة">Damietta</option>
+                  <option value="Port Said" data-value="الدلتا والإسكندرية ومدن القناة">Port Said</option>
+                  <option value="Ismailia" data-value="الدلتا والإسكندرية ومدن القناة">Ismailia</option>
+                  <option value="Suez" data-value="الدلتا والإسكندرية ومدن القناة">Suez</option>
+                  <option value="Fayoum" data-value="الصعيد (الفيوم - أسوان)">Fayoum</option>
+                  <option value="Beni Suef" data-value="الصعيد (الفيوم - أسوان)">Beni Suef</option>
+                  <option value="Minya" data-value="الصعيد (الفيوم - أسوان)">Minya</option>
+                  <option value="Assiut" data-value="الصعيد (الفيوم - أسوان)">Assiut</option>
+                  <option value="Sohag" data-value="الصعيد (الفيوم - أسوان)">Sohag</option>
+                  <option value="Qena" data-value="الصعيد (الفيوم - أسوان)">Qena</option>
+                  <option value="Luxor" data-value="الصعيد (الفيوم - أسوان)">Luxor</option>
+                  <option value="Aswan" data-value="الصعيد (الفيوم - أسوان)">Aswan</option>
                 </select>
                 {errors.city && (
                   <span className="form-error">{errors.city}</span>
@@ -286,6 +317,29 @@ const Cart = () => {
                 {errors.phone && (
                   <span className="form-error">{errors.phone}</span>
                 )}
+
+                <input
+                  placeholder="Discount Code (optional)"
+                  value={form.discount_code}
+                  onChange={(e) =>
+                    setForm({ ...form, discount_code: e.target.value })
+                  }
+                />
+
+                <textarea
+                  placeholder="Note (optional)"
+                  value={form.note}
+                  onChange={(e) =>
+                    setForm({ ...form, note: e.target.value })
+                  }
+                  rows="3"
+                  style={{
+                    resize: 'vertical',
+                    minHeight: '60px',
+                    fontFamily: 'inherit',
+                    padding: '12px',
+                  }}
+                />
 
                 <button className="confirm-btn" onClick={handleCheckout}>
                   Confirm Order

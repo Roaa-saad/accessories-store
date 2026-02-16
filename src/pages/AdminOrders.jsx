@@ -107,6 +107,24 @@ const AdminOrders = () => {
               <div className="order-address">
                 {order.customer_address}
               </div>
+
+              {order.customer_city && (
+                <div className="order-city">
+                  <strong>City:</strong> {order.customer_city}
+                </div>
+              )}
+
+              {order.discount_code && (
+                <div className="order-discount-code">
+                  <strong>Discount Code:</strong> {order.discount_code}
+                </div>
+              )}
+
+              {order.note && (
+                <div className="order-note">
+                  <strong>Note:</strong> {order.note}
+                </div>
+              )}
             </div>
 
             {/* ===== STATUS ===== */}

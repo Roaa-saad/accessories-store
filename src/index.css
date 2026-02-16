@@ -25,7 +25,7 @@ html {
 
 body {
   margin: 0;
-  background: #f9f4f0;
+  background: #fbf9f8;
   font-family: "Cormorant Garamond", serif;
   color: var(--text);
   -webkit-font-smoothing: antialiased;
@@ -1838,6 +1838,114 @@ HERO TEXT
   line-height: 1.6;
 }
 
+/* ================= POLICY PAGE ================= */
+.policy-page {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 50px 24px 80px;
+  font-family: "Cormorant Garamond", serif;
+  background: linear-gradient(180deg, #fefbf9 0%, #f9f3ee 100%);
+  min-height: calc(100vh - 140px);
+}
+
+.policy-title {
+  font-size: 36px;
+  font-weight: 500;
+  color: #c9ab7a;
+  text-align: center;
+  margin-bottom: 50px;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 4px rgba(201, 171, 122, 0.1);
+  position: relative;
+  padding-bottom: 20px;
+}
+
+.policy-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #c9ab7a, transparent);
+}
+
+.policy-section {
+  margin-bottom: 35px;
+  padding: 35px 30px;
+  background: #ffffff;
+  border-radius: 24px;
+  border: 2px solid rgba(201, 171, 122, 0.2);
+  box-shadow: 0 4px 20px rgba(201, 171, 122, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.policy-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #c9ab7a, #d4c4b4, #c9ab7a);
+}
+
+.policy-section:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(201, 171, 122, 0.15);
+}
+
+.policy-heading {
+  font-size: 26px;
+  font-weight: 600;
+  color: #8b7355;
+  margin-bottom: 24px;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.policy-heading::before {
+  content: '✨';
+  font-size: 22px;
+}
+
+.policy-text {
+  font-size: 17px;
+  line-height: 1.9;
+  color: #6f6258;
+  margin-bottom: 18px;
+  padding-left: 8px;
+}
+
+.policy-text:last-child {
+  margin-bottom: 0;
+}
+
+.policy-text strong {
+  color: #8b7355;
+  font-weight: 600;
+  padding: 2px 6px;
+  background: rgba(201, 171, 122, 0.08);
+  border-radius: 4px;
+}
+
+.policy-thank-you {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 25px;
+  border-top: 1px dashed rgba(201, 171, 122, 0.3);
+  font-size: 19px;
+  color: #c9ab7a;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
 .brand {
   position: absolute;
   left: 50%;
@@ -2092,9 +2200,33 @@ background: linear-gradient(
     border-radius: 26px;
   }
 
-  .checkout-box input {
+  .checkout-box input,
+  .checkout-box textarea {
     padding: 12px 16px;
     font-size: 15px;
+  }
+
+  /* ============== POLICY PAGE ============== */
+  .policy-page {
+    padding: 70px 40px 100px;
+  }
+
+  .policy-title {
+    font-size: 42px;
+    margin-bottom: 60px;
+  }
+
+  .policy-section {
+    padding: 40px 45px;
+    margin-bottom: 40px;
+  }
+
+  .policy-heading {
+    font-size: 28px;
+  }
+
+  .policy-text {
+    font-size: 18px;
   }
 
   /* ============== PRODUCTS (same cards as mobile) ============== */
