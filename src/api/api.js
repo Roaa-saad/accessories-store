@@ -21,9 +21,15 @@ const API = axios.create({
   }
 });
 
-// Add session ID to all requests
+// Add session ID only to cart-related requests
 API.interceptors.request.use((config) => {
-  config.headers['X-Session-ID'] = getSessionId();
+  // Only add session ID to cart endpoints
+  if (config.url && (
+    config.url.includes('/cart') || 
+    config.url.includes('/checkout')
+  )) {
+    config.headers['X-Session-ID'] = getSessionId();
+  }
   return config;
 });
 
