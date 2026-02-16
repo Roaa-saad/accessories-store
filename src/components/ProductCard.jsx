@@ -24,6 +24,8 @@ const ProductCard = ({ product, addToCart }) => {
           src={mainImage.image_url}
           alt={product.name}
           draggable={false}
+          loading="lazy"
+          decoding="async"
           onMouseDown={product.onDragStart}
           style={{
             objectFit: "cover",
