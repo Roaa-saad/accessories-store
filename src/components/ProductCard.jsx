@@ -44,6 +44,10 @@ const ProductCard = ({ product, addToCart }) => {
       {product.sold_out && (
         <div className="sold-out-overlay">SOLD OUT</div>
       )}
+      
+      {!product.sold_out && hasDiscount && (
+        <div className="sale-badge">SALE</div>
+      )}
     </>
   );
 

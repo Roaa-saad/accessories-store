@@ -1406,6 +1406,36 @@ HERO TEXT
   box-shadow: 0 4px 10px rgba(0,0,0,.08);
 }
 
+/* ===== SALE BADGE ===== */
+.sale-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  background: rgba(212, 99, 63, 0.95);
+  color: white;
+
+  padding: 6px 12px;
+  border-radius: 10px;
+
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+
+  box-shadow: 0 4px 10px rgba(212, 99, 63, 0.3);
+  animation: pulse-sale 2s ease-in-out infinite;
+}
+
+@keyframes pulse-sale {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
 /* الصورة تفضل واضحة عادي */
 .product-card.sold-out {
   opacity: 0.7;
