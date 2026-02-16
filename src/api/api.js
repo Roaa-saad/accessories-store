@@ -119,17 +119,17 @@ export const getCart = async () => {
     return [];
   }
   
-  // Fetch full product details for each cart item
+  // Fetch all products once and match by ID
   try {
-    const productIds = cart.map(item => item.product_id);
-    const products = await Promise.all(
-      productIds.map(id => getProduct(id).catch(() => null))
-    );
+    const allProducts = await getProducts();
     
     // Combine cart quantities with product details
-    const cartWithDetails = cart.map((item, index) => {
-      const product = products[index];
-      if (!product) return null;
+    const cartWithDetails = cart.map((item) => {
+      const product = allProducts.find(p => p.product_id === item.product_id);
+      if (!product) {
+        console.warn(`Product ${item.product_id} not found`);
+        return null;
+      }
       
       return {
         ...product,
@@ -137,6 +137,13 @@ export const getCart = async () => {
         cart_item_id: item.product_id
       };
     }).filter(Boolean);
+    
+    // Clean up cart - remove items that no longer exist
+    if (cartWithDetails.length < cart.length) {
+      const validProductIds = cartWithDetails.map(item => item.product_id);
+      const cleanedCart = cart.filter(item => validProductIds.includes(item.product_id));
+      saveCartToStorage(cleanedCart);
+    }
     
     return cartWithDetails;
   } catch (error) {
