@@ -9,32 +9,32 @@ const CATEGORIES = [
   {
     name: "Necklaces",
     slug: "necklaces",
-    image: "/categories/necklaces.jpg",
+    image: "/categories/necklaces.webp",
   },
   {
     name: "Bracelets",
     slug: "bracelets",
-    image: "/categories/bracelets.jpg?v=20260216",
+    image: "/categories/bracelets.webp",
   },
   {
     name: "Rings",
     slug: "rings",
-    image: "/categories/rings.jpg?v=20260216",
+    image: "/categories/rings.webp",
   },
   {
     name: "Earrings",
     slug: "earrings",
-    image: "/categories/earrings.jpg",
+    image: "/categories/earrings.webp",
   },
   {
     name: "Hair Clips",
     slug: "hair-clips",
-    image: "/categories/hair-clips.jpg",
+    image: "/categories/hair-clips.webp",
   },
   {
     name: "Sets on Sale",
     slug: "sale",
-    image: "/categories/sale.jpg",
+    image: "/categories/sale.webp",
   },
 ];
 
