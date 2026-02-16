@@ -65,7 +65,7 @@ const Home = () => {
 
       {/* HERO */}
       <div className="hero">
-        <img src="/hero.jpg" alt="Lumie Hero" loading="eager" fetchpriority="high" />
+        <img src="/hero.jpg" alt="Lumie Hero" loading="eager" fetchpriority="high" decoding="async" />
       </div>
 
       {/* FEATURED PRODUCTS */}
@@ -101,7 +101,7 @@ const Home = () => {
             to={`/category/${cat.slug}`}
             className="product-card category-card"
           >
-            <img src={cat.image} alt={cat.name} loading="lazy" />
+            <img src={cat.image} alt={cat.name} loading="lazy" decoding="async" />
 
             <div className="category-overlay">
               <span>Shop now</span>
