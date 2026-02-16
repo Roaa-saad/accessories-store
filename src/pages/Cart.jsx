@@ -257,19 +257,6 @@ const Cart = () => {
                   onChange={(e) =>
                     setForm({ ...form, city: e.target.value })
                   }
-                  style={{
-                    width: '100%',
-                    padding: '12px 16px',
-                    borderRadius: '14px',
-                    border: '1.5px solid #d4c4b4',
-                    fontSize: '15px',
-                    fontFamily: '"Cormorant Garamond", serif',
-                    color: '#8b7355',
-                    backgroundColor: '#f9f4f0',
-                    cursor: 'pointer',
-                    outline: 'none',
-                    transition: 'all 0.2s ease'
-                  }}
                 >
                   <option value="" disabled>Select your city</option>
                   <option value="القاهرة والجيزة">Cairo & Giza</option>
