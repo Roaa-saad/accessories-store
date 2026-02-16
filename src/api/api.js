@@ -123,6 +123,7 @@ export const addToCart = async (product_id, quantity = 1) => {
         quantity: quantity,
         name: validatedProduct.name,
         price: validatedProduct.price,
+        discount_price: validatedProduct.discount_price || null,
         images: validatedProduct.images,
         description: validatedProduct.description
       });
