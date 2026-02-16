@@ -1389,8 +1389,7 @@ HERO TEXT
 .sold-out-overlay {
   position: absolute;
   top: 10px;
-  left: 10px;
-
+  right: 10px;
 
   background: rgba(255, 245, 245, 0.92);
   color: #b85c5c;
@@ -1410,10 +1409,10 @@ HERO TEXT
 .sale-badge {
   position: absolute;
   top: 10px;
-  right: 10px;
+  left: 10px;
 
-  background: rgba(212, 99, 63, 0.95);
-  color: white;
+  background: white;
+  color: #d63031;
 
   padding: 6px 12px;
   border-radius: 10px;
@@ -1423,7 +1422,7 @@ HERO TEXT
   letter-spacing: 1px;
   text-transform: uppercase;
 
-  box-shadow: 0 4px 10px rgba(212, 99, 63, 0.3);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   animation: pulse-sale 2s ease-in-out infinite;
 }
 
