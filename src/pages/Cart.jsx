@@ -213,36 +213,18 @@ const Cart = () => {
             {cart.length > 0 && (
               <div className="cart-total">
                 <div style={{ marginBottom: '12px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span>Subtotal:</span>
-                    <span>{originalTotal.toFixed(2)} EGP</span>
-                  </div>
+                  <div>Subtotal: {originalTotal.toFixed(2)} EGP</div>
                 </div>
                 
                 {discount > 0 && (
-                  <div style={{ marginBottom: '12px' }}>
-                    <div style={{ 
-                      display: 'flex', 
-                      justifyContent: 'space-between',
-                      color: '#d4633f'
-                    }}>
-                      <span>Discount:</span>
-                      <span>-{discount.toFixed(2)} EGP</span>
-                    </div>
+                  <div style={{ marginBottom: '12px', color: '#d4633f' }}>
+                    <div>Discount: -{discount.toFixed(2)} EGP</div>
                   </div>
                 )}
                 
                 {form.city && shippingCharge > 0 && (
-                  <div style={{ marginBottom: '12px' }}>
-                    <div style={{ 
-                      display: 'flex', 
-                      justifyContent: 'space-between',
-                      fontSize: '14px',
-                      color: '#8b7355'
-                    }}>
-                      <span>Shipping ({form.city}):</span>
-                      <span>{shippingCharge} EGP</span>
-                    </div>
+                  <div style={{ marginBottom: '12px', fontSize: '14px', color: '#8b7355' }}>
+                    <div>Shipping ({form.city}): {shippingCharge} EGP</div>
                   </div>
                 )}
                 
@@ -251,10 +233,7 @@ const Cart = () => {
                   borderTop: '2px solid #8b7355',
                   marginTop: '8px'
                 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <strong>Total:</strong>
-                    <strong>{grandTotal.toFixed(2)} EGP</strong>
-                  </div>
+                  <div><strong>Total: {grandTotal.toFixed(2)} EGP</strong></div>
                 </div>
               </div>
             )}
