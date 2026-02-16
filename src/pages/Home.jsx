@@ -19,7 +19,7 @@ const CATEGORIES = [
   {
     name: "Rings",
     slug: "rings",
-    image: "/categories/rings.jpg",
+    image: "/categories/rings-new.jpg",
   },
   {
     name: "Earrings",
