@@ -212,28 +212,28 @@ const Cart = () => {
             {/* TOTAL */}
             {cart.length > 0 && (
               <div className="cart-total">
-                <div style={{ marginBottom: '12px' }}>
-                  <div>Subtotal: {originalTotal.toFixed(2)} EGP</div>
+                <div style={{ marginBottom: '10px', paddingBottom: '10px' }}>
+                  Subtotal: {originalTotal.toFixed(2)} EGP
                 </div>
                 
                 {discount > 0 && (
-                  <div style={{ marginBottom: '12px', color: '#d4633f' }}>
-                    <div>Discount: -{discount.toFixed(2)} EGP</div>
+                  <div style={{ marginBottom: '10px', paddingBottom: '10px', color: '#d4633f' }}>
+                    Discount: -{discount.toFixed(2)} EGP
                   </div>
                 )}
                 
                 {form.city && shippingCharge > 0 && (
-                  <div style={{ marginBottom: '12px', fontSize: '14px', color: '#8b7355' }}>
-                    <div>Shipping ({form.city}): {shippingCharge} EGP</div>
+                  <div style={{ marginBottom: '10px', paddingBottom: '10px', fontSize: '14px', color: '#8b7355' }}>
+                    Shipping ({form.city}): {shippingCharge} EGP
                   </div>
                 )}
                 
                 <div style={{ 
-                  paddingTop: '12px',
+                  paddingTop: '15px',
                   borderTop: '2px solid #8b7355',
-                  marginTop: '8px'
+                  marginTop: '10px'
                 }}>
-                  <div><strong>Total: {grandTotal.toFixed(2)} EGP</strong></div>
+                  <strong>Total: {grandTotal.toFixed(2)} EGP</strong>
                 </div>
               </div>
             )}
