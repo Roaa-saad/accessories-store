@@ -212,42 +212,49 @@ const Cart = () => {
             {/* TOTAL */}
             {cart.length > 0 && (
               <div className="cart-total">
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span>Subtotal</span>
-                  <span>{originalTotal.toFixed(2)} EGP</span>
+                <div style={{ marginBottom: '12px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Subtotal:</span>
+                    <span>{originalTotal.toFixed(2)} EGP</span>
+                  </div>
                 </div>
+                
                 {discount > 0 && (
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between', 
-                    marginBottom: '8px',
-                    color: '#d4633f'
-                  }}>
-                    <span>Discount</span>
-                    <span>-{discount.toFixed(2)} EGP</span>
+                  <div style={{ marginBottom: '12px' }}>
+                    <div style={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between',
+                      color: '#d4633f'
+                    }}>
+                      <span>Discount:</span>
+                      <span>-{discount.toFixed(2)} EGP</span>
+                    </div>
                   </div>
                 )}
+                
                 {form.city && shippingCharge > 0 && (
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between', 
-                    marginBottom: '8px',
-                    fontSize: '14px',
-                    color: '#8b7355'
-                  }}>
-                    <span>Shipping ({form.city})</span>
-                    <span>{shippingCharge} EGP</span>
+                  <div style={{ marginBottom: '12px' }}>
+                    <div style={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between',
+                      fontSize: '14px',
+                      color: '#8b7355'
+                    }}>
+                      <span>Shipping ({form.city}):</span>
+                      <span>{shippingCharge} EGP</span>
+                    </div>
                   </div>
                 )}
+                
                 <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between',
-                  paddingTop: '8px',
-                  borderTop: '1px solid #e0d5cc',
-                  marginTop: '4px'
+                  paddingTop: '12px',
+                  borderTop: '2px solid #8b7355',
+                  marginTop: '8px'
                 }}>
-                  <strong>Total</strong>
-                  <strong>{grandTotal.toFixed(2)} EGP</strong>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>Total:</strong>
+                    <strong>{grandTotal.toFixed(2)} EGP</strong>
+                  </div>
                 </div>
               </div>
             )}
