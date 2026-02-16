@@ -2,6 +2,16 @@ import axios from "axios";
 
 const API_URL = 'https://accessories-backend-production.up.railway.app';
 
+// ================= SESSION MANAGEMENT =================
+const getSessionId = () => {
+  let sessionId = localStorage.getItem('sessionId');
+  if (!sessionId) {
+    sessionId = crypto.randomUUID();
+    localStorage.setItem('sessionId', sessionId);
+  }
+  return sessionId;
+};
+
 const API = axios.create({
   baseURL: API_URL,
   timeout: 10000,
@@ -9,6 +19,12 @@ const API = axios.create({
   headers: {
     'Cache-Control': 'public, max-age=300'
   }
+});
+
+// Add session ID to all requests
+API.interceptors.request.use((config) => {
+  config.headers['X-Session-ID'] = getSessionId();
+  return config;
 });
 
 // ================= UTILITY: Fix HTTP to HTTPS =================
@@ -75,6 +91,7 @@ export const addToCart = async (product_id, quantity = 1) => {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Accept: "application/json",
+        "X-Session-ID": getSessionId(),
       },
       body,
       credentials: "include",
@@ -131,6 +148,7 @@ export const checkout = async (data) => {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Accept: "application/json",
+        "X-Session-ID": getSessionId(),
       },
       body,
       credentials: "include",
