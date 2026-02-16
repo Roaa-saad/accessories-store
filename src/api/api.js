@@ -85,36 +85,53 @@ const saveCartToStorage = (cart) => {
 // ================= ADD TO CART =================
 export const addToCart = async (product_id, quantity = 1) => {
   try {
-    // Fetch product details
-    const allProducts = await getProducts();
-    const product = allProducts.find(p => p.product_id === product_id);
-    
-    if (!product) {
-      throw new Error('Product not found');
+    // Validate product with backend
+    const response = await fetch(
+      "https://accessories-backend-production.up.railway.app/client/cart/add",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Accept: "application/json",
+        },
+        body: `product_id=${product_id}&quantity=${quantity}`,
+      }
+    );
+
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(err);
     }
+
+    // Get validated product from response
+    const result = await response.json();
+    const validatedProduct = result.product;
     
+    // Get current cart from localStorage
     const cart = getCartFromStorage();
     
-    // Check if product already exists in cart
-    const existingItemIndex = cart.findIndex(item => item.product_id === product_id);
+    // Check if product already in cart
+    const existingIndex = cart.findIndex(item => item.product_id === product_id);
     
-    if (existingItemIndex > -1) {
+    if (existingIndex !== -1) {
       // Update quantity
-      cart[existingItemIndex].quantity += quantity;
+      cart[existingIndex].quantity += quantity;
     } else {
-      // Add new item with full product details
+      // Add new item with validated product data
       cart.push({
-        product_id: product.product_id,
+        product_id: validatedProduct.product_id,
         quantity: quantity,
-        name: product.name,
-        price: product.price,
-        images: product.images,
-        description: product.description
+        name: validatedProduct.name,
+        price: validatedProduct.price,
+        images: validatedProduct.images,
+        description: validatedProduct.description
       });
     }
     
+    // Save to localStorage
     saveCartToStorage(cart);
-    return { success: true, cart };
+    
+    return { success: true, product: validatedProduct };
   } catch (error) {
     console.error('Error adding to cart:', error);
     throw error;
