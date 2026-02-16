@@ -125,13 +125,6 @@ const Cart = () => {
     return 70;
   };
 
-  const shippingCharge = getShippingCharge();
-  const total = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-  const grandTotal = total + shippingCharge;
-
   const handleCheckout = async () => {
     if (!cart.length) return;
     if (!validateForm()) return;
@@ -158,6 +151,22 @@ const Cart = () => {
       alert(errorMessage);
     }
   };
+
+  // Calculate prices
+  const subtotal = cart.reduce((sum, item) => {
+    const itemPrice = item.discount_price && item.discount_price > 0 
+      ? item.discount_price 
+      : item.price;
+    return sum + itemPrice * item.quantity;
+  }, 0);
+
+  const originalTotal = cart.reduce((sum, item) => {
+    return sum + item.price * item.quantity;
+  }, 0);
+
+  const discount = originalTotal - subtotal;
+  const shippingCharge = form.city ? getShippingCharge() : 0;
+  const grandTotal = subtotal + shippingCharge;
 
   return (
     <>
@@ -205,9 +214,20 @@ const Cart = () => {
               <div className="cart-total">
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <span>Subtotal</span>
-                  <span>{total} EGP</span>
+                  <span>{originalTotal.toFixed(2)} EGP</span>
                 </div>
-                {form.city && (
+                {discount > 0 && (
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    marginBottom: '8px',
+                    color: '#d4633f'
+                  }}>
+                    <span>Discount</span>
+                    <span>-{discount.toFixed(2)} EGP</span>
+                  </div>
+                )}
+                {form.city && shippingCharge > 0 && (
                   <div style={{ 
                     display: 'flex', 
                     justifyContent: 'space-between', 
@@ -223,10 +243,11 @@ const Cart = () => {
                   display: 'flex', 
                   justifyContent: 'space-between',
                   paddingTop: '8px',
-                  borderTop: '1px solid #e0d5cc'
+                  borderTop: '1px solid #e0d5cc',
+                  marginTop: '4px'
                 }}>
                   <strong>Total</strong>
-                  <strong>{form.city ? grandTotal : total} EGP</strong>
+                  <strong>{grandTotal.toFixed(2)} EGP</strong>
                 </div>
               </div>
             )}
