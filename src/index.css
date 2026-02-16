@@ -81,6 +81,7 @@ REORDER IMAGES
 .product-card .product-image-wrapper {
   height: 170px;   /* أو أي height ثابت */
   overflow: hidden;
+  position: relative;
 }
 
 /* الوضع الطبيعي (كلاينت) */
