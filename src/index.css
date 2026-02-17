@@ -852,7 +852,9 @@ REORDER IMAGES
   height: 150px;
   width: 170px;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 
@@ -2508,7 +2510,8 @@ img {
 
 .product-image-wrapper {
         display: flex;
-        align-items: flex-end;
+        align-items: center;
+        justify-content: center;
         height: 250px;
         width: 100%;
         overflow: hidden;
