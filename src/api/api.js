@@ -154,28 +154,30 @@ export const getCart = async () => {
 export const checkout = async (data) => {
   const cart = getCartFromStorage();
   
+  const body = new URLSearchParams({
+    customer_name: data.name,
+    customer_email: data.email,
+    customer_phone: data.phone,
+    customer_address: data.address,
+    customer_city: data.city,
+    discount_code: data.discount_code || '',
+    notes: data.note || '',
+    total_amount: data.total_amount.toString(),
+    cart_items: JSON.stringify(cart.map(item => ({
+      product_id: item.product_id,
+      quantity: item.quantity
+    })))
+  });
+  
   const response = await fetch(
     "https://accessories-backend-production.up.railway.app/client/checkout",
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
         Accept: "application/json",
       },
-      body: JSON.stringify({
-        customer_name: data.name,
-        customer_email: data.email,
-        customer_phone: data.phone,
-        customer_address: data.address,
-        customer_city: data.city,
-        discount_code: data.discount_code || null,
-        notes: data.note || null,
-        total_amount: data.total_amount,
-        cart_items: cart.map(item => ({
-          product_id: item.product_id,
-          quantity: item.quantity
-        }))
-      }),
+      body: body.toString(),
     }
   );
 
