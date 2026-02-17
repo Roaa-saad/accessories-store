@@ -51,10 +51,11 @@ const AdminOrders = () => {
   // Calculate discount amount based on code
   const getDiscountAmount = (subtotal, discountCode) => {
     if (!discountCode) return 0;
-    if (discountCode.toUpperCase() === 'BACKTOLUMIE') {
+    const code = discountCode.toUpperCase().trim();
+    if (code === 'BACKTOLUMIE') {
       return subtotal * 0.1; // 10% discount
     }
-    return 0; // FREEGIFT has no discount
+    return 0; // FREEGIFT or other codes have no discount
   };
 
   // ✅ UPDATE DELIVERY STATUS
@@ -247,16 +248,16 @@ const AdminOrders = () => {
                   </div>
 
                   {/* Discount (if exists) */}
-                  {discountAmount > 0 && (
+                  {order.discount_code && (
                     <div style={{ 
                       display: 'flex', 
                       justifyContent: 'space-between',
                       marginBottom: '8px',
                       fontSize: '15px',
-                      color: '#d4633f'
+                      color: discountAmount > 0 ? '#d4633f' : '#6b5d52'
                     }}>
                       <span>Discount ({order.discount_code}):</span>
-                      <span>-{discountAmount.toFixed(2)} EGP</span>
+                      <span>{discountAmount > 0 ? `-${discountAmount.toFixed(2)}` : '0.00'} EGP</span>
                     </div>
                   )}
 
