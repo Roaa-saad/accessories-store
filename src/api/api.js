@@ -170,6 +170,7 @@ export const checkout = async (data) => {
         customer_city: data.city,
         discount_code: data.discount_code || null,
         notes: data.note || null,
+        total_amount: data.total_amount,
         cart_items: cart.map(item => ({
           product_id: item.product_id,
           quantity: item.quantity

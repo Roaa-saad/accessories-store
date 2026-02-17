@@ -108,7 +108,10 @@ const Cart = () => {
     if (!validateForm()) return;
 
     try {
-      await checkout(form);
+      await checkout({
+        ...form,
+        total_amount: grandTotal
+      });
       // ✅ SAVE TOTAL + SHOW THANK YOU
       setOrderSuccess(true);
 
@@ -141,8 +144,23 @@ const Cart = () => {
     return sum + itemPrice * item.quantity;
   }, 0);
 
+  // Calculate discount code discount
+  const calculateDiscountCodeDiscount = () => {
+    const code = form.discount_code?.trim().toUpperCase();
+    if (!code) return 0;
+    
+    if (code === 'BACKTOLUMIE') {
+      return subtotal * 0.10; // 10% discount
+    } else if (code === 'FREEGIFT') {
+      return 0; // Free gift, no price discount
+    }
+    return 0;
+  };
+
+  const discountCodeAmount = calculateDiscountCodeDiscount();
+  const subtotalAfterDiscount = subtotal - discountCodeAmount;
   const shippingCharge = form.city ? getShippingCharge() : 0;
-  const grandTotal = subtotal + shippingCharge;
+  const grandTotal = subtotalAfterDiscount + shippingCharge;
 
   return (
     <>
@@ -191,6 +209,12 @@ const Cart = () => {
                 <div style={{ marginBottom: '10px', paddingBottom: '10px', fontSize: '18px' }}>
                   Subtotal: {subtotal.toFixed(2)} EGP
                 </div>
+                
+                {discountCodeAmount > 0 && (
+                  <div style={{ marginBottom: '10px', paddingBottom: '10px', color: '#d4633f', fontSize: '18px' }}>
+                    Discount ({form.discount_code?.toUpperCase()}): -{discountCodeAmount.toFixed(2)} EGP
+                  </div>
+                )}
                 
                 {form.city && shippingCharge > 0 && (
                   <div style={{ marginBottom: '10px', paddingBottom: '10px', fontSize: '18px', color: '#8b7355' }}>
