@@ -653,6 +653,7 @@ REORDER IMAGES
   color: inherit;
   overflow: hidden;
   min-width: 170px;
+  max-height: 200px;
   flex-shrink: 0;
 }
 
