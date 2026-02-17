@@ -25,6 +25,38 @@ const AdminOrders = () => {
       });
   }, []);
 
+  // Calculate shipping cost based on city
+  const getShippingCost = (city) => {
+    if (!city) return 0;
+    const cityLower = city.toLowerCase();
+    
+    // Cairo & Giza - 65 EGP
+    if (cityLower === 'cairo' || cityLower === 'giza') return 65;
+    
+    // New Cities - 70 EGP
+    if (['6th of october', 'sheikh zayed', 'new cairo', 'heliopolis', 'maadi', 
+         'nasr city', 'zamalek', 'dokki'].includes(cityLower)) return 70;
+    
+    // Delta - 80 EGP
+    if (['alexandria', 'tanta', 'mansoura', 'zagazig', 'damietta', 
+         'port said', 'ismailia'].includes(cityLower)) return 80;
+    
+    // Upper Egypt - 90 EGP
+    if (['luxor', 'aswan', 'sohag', 'qena', 'asyut', 
+         'minya', 'beni suef', 'fayoum'].includes(cityLower)) return 90;
+    
+    return 0;
+  };
+
+  // Calculate discount amount based on code
+  const getDiscountAmount = (subtotal, discountCode) => {
+    if (!discountCode) return 0;
+    if (discountCode.toUpperCase() === 'BACKTOLUMIE') {
+      return subtotal * 0.1; // 10% discount
+    }
+    return 0; // FREEGIFT has no discount
+  };
+
   // ✅ UPDATE DELIVERY STATUS
   const toggleDelivered = async (orderId, currentStatus) => {
     try {
@@ -183,6 +215,79 @@ const AdminOrders = () => {
                 </div>
               ))}
             </div>
+
+            {/* ===== ORDER TOTAL ===== */}
+            {(() => {
+              // Calculate subtotal from items
+              const subtotal = order.items.reduce((sum, item) => 
+                sum + (item.price * item.quantity), 0
+              );
+              
+              const discountAmount = getDiscountAmount(subtotal, order.discount_code);
+              const subtotalAfterDiscount = subtotal - discountAmount;
+              const shippingCost = getShippingCost(order.customer_city);
+              const totalAmount = subtotalAfterDiscount + shippingCost;
+
+              return (
+                <div className="order-total" style={{
+                  marginTop: '15px',
+                  paddingTop: '15px',
+                  borderTop: '2px solid #e0d5cc'
+                }}>
+                  {/* Subtotal */}
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between',
+                    marginBottom: '8px',
+                    fontSize: '15px',
+                    color: '#6b5d52'
+                  }}>
+                    <span>Subtotal:</span>
+                    <span>{subtotal.toFixed(2)} EGP</span>
+                  </div>
+
+                  {/* Discount (if exists) */}
+                  {discountAmount > 0 && (
+                    <div style={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between',
+                      marginBottom: '8px',
+                      fontSize: '15px',
+                      color: '#d4633f'
+                    }}>
+                      <span>Discount ({order.discount_code}):</span>
+                      <span>-{discountAmount.toFixed(2)} EGP</span>
+                    </div>
+                  )}
+
+                  {/* Shipping */}
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between',
+                    marginBottom: '12px',
+                    fontSize: '15px',
+                    color: '#6b5d52'
+                  }}>
+                    <span>Shipping:</span>
+                    <span>{shippingCost.toFixed(2)} EGP</span>
+                  </div>
+
+                  {/* Total */}
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between',
+                    paddingTop: '12px',
+                    borderTop: '1px solid #e0d5cc',
+                    fontSize: '18px', 
+                    fontWeight: 'bold',
+                    color: '#8b7355'
+                  }}>
+                    <span>Total:</span>
+                    <span>{totalAmount.toFixed(2)} EGP</span>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         ))}
       </main>
