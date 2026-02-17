@@ -654,6 +654,7 @@ REORDER IMAGES
   overflow: hidden;
   min-width: 170px;
   max-width: 170px;
+  max-height: 150px;
   flex-shrink: 0;
 }
 
