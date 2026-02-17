@@ -90,13 +90,25 @@ const Cart = () => {
   const getShippingCharge = () => {
     const city = form.city;
     
-    if (city === 'القاهرة والجيزة') {
+    // Cairo and Giza - 65 EGP
+    if (city === 'Cairo' || city === 'Giza') {
       return 65;
-    } else if (city === 'المدن الجديدة والضواحي') {
+    } 
+    // New Cities - 70 EGP
+    else if (city === '6th October' || city === 'Sheikh Zayed' || city === 'New Cairo' || 
+             city === 'Shorouk' || city === 'Obour') {
       return 70;
-    } else if (city === 'الدلتا والإسكندرية ومدن القناة') {
+    } 
+    // Delta and Alexandria - 80 EGP
+    else if (city === 'Alexandria' || city === 'Mansoura' || city === 'Tanta' || 
+             city === 'Zagazig' || city === 'Damietta' || city === 'Port Said' || 
+             city === 'Ismailia' || city === 'Suez') {
       return 80;
-    } else if (city === 'الصعيد (الفيوم - أسوان)') {
+    } 
+    // Upper Egypt - 90 EGP
+    else if (city === 'Fayoum' || city === 'Beni Suef' || city === 'Minya' || 
+             city === 'Assiut' || city === 'Sohag' || city === 'Qena' || 
+             city === 'Luxor' || city === 'Aswan') {
       return 90;
     }
     
