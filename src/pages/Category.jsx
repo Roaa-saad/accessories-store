@@ -68,6 +68,9 @@ const Category = () => {
       <Navbar />
 
       <h2 className="section-title">
+        {CATEGORY_CONFIG[name]?.label}
+      </h2>
+
       <div className="products-page">
         {loading ? (
           <p style={{ textAlign: "center", opacity: 0.6, gridColumn: "1 / -1" }}>
@@ -84,9 +87,6 @@ const Category = () => {
               product={p}
               addToCart={handleAddToCart}
             />
-          ))
-        )}
-      </div>/>
           ))
         )}
       </div>
