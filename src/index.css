@@ -2069,30 +2069,8 @@ HERO TEXT
   z-index: 2;
 }
 
-.hero::before {
-  top: -80px;
-  height: 200px;
-  opacity: 95%;
-background: linear-gradient(
-    to bottom,
-    #f9f4f0 0%,
-    rgba(249,244,240,0.95) 25%,
-    rgba(249,244,240,0.6) 55%,
-    rgba(249,244,240,0.25) 80%,
-    rgba(249,244,240,0) 100%
-  );
-}
 
-.hero::after {
-  bottom: 0;
-  height: 120px;
-  background: linear-gradient(
-    to top,
-    #f9f4f0,
-    rgba(255,255,255,.6),
-    rgba(255,255,255,0)
-  );
-}
+
 
 /* SECTION TITLE */
 .section-title {
