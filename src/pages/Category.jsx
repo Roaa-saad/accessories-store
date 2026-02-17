@@ -36,9 +36,11 @@ const CATEGORY_CONFIG = {
 const Category = () => {
   const { name } = useParams();
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { updateCartCount, showAddedNotification } = useCart();
 
   useEffect(() => {
+    setLoading(true);
     const category = CATEGORY_CONFIG[name];
     if (!category) return;
 
@@ -47,6 +49,7 @@ const Category = () => {
         (p) => p.category?.id === category.id
       );
       setProducts(filtered);
+      setLoading(false);
     });
   }, [name]);
 
@@ -65,12 +68,13 @@ const Category = () => {
       <Navbar />
 
       <h2 className="section-title">
-        {CATEGORY_CONFIG[name]?.label}
-      </h2>
-
       <div className="products-page">
-        {products.length === 0 ? (
-          <p style={{ textAlign: "center", opacity: 0.6 }}>
+        {loading ? (
+          <p style={{ textAlign: "center", opacity: 0.6, gridColumn: "1 / -1" }}>
+            Loading...
+          </p>
+        ) : products.length === 0 ? (
+          <p style={{ textAlign: "center", opacity: 0.6, gridColumn: "1 / -1" }}>
             No products yet ✨
           </p>
         ) : (
@@ -80,6 +84,9 @@ const Category = () => {
               product={p}
               addToCart={handleAddToCart}
             />
+          ))
+        )}
+      </div>/>
           ))
         )}
       </div>
