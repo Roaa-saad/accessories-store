@@ -14,7 +14,7 @@ const CATEGORIES = [
   {
     name: "Bracelets",
     slug: "bracelets",
-    image: "/categories/bracelets.webp?v=3",
+    image: "/categories/bracelets.webp?v=4",
   },
   {
     name: "Rings",
