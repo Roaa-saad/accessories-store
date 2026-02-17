@@ -652,6 +652,9 @@ REORDER IMAGES
   text-decoration: none;
   color: inherit;
   overflow: hidden;
+  min-width: 170px;
+  max-width: 170px;
+  flex-shrink: 0;
 }
 
 .category-card img {
