@@ -154,30 +154,25 @@ export const getCart = async () => {
 export const checkout = async (data) => {
   const cart = getCartFromStorage();
   
-  const body = new URLSearchParams({
-    customer_name: data.name,
-    customer_email: data.email,
-    customer_phone: data.phone,
-    customer_address: data.address,
-    customer_city: data.city,
-    discount_code: data.discount_code || '',
-    notes: data.note || '',
-    total_amount: data.total_amount.toString(),
-    cart_items: JSON.stringify(cart.map(item => ({
-      product_id: item.product_id,
-      quantity: item.quantity
-    })))
-  });
+  const formData = new FormData();
+  formData.append('customer_name', data.name);
+  formData.append('customer_email', data.email);
+  formData.append('customer_phone', data.phone);
+  formData.append('customer_address', data.address);
+  formData.append('customer_city', data.city);
+  formData.append('discount_code', data.discount_code || '');
+  formData.append('notes', data.note || '');
+  formData.append('total_amount', data.total_amount.toString());
+  formData.append('cart_items', JSON.stringify(cart.map(item => ({
+    product_id: item.product_id,
+    quantity: item.quantity
+  }))));
   
   const response = await fetch(
     "https://accessories-backend-production.up.railway.app/client/checkout",
     {
       method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Accept: "application/json",
-      },
-      body: body.toString(),
+      body: formData,
     }
   );
 
