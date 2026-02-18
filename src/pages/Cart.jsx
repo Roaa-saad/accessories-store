@@ -22,6 +22,7 @@ const Cart = () => {
 
   const [errors, setErrors] = useState({});
   const [orderSuccess, setOrderSuccess] = useState(false);
+  const [discountMessage, setDiscountMessage] = useState({ text: '', type: '' }); // 'valid' or 'invalid'
 
   useEffect(() => {
     fetchCart();
@@ -167,6 +168,33 @@ const Cart = () => {
       return 0; // Free gift, no price discount
     }
     return 0;
+  };
+
+  // Validate discount code and set message
+  const validateDiscountCode = (code) => {
+    const upperCode = code.trim().toUpperCase();
+    
+    if (!upperCode) {
+      setDiscountMessage({ text: '', type: '' });
+      return;
+    }
+    
+    if (upperCode === 'FREEGIFT') {
+      setDiscountMessage({ 
+        text: '✓ Valid code! You will get a free gift', 
+        type: 'valid' 
+      });
+    } else if (upperCode === 'BACKTOLUMIE') {
+      setDiscountMessage({ 
+        text: '✓ 10% discount applied', 
+        type: 'valid' 
+      });
+    } else {
+      setDiscountMessage({ 
+        text: '✗ Invalid code', 
+        type: 'invalid' 
+      });
+    }
   };
 
   const discountCodeAmount = calculateDiscountCodeDiscount();
@@ -344,10 +372,21 @@ const Cart = () => {
                 <input
                   placeholder="Discount Code (optional)"
                   value={form.discount_code}
-                  onChange={(e) =>
-                    setForm({ ...form, discount_code: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setForm({ ...form, discount_code: e.target.value });
+                    validateDiscountCode(e.target.value);
+                  }}
                 />
+                {discountMessage.text && (
+                  <p style={{
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    margin: '6px 0 12px 0',
+                    color: discountMessage.type === 'valid' ? '#2e7d32' : '#d32f2f'
+                  }}>
+                    {discountMessage.text}
+                  </p>
+                )}
 
                 <textarea
                   placeholder="Note (optional)"
