@@ -66,7 +66,7 @@ const Home = () => {
       {/* HERO */}
       <div className="hero">
         <img src="/hero.jpg?v=2" alt="Lumie Hero" loading="eager" fetchpriority="high" decoding="async" />
-        <Link to="/products" className="hero-shop-btn">Shop Now</Link>
+        <div className="hero-center-text">Shop Now</div>
       </div>
 
       {/* FEATURED PRODUCTS */}
