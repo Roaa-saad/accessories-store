@@ -379,7 +379,7 @@ const Cart = () => {
                 />
                 {discountMessage.text && (
                   <p style={{
-                    fontSize: '14px',
+                    fontSize: '15px',
                     fontWeight: '500',
                     margin: '6px 0 12px 0',
                     color: discountMessage.type === 'valid' ? '#2e7d32' : '#d32f2f'
