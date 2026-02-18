@@ -219,7 +219,7 @@ const AdminOrders = () => {
 
             {/* ===== ORDER TOTAL ===== */}
             {(() => {
-              // Calculate subtotal from items
+              // Calculate subtotal from items (using the actual price paid, which includes discounts)
               const subtotal = order.items.reduce((sum, item) => 
                 sum + (item.price * item.quantity), 0
               );

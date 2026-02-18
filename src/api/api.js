@@ -165,7 +165,8 @@ export const checkout = async (data) => {
   formData.append('total_amount', data.total_amount.toString());
   formData.append('cart_items', JSON.stringify(cart.map(item => ({
     product_id: item.product_id,
-    quantity: item.quantity
+    quantity: item.quantity,
+    price: item.discount_price && item.discount_price > 0 ? item.discount_price : item.price
   }))));
   
   const response = await fetch(
