@@ -953,7 +953,8 @@ REORDER IMAGES
   align-self: center;
   margin-bottom: 14px;
   padding: 5px 18px;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 600;
   color: var(--gold);
   border: 1.5px solid var(--gold-soft);
   border-radius: 999px;
@@ -2336,7 +2337,8 @@ HERO TEXT
   }
 
   .price {
-    font-size: 15px;
+    font-size: 16px;
+    font-weight: 600;
     padding: 6px 22px;
     margin-bottom: 18px;
     color: var(--gold);
