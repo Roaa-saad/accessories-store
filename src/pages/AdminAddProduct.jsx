@@ -31,9 +31,49 @@ const AdminAddProduct = () => {
   };
 
   /* ================= ADD IMAGES ================= */
-  const handleImages = (e) => {
+  const handleImages = async (e) => {
     const files = Array.from(e.target.files);
-    setImages((prev) => [...prev, ...files]);
+    
+    // Process each image to strip EXIF orientation
+    const processedFiles = await Promise.all(
+      files.map(async (file) => {
+        try {
+          // Create a canvas to redraw the image without EXIF
+          const img = new Image();
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          // Load the image
+          const imageUrl = URL.createObjectURL(file);
+          await new Promise((resolve) => {
+            img.onload = resolve;
+            img.src = imageUrl;
+          });
+          
+          // Set canvas size to image size
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          
+          // Draw image (this strips EXIF data)
+          ctx.drawImage(img, 0, 0);
+          
+          // Convert back to file
+          const blob = await new Promise((resolve) => {
+            canvas.toBlob(resolve, 'image/jpeg', 0.95);
+          });
+          
+          URL.revokeObjectURL(imageUrl);
+          
+          // Create new file with same name
+          return new File([blob], file.name, { type: 'image/jpeg' });
+        } catch (error) {
+          console.error('Error processing image:', error);
+          return file; // Return original if processing fails
+        }
+      })
+    );
+    
+    setImages((prev) => [...prev, ...processedFiles]);
   };
 
   const removeImage = (index) => {
