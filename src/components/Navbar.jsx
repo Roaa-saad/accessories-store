@@ -124,7 +124,7 @@ const Navbar = () => {
             onClick={() => setOpen(false)}
             className="sale-link"
           >
-            Sets on sale ✨
+            Bundles ✨
           </Link>
         </nav>
 

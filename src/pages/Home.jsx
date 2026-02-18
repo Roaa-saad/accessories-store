@@ -22,6 +22,11 @@ const CATEGORIES = [
     image: "/categories/rings.webp?v=5",
   },
   {
+    name: "Bundles",
+    slug: "sale",
+    image: "/categories/sale.webp?v=5",
+  },
+  {
     name: "Earrings",
     slug: "earrings",
     image: "/categories/earrings.webp?v=5",
@@ -30,11 +35,6 @@ const CATEGORIES = [
     name: "Hair Clips",
     slug: "hair-clips",
     image: "/categories/hair-clips.webp?v=5",
-  },
-  {
-    name: "Sets on Sale",
-    slug: "sale",
-    image: "/categories/sale.webp?v=5",
   },
 ];
 
