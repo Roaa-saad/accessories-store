@@ -27,16 +27,15 @@ async function convertDirectoryToWebP(directory, dirName) {
       const outputPath = path.join(directory, file.replace(ext, '.webp'));
       
       try {
-        // Read image WITHOUT auto-rotation
-        const image = sharp(inputPath);
-        const metadata = await image.metadata();
-        
-        // Get raw buffer, ignoring EXIF orientation
-        await sharp(inputPath, { failOnError: false })
-          .rotate(0) // Explicitly no rotation
-          .withMetadata(false) // Strip ALL metadata including orientation
-          .webp({ quality: 85 })
-          .toFile(outputPath);
+        // Open with NO auto-orientation
+        await sharp(inputPath)
+          .withMetadata({ orientation: undefined }) // Remove orientation tag
+          .toBuffer()
+          .then(buffer => 
+            sharp(buffer)
+              .webp({ quality: 85 })
+              .toFile(outputPath)
+          );
         
         console.log(`✅ Converted: ${dirName}/${file} → ${path.basename(outputPath)}`);
         converted++;
