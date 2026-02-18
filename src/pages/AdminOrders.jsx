@@ -210,7 +210,20 @@ const AdminOrders = () => {
                   <div className="order-item-info">
                     <h4>{item.product_name}</h4>
                     <p>
-                      {item.quantity} × {item.price} EGP
+                      {item.quantity} × {' '}
+                      {item.discount_price && item.discount_price > 0 ? (
+                        <>
+                          <span style={{ color: '#d4633f', fontWeight: 600 }}>
+                            {item.discount_price} EGP
+                          </span>
+                          {' '}
+                          <span style={{ textDecoration: 'line-through', color: '#999', fontSize: '13px' }}>
+                            ({item.price} EGP)
+                          </span>
+                        </>
+                      ) : (
+                        <span>{item.price} EGP</span>
+                      )}
                     </p>
                   </div>
                 </div>
@@ -220,9 +233,12 @@ const AdminOrders = () => {
             {/* ===== ORDER TOTAL ===== */}
             {(() => {
               // Calculate subtotal from items (using the actual price paid, which includes discounts)
-              const subtotal = order.items.reduce((sum, item) => 
-                sum + (item.price * item.quantity), 0
-              );
+              const subtotal = order.items.reduce((sum, item) => {
+                const itemPrice = item.discount_price && item.discount_price > 0 
+                  ? item.discount_price 
+                  : item.price;
+                return sum + (itemPrice * item.quantity);
+              }, 0);
               
               const discountAmount = getDiscountAmount(subtotal, order.discount_code);
               const subtotalAfterDiscount = subtotal - discountAmount;
