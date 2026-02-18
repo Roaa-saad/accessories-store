@@ -55,10 +55,8 @@ const Cart = () => {
       newErrors.name = "Name can only contain letters and spaces";
     }
 
-    // Email validation: valid email format
-    if (!form.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    // Email validation: optional, but if provided must be valid
+    if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       newErrors.email = "Please enter a valid email address";
     }
 
@@ -301,7 +299,7 @@ const Cart = () => {
                 )}
 
                 <input
-                  placeholder="Email"
+                  placeholder="Email (optional)"
                   value={form.email}
                   onChange={(e) =>
                     setForm({ ...form, email: e.target.value })
