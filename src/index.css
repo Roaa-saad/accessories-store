@@ -2271,22 +2271,16 @@ HERO TEXT
 
 @media (max-width: 600px) {
   .hero {
-    min-height: 180px;
-    height: 38vh;
+    min-height: 160px;
+    height: 36vh;
   }
   .hero-center-text {
-    font-size: 20px;
-    padding: 7px 10px 9px 10px;
-    border-radius: 12px;
+    font-size: 22px;
+    padding: 8px 16px 10px 16px;
+    border-radius: 14px;
     min-width: 60px;
     max-width: 90vw;
-    letter-spacing: 1.1px;
-    z-index: 10;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    position: absolute;
-    box-sizing: border-box;
+    /* All other style comes from desktop, do not override! */
   }
   .hero-center-text::after {
     margin-left: 8px;
