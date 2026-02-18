@@ -126,7 +126,7 @@ const AdminOrders = () => {
             {/* ===== ORDER INFO ===== */}
             <div className="order-header">
               <div className="order-main-info">
-                <h3>Order #{order.order_id}</h3>
+                <h3>Order #{String(order.order_id).padStart(3, '0')}</h3>
 
                 <p className="order-name">
                   {order.customer_name}

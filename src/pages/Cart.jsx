@@ -22,6 +22,7 @@ const Cart = () => {
 
   const [errors, setErrors] = useState({});
   const [orderSuccess, setOrderSuccess] = useState(false);
+  const [orderNumber, setOrderNumber] = useState(null);
   const [discountMessage, setDiscountMessage] = useState({ text: '', type: '' }); // 'valid' or 'invalid'
 
   useEffect(() => {
@@ -121,11 +122,13 @@ const Cart = () => {
     if (!validateForm()) return;
 
     try {
-      await checkout({
+      const result = await checkout({
         ...form,
         total_amount: grandTotal
       });
-      // ✅ SAVE TOTAL + SHOW THANK YOU
+      
+      // ✅ Capture order ID and show thank you
+      setOrderNumber(result.order_id);
       setOrderSuccess(true);
 
       setCart([]);
@@ -213,11 +216,19 @@ const Cart = () => {
             <h1>Thank you for your order </h1>
 
             <p className="thank-you-text">
-              Your order has been placed successfully 🤍  
-              
+              Your order has been placed successfully 🤍
             </p>
-
-
+            
+            {orderNumber && (
+              <p style={{
+                fontSize: '18px',
+                fontWeight: '600',
+                color: '#c9ab7a',
+                marginTop: '16px'
+              }}>
+                Order Number: #{String(orderNumber).padStart(3, '0')}
+              </p>
+            )}
           </div>
         ) : (
           <>
