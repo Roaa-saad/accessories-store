@@ -2212,6 +2212,31 @@ HERO TEXT
   opacity: 0.9;
 }
 
+.hero-shop-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 32px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--gold);
+  padding: 14px 45px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  letter-spacing: 1px;
+  box-shadow: 0 8px 24px rgba(201,171,122,0.4);
+  transition: all 0.3s ease;
+}
+
+.hero-shop-btn:hover {
+  background: #b89760;
+  box-shadow: 0 12px 32px rgba(201,171,122,0.5);
+  transform: translate(-50%, -50%) translateY(-3px);
+}
+
 /* SOFT FADE */
 .hero::before,
 .hero::after {
