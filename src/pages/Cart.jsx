@@ -400,7 +400,7 @@ const Cart = () => {
                 )}
 
                 <textarea
-                  placeholder="Note (optional)"
+                  placeholder="Tell us your favorite perfume scent. If it’s a gift, add the recipient’s name and your special message"
                   value={form.note}
                   onChange={(e) =>
                     setForm({ ...form, note: e.target.value })
