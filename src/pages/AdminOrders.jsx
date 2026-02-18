@@ -16,6 +16,10 @@ const AdminOrders = () => {
     fetch(`${apiUrl}/admin/orders`)
       .then((res) => res.json())
       .then((data) => {
+        console.log('Orders received:', data);
+        if (data.length > 0) {
+          console.log('First order items:', data[0].items);
+        }
         setOrders(data);
         setLoading(false);
       })
@@ -232,9 +236,11 @@ const AdminOrders = () => {
 
             {/* ===== ORDER TOTAL ===== */}
             {(() => {
-              // Calculate subtotal from items (using the actual price paid, which includes discounts)
+              // Calculate subtotal from items (using the actual price paid at checkout, which includes product discounts)
+              // Note: Backend may return current prices, not historical prices at time of order
               const subtotal = order.items.reduce((sum, item) => {
-                const itemPrice = item.discount_price && item.discount_price > 0 
+                // Use discount_price if available and greater than 0, otherwise use regular price
+                const itemPrice = (item.discount_price && item.discount_price > 0) 
                   ? item.discount_price 
                   : item.price;
                 return sum + (itemPrice * item.quantity);
