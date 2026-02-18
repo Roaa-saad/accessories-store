@@ -28,6 +28,7 @@ async function convertDirectoryToWebP(directory, dirName) {
       
       try {
         await sharp(inputPath)
+          .rotate(0) // Disable auto-rotation from EXIF
           .webp({ quality: 85 }) // High quality WebP
           .toFile(outputPath);
         

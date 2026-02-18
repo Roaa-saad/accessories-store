@@ -9,7 +9,7 @@ const CATEGORIES = [
   {
     name: "Necklaces",
     slug: "necklaces",
-    image: "/categories/necklaces.webp?v=6",
+    image: "/categories/necklaces.webp?v=7",
   },
   {
     name: "Bracelets",
