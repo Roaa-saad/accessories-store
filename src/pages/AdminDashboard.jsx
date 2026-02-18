@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import ProductCard from "../components/ProductCard";
 import AdminSidebar from "../components/AdminSidebar";
 import ReorderImages from "../components/ReorderImages";
+import imageCompression from 'browser-image-compression';
 import "../styles/admin-dashboard.css";
 
 const apiUrl = 'https://accessories-backend-production.up.railway.app';
@@ -109,8 +110,24 @@ const AdminDashboard = () => {
   const addImage = async (productId, file) => {
     if (!file) return;
 
+    // Strip EXIF data to prevent rotation
+    let processedFile = file;
+    try {
+      const options = {
+        maxSizeMB: 10,
+        maxWidthOrHeight: 4096,
+        useWebWorker: true,
+        exifOrientation: 1,
+        preserveExif: false,
+      };
+      processedFile = await imageCompression(file, options);
+      processedFile = new File([processedFile], file.name, { type: file.type });
+    } catch (error) {
+      console.error('Error processing image:', error);
+    }
+
     const formData = new FormData();
-    formData.append("image", file);
+    formData.append("image", processedFile);
 
     const res = await fetch(
       `${apiUrl}/admin/products/${productId}/images`,

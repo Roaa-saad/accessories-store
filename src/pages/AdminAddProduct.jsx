@@ -1,5 +1,6 @@
 import { useState } from "react";
 import AdminSidebar from "../components/AdminSidebar";
+import imageCompression from 'browser-image-compression';
 import "../styles/admin-dashboard.css";
 
 const AdminAddProduct = () => {
@@ -34,41 +35,23 @@ const AdminAddProduct = () => {
   const handleImages = async (e) => {
     const files = Array.from(e.target.files);
     
-    // Process each image to strip EXIF orientation
+    // Process each image to strip EXIF and prevent rotation
     const processedFiles = await Promise.all(
       files.map(async (file) => {
         try {
-          // Create a canvas to redraw the image without EXIF
-          const img = new Image();
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
+          const options = {
+            maxSizeMB: 10,
+            maxWidthOrHeight: 4096,
+            useWebWorker: true,
+            exifOrientation: 1, // Force no rotation
+            preserveExif: false, // Strip EXIF data
+          };
           
-          // Load the image
-          const imageUrl = URL.createObjectURL(file);
-          await new Promise((resolve) => {
-            img.onload = resolve;
-            img.src = imageUrl;
-          });
-          
-          // Set canvas size to image size
-          canvas.width = img.naturalWidth;
-          canvas.height = img.naturalHeight;
-          
-          // Draw image (this strips EXIF data)
-          ctx.drawImage(img, 0, 0);
-          
-          // Convert back to file
-          const blob = await new Promise((resolve) => {
-            canvas.toBlob(resolve, 'image/jpeg', 0.95);
-          });
-          
-          URL.revokeObjectURL(imageUrl);
-          
-          // Create new file with same name
-          return new File([blob], file.name, { type: 'image/jpeg' });
+          const compressedFile = await imageCompression(file, options);
+          return new File([compressedFile], file.name, { type: file.type });
         } catch (error) {
           console.error('Error processing image:', error);
-          return file; // Return original if processing fails
+          return file;
         }
       })
     );
