@@ -158,7 +158,7 @@ const AdminOrders = () => {
               )}
 
               <div className="order-note">
-                <strong>Note:</strong> {order.note && order.note.trim() ? order.note : <span style={{color:'#b7a78c'}}>No note</span>}
+                <strong>Note:</strong> {order.notes && order.notes.trim() ? order.notes : <span style={{color:'#b7a78c'}}>No note</span>}
               </div>
             </div>
 
