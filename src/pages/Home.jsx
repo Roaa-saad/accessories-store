@@ -3,7 +3,7 @@ import { getProducts, addToCart } from "../api/api";
 import Navbar from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
 import { Link } from "react-router-dom";
-import { useCart } from "../context/useCart";
+import { useCart } from "../context/CartContext";
 
 const CATEGORIES = [
   {

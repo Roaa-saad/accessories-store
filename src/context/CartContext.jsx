@@ -1,7 +1,15 @@
-import { useState, useEffect } from 'react';
-import { CartContext } from './CartContextInstance';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { getCart } from '../api/api';
 
+export const CartContext = createContext();
+
+export const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart must be used within CartProvider');
+  }
+  return context;
+};
 export const CartProvider = ({ children }) => {
   const [cartCount, setCartCount] = useState(0);
   const [showNotification, setShowNotification] = useState(false);
