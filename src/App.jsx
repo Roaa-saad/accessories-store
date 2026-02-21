@@ -19,48 +19,51 @@ import AdminRoute from "./components/AdminRoute";
 
 const App = () => {
   return (
-    <Routes>
-      {/* ================= PUBLIC WEBSITE ================= */}
-      <Route path="/" element={<Home />} />
-      <Route path="/products" element={<Products />} />
-      <Route path="/category/:name" element={<Category />} />
-      <Route path="/product/:id" element={<ProductDetails />} />
-      <Route path="/cart" element={<Cart />} />
-      <Route path="/return-policy" element={<ReturnPolicy />} />
+    <>
+      <div className="free-shipping-banner">
+        Free shipping for orders above <span className="free-shipping-amount">999</span>
+      </div>
+      <Routes>
+        {/* ================= PUBLIC WEBSITE ================= */}
+        <Route path="/" element={<Home />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/category/:name" element={<Category />} />
+        <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/return-policy" element={<ReturnPolicy />} />
 
-      {/* ================= ADMIN LOGIN ================= */}
-      <Route path="/admin/login" element={<AdminLogin />} />
+        {/* ================= ADMIN LOGIN ================= */}
+        <Route path="/admin/login" element={<AdminLogin />} />
 
-      {/* ================= ADMIN (PROTECTED) ================= */}
-      <Route
-        path="/admin"
-        element={
-          <AdminRoute>
-            <AdminDashboard />
-          </AdminRoute>
-        }
-      />
+        {/* ================= ADMIN (PROTECTED) ================= */}
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        />
 
-      <Route
-        path="/admin/add-product"
-        element={
-          <AdminRoute>
-            <AdminAddProduct />
-          </AdminRoute>
-        }
-      />
+        <Route
+          path="/admin/add-product"
+          element={
+            <AdminRoute>
+              <AdminAddProduct />
+            </AdminRoute>
+          }
+        />
 
-      <Route
-        path="/admin/orders"
-        element={
-          <AdminRoute>
-            <AdminOrders />
-          </AdminRoute>
-        }
-      />
-    </Routes>
-
-    
+        <Route
+          path="/admin/orders"
+          element={
+            <AdminRoute>
+              <AdminOrders />
+            </AdminRoute>
+          }
+        />
+      </Routes>
+    </>
   );
 };
 

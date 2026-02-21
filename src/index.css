@@ -1,3 +1,25 @@
+/* ===== FREE SHIPPING BANNER ===== */
+.free-shipping-banner {
+  width: 100%;
+  background: linear-gradient(90deg, #f9f4f0 0%, #f7e7d9 100%);
+  color: var(--gold);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-align: center;
+  padding: 10px 0 8px 0;
+  border-bottom: 1.5px solid var(--gold-soft);
+  z-index: 100;
+  position: sticky;
+  top: 0;
+}
+.free-shipping-amount {
+  color: #d4633f;
+  font-weight: 700;
+  font-size: 20px;
+  margin-left: 2px;
+}
 :root {
   --blush: hsl(16, 100%, 97%);
   --card-bg: #f4ebe6;
