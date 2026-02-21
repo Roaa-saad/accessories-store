@@ -267,9 +267,13 @@ const Cart = () => {
                   </div>
                 )}
                 
-                {form.city && shippingCharge > 0 && (
+                {form.city && shippingChargeFinal === 0 ? (
                   <div style={{ marginBottom: '10px', paddingBottom: '10px', fontSize: '18px', color: '#8b7355' }}>
-                    Shipping: {shippingCharge} EGP
+                    Shipping: Free Shipping
+                  </div>
+                ) : form.city && shippingChargeFinal > 0 && (
+                  <div style={{ marginBottom: '10px', paddingBottom: '10px', fontSize: '18px', color: '#8b7355' }}>
+                    Shipping: {shippingChargeFinal} EGP
                   </div>
                 )}
                 
