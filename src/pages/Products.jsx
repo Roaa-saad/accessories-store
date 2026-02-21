@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getProducts, addToCart } from "../api/api";
 import Navbar from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../context/useCart";
 
 const Products = () => {
   const [products, setProducts] = useState([]);

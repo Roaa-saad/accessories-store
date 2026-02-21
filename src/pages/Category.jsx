@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
 import { getProducts, addToCart } from "../api/api";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../context/useCart";
 
 /* ================= CATEGORY CONFIG ================= */
 const CATEGORY_CONFIG = {

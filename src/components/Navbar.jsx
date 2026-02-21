@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { FaShoppingBag } from "react-icons/fa";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../context/useCart";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);

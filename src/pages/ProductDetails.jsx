@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { getProducts, addToCart } from "../api/api";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../context/useCart";
 
 const ProductDetails = () => {
   const { id } = useParams();
