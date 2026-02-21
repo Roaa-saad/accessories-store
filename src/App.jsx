@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
 
 /* ===== PUBLIC PAGES ===== */
 import Home from "./pages/Home";
@@ -21,7 +20,6 @@ import AdminRoute from "./components/AdminRoute";
 const App = () => {
   return (
     <>
-      <Navbar />
       <div className="free-shipping-banner">
         Free shipping for orders above <span className="free-shipping-amount">999</span>
       </div>
