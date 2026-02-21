@@ -20,9 +20,6 @@ import AdminRoute from "./components/AdminRoute";
 const App = () => {
   return (
     <>
-      <div className="free-shipping-banner">
-        Free shipping for orders above <span className="free-shipping-amount">999</span>
-      </div>
       <Routes>
         {/* ================= PUBLIC WEBSITE ================= */}
         <Route path="/" element={<Home />} />
