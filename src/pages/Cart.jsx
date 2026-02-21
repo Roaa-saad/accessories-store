@@ -122,7 +122,8 @@ const Cart = () => {
     try {
       const result = await checkout({
         ...form,
-        total_amount: grandTotal
+        total_amount: grandTotal,
+        shipping: shippingChargeFinal
       });
       
       // ✅ Capture order ID and show thank you
@@ -201,7 +202,8 @@ const Cart = () => {
   const discountCodeAmount = calculateDiscountCodeDiscount();
   const subtotalAfterDiscount = subtotal - discountCodeAmount;
   const shippingCharge = form.city ? getShippingCharge() : 0;
-  const grandTotal = subtotalAfterDiscount + shippingCharge;
+  const shippingChargeFinal = subtotalAfterDiscount > 999 ? 0 : shippingCharge;
+  const grandTotal = subtotalAfterDiscount + shippingChargeFinal;
 
   return (
     <>
