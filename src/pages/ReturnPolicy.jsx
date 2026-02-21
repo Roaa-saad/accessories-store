@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 const ReturnPolicy = () => {
   return (
     <>
+      <Navbar />
       <div className="policy-page">
         <h1 className="policy-title">Shipping & Return Policy – Lumie ✨</h1>
 

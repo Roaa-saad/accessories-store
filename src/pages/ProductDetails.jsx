@@ -41,8 +41,9 @@ const ProductDetails = () => {
     discountPrice < price;
 
   return (
-
     <>
+      <Navbar />
+
       <div className="product-details-page">
         {/* ===== الصور ===== */}
         <div className="product-gallery">
