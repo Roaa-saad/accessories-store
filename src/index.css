@@ -1,10 +1,11 @@
 /* ===== FREE SHIPPING BANNER ===== */
+/* Animated shimmer gradient using only the navbar color */
 .free-shipping-banner {
   width: 100%;
-  background: linear-gradient(90deg, var(--blush) 0%, #f7e7d9 100%, var(--blush) 200%);
+  background: linear-gradient(110deg, var(--blush) 0%, #fbeee7 40%, var(--blush) 80%);
   background-size: 200% 100%;
-  background-position: right center;
-  animation: banner-gradient-move 6s linear infinite;
+  background-position: 100% 0;
+  animation: banner-shimmer 2.5s linear infinite;
   color: var(--gold);
   font-family: "Cormorant Garamond", serif;
   font-size: 18px;
@@ -16,6 +17,15 @@
   z-index: 100;
   position: sticky;
   top: 0;
+}
+
+@keyframes banner-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
 }
 
 @keyframes banner-gradient-move {
