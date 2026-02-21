@@ -1,7 +1,7 @@
 /* ===== FREE SHIPPING BANNER ===== */
 .free-shipping-banner {
   width: 100%;
-  background: linear-gradient(90deg, #f9f4f0 0%, #f7e7d9 100%);
+  background: var(--blush);
   color: var(--gold);
   font-family: "Cormorant Garamond", serif;
   font-size: 18px;
