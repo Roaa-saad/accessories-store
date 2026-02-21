@@ -64,9 +64,8 @@ const Category = () => {
   };
 
   return (
-    <>
-      <Navbar />
 
+    <>
       <h2 className="section-title">
         {CATEGORY_CONFIG[name]?.label}
       </h2>

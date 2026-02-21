@@ -30,12 +30,11 @@ const Products = () => {
     <>
       <Navbar />
 
-      <h2 className="section-title">All Products</h2>
-
-      <div className="products-page">
         {loading ? (
-          <p style={{ textAlign: "center", opacity: 0.6, gridColumn: "1 / -1" }}>
+    <>
+  <h2 className="section-title">All Products</h2>
             Loading...
+  <div className="products-page">
           </p>
         ) : products.length === 0 ? (
           <p style={{ textAlign: "center", opacity: 0.6, gridColumn: "1 / -1" }}>
