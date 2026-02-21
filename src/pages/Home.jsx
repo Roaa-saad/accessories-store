@@ -61,8 +61,10 @@ const Home = () => {
 
   return (
     <>
-
-
+      <Navbar />
+      <div className="free-shipping-banner">
+        Free shipping for orders above <span className="free-shipping-amount">999</span>
+      </div>
       {/* HERO */}
       <div className="hero">
         <img src="/hero.jpg?v=2" alt="Lumie Hero" loading="eager" fetchpriority="high" decoding="async" />
