@@ -62,7 +62,7 @@ const Home = () => {
   return (
     <>
 
-      <Navbar />
+      {/* Navbar removed, now rendered in App.jsx */}
       <div className="free-shipping-banner">
         Free shipping for orders above <span className="free-shipping-amount">999</span>
       </div>

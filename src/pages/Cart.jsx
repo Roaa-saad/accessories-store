@@ -205,7 +205,7 @@ const Cart = () => {
 
   return (
     <>
-      <Navbar cartCount={cart.length} />
+      {/* Navbar removed, now rendered in App.jsx */}
 
       <div className="page cart-page">
         {/* 🌸 THANK YOU PAGE */}
