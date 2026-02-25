@@ -223,6 +223,7 @@ const AdminDashboard = () => {
           image_pos_x: product.posX,
           image_pos_y: product.posY,
           image_scale: product.scale,
+          category_name: product.category_name, // send category_name
         }),
       }
     );
@@ -391,6 +392,20 @@ const AdminDashboard = () => {
                       })
                     }
                   />
+
+                  {/* CATEGORY SELECT */}
+                  <select
+                    value={p.category_name || ''}
+                    onChange={e => updateProduct(p.id, { category_name: e.target.value })}
+                  >
+                    <option value="">Select Category</option>
+                    <option value="Necklaces">Necklaces</option>
+                    <option value="Bracelets">Bracelets</option>
+                    <option value="Rings">Rings</option>
+                    <option value="Bundles">Bundles</option>
+                    <option value="Earrings">Earrings</option>
+                    <option value="Hair Clips">Hair Clips</option>
+                  </select>
                 </div>
 
                 {/* ACTIONS */}
