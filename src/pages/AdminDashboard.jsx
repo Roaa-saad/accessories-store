@@ -55,6 +55,7 @@ const AdminDashboard = () => {
       scale: p.image_scale ?? 1,
       discount_price: p.discount_price ?? null,
       featured: p.featured ?? false, // ⭐ الجديد
+      category_name: p.category_name || p.category?.label || '', // ensure category_name is always set
     }));
 
     console.log('Processed products with images:', processedProducts.map(p => ({ 
