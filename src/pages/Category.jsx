@@ -45,9 +45,9 @@ const Category = () => {
     if (!category) return;
 
     getProducts().then((data) => {
-      // Prefer category_id for robust filtering if present
+      // Ensure robust matching: handle category_id as string or number
       const filtered = data.filter(
-        (p) => p.category_id === category.id
+        (p) => Number(p.category_id) === Number(category.id)
       );
       setProducts(filtered);
       setLoading(false);
