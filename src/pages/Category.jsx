@@ -45,10 +45,13 @@ const Category = () => {
     if (!category) return;
 
     getProducts().then((data) => {
+      console.log("API products:", data);
+      console.log("Current category id:", category.id, typeof category.id);
       // Ensure robust matching: handle category_id as string or number
       const filtered = data.filter(
         (p) => Number(p.category_id) === Number(category.id)
       );
+      console.log("Filtered products:", filtered);
       setProducts(filtered);
       setLoading(false);
     });
