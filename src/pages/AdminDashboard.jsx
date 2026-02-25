@@ -228,6 +228,8 @@ const AdminDashboard = () => {
       }
     );
 
+    await loadProducts(); // reload products after save
+
     await fetch(
       `${apiUrl}/admin/products/${product.id}/images/reorder`,
       {
