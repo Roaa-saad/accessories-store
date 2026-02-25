@@ -45,11 +45,9 @@ const Category = () => {
     if (!category) return;
 
     getProducts().then((data) => {
-      // Normalize function to match category_name and label
-      const normalize = str => (str || '').toLowerCase().replace(/\s|-/g, '').replace(/s$/,'');
-      const labelNorm = normalize(category.label);
+      // Prefer category_id for robust filtering if present
       const filtered = data.filter(
-        (p) => normalize(p.category_name) === labelNorm
+        (p) => p.category_id === category.id
       );
       setProducts(filtered);
       setLoading(false);
