@@ -45,9 +45,11 @@ const Category = () => {
     if (!category) return;
 
     getProducts().then((data) => {
-      // Use category_name for filtering (case-insensitive)
+      // Normalize function to match category_name and label
+      const normalize = str => (str || '').toLowerCase().replace(/\s|-/g, '').replace(/s$/,'');
+      const labelNorm = normalize(category.label);
       const filtered = data.filter(
-        (p) => (p.category_name || '').toLowerCase() === category.label.toLowerCase()
+        (p) => normalize(p.category_name) === labelNorm
       );
       setProducts(filtered);
       setLoading(false);
