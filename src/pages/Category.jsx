@@ -45,9 +45,9 @@ const Category = () => {
     if (!category) return;
 
     getProducts().then((data) => {
-      // Match category_name with label (case-insensitive)
+      // Use category_id for robust filtering
       const filtered = data.filter(
-        (p) => (p.category_name || '').toLowerCase() === category.label.toLowerCase()
+        (p) => p.category_id === category.id
       );
       setProducts(filtered);
       setLoading(false);
