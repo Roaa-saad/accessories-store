@@ -47,6 +47,12 @@ const Category = () => {
     fetch(`https://accessories-backend-production.up.railway.app/client/categories/${category.id}/products`)
       .then(res => res.json())
       .then((data) => {
+        console.log("Category API products:", data);
+        if (!Array.isArray(data)) {
+          setProducts([]);
+          setLoading(false);
+          return;
+        }
         setProducts(data);
         setLoading(false);
       })

@@ -17,11 +17,16 @@ const ProductCard = ({ product, addToCart }) => {
     discountPrice &&
     discountPrice < price;
 
+const optimizedImage = mainImage?.image_url
+  ? mainImage.image_url.includes("/upload/")
+    ? mainImage.image_url.replace("/upload/", "/upload/w_600,f_auto,q_auto/")
+    : mainImage.image_url
+  : null;
   const ImageContent = (
     <>
       {mainImage ? (
         <img
-          src={mainImage.image_url}
+          src={optimizedImage}
           alt={product.name}
           draggable={false}
           loading="lazy"
