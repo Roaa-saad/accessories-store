@@ -87,33 +87,69 @@ const Cart = () => {
   };
 
   // Shipping charges based on city
-  const getShippingCharge = () => {
-    const city = form.city;
-    
-    // Cairo and Giza - 65 EGP
-    if (city === 'Cairo' || city === 'Giza') {
-      return 65;
-    } 
-    // New Cities - 70 EGP
-    else if (city === '6th October' || city === 'Sheikh Zayed' || city === 'New Cairo' || 
-             city === 'Shorouk' || city === 'Obour') {
-      return 70;
-    } 
-    // Delta and Alexandria - 80 EGP
-    else if (city === 'Alexandria' || city === 'Mansoura' || city === 'Tanta' || 
-             city === 'Zagazig' || city === 'Damietta' || city === 'Port Said' || 
-             city === 'Ismailia' || city === 'Suez') {
-      return 80;
-    } 
-    // Upper Egypt - 90 EGP
-    else if (city === 'Fayoum' || city === 'Beni Suef' || city === 'Minya' || 
-             city === 'Assiut' || city === 'Sohag' || city === 'Qena' || 
-             city === 'Luxor' || city === 'Aswan') {
-      return 90;
-    }
-    
-    return 0;
-  };
+const getShippingCharge = () => {
+  const city = form.city;
+  
+  // Cairo & Giza
+  if (city === 'Cairo' || city === 'Giza') {
+    return 70;
+  } 
+  
+  // New Cities
+  else if (
+    city === '6th October' ||
+    city === 'Sheikh Zayed' ||
+    city === 'New Cairo' ||
+    city === 'Shorouk' ||
+    city === 'Obour' ||
+    city === 'Badr' ||
+    city === 'New Capital'
+  ) {
+    return 75;
+  } 
+  
+  // Delta + Canal + Alexandria
+  else if (
+    city === 'Alexandria' ||
+    city === 'Beheira' ||
+    city === 'Kafr El Sheikh' ||
+    city === 'Gharbia' ||
+    city === 'Tanta' ||
+    city === 'Dakahlia' ||
+    city === 'Mansoura' ||
+    city === 'Damietta' ||
+    city === 'Port Said' ||
+    city === 'Ismailia' ||
+    city === 'Suez' ||
+    city === 'Sharqia' ||
+    city === 'Zagazig' ||
+    city === 'Qalyubia' ||
+    city === 'Monufia'
+  ) {
+    return 85;
+  } 
+  
+  // Upper Egypt + remote areas
+  else if (
+    city === 'Fayoum' ||
+    city === 'Beni Suef' ||
+    city === 'Minya' ||
+    city === 'Assiut' ||
+    city === 'Sohag' ||
+    city === 'Qena' ||
+    city === 'Luxor' ||
+    city === 'Aswan' ||
+    city === 'Red Sea' ||
+    city === 'Matrouh' ||
+    city === 'New Valley' ||
+    city === 'North Sinai' ||
+    city === 'South Sinai'
+  ) {
+    return 95;
+  }
+
+  return 85; // default shipping لو محافظة مش موجودة
+};
 
   const handleCheckout = async () => {
     if (!cart.length) return;
@@ -337,29 +373,53 @@ const Cart = () => {
                   }}
                 >
                   <option value="" disabled>Select your city</option>
-                  <option value="Cairo">Cairo</option>
-                  <option value="Giza">Giza</option>
-                  <option value="6th October">6th October</option>
-                  <option value="Sheikh Zayed">Sheikh Zayed</option>
-                  <option value="New Cairo">New Cairo</option>
-                  <option value="Shorouk">Shorouk</option>
-                  <option value="Obour">Obour</option>
-                  <option value="Alexandria">Alexandria</option>
-                  <option value="Mansoura">Mansoura</option>
-                  <option value="Tanta">Tanta</option>
-                  <option value="Zagazig">Zagazig</option>
-                  <option value="Damietta">Damietta</option>
-                  <option value="Port Said">Port Said</option>
-                  <option value="Ismailia">Ismailia</option>
-                  <option value="Suez" data-value="الدلتا والإسكندرية ومدن القناة">Suez</option>
-                  <option value="Fayoum">Fayoum</option>
-                  <option value="Beni Suef">Beni Suef</option>
-                  <option value="Minya">Minya</option>
-                  <option value="Assiut">Assiut</option>
-                  <option value="Sohag">Sohag</option>
-                  <option value="Qena">Qena</option>
-                  <option value="Luxor">Luxor</option>
-                  <option value="Aswan">Aswan</option>
+
+                      
+                      <option value="Cairo">Cairo</option>
+                      <option value="Giza">Giza</option>
+
+                      
+                      <option value="6th October">6th October</option>
+                      <option value="Sheikh Zayed">Sheikh Zayed</option>
+                      <option value="New Cairo">New Cairo</option>
+                      <option value="Shorouk">Shorouk</option>
+                      <option value="Obour">Obour</option>
+                      <option value="Badr">Badr</option>
+                      <option value="New Capital">New Capital</option>
+
+                     
+                      <option value="Alexandria">Alexandria</option>
+                      <option value="Beheira">Beheira</option>
+                      <option value="Kafr El Sheikh">Kafr El Sheikh</option>
+                      <option value="Gharbia">Gharbia</option>
+                      <option value="Tanta">Tanta</option>
+                      <option value="Dakahlia">Dakahlia</option>
+                      <option value="Mansoura">Mansoura</option>
+                      <option value="Monufia">Monufia</option>
+                      <option value="Qalyubia">Qalyubia</option>
+                      <option value="Sharqia">Sharqia</option>
+                      <option value="Zagazig">Zagazig</option>
+                      <option value="Damietta">Damietta</option>
+                      <option value="Port Said">Port Said</option>
+                      <option value="Ismailia">Ismailia</option>
+                      <option value="Suez">Suez</option>
+
+                     
+                      <option value="Fayoum">Fayoum</option>
+                      <option value="Beni Suef">Beni Suef</option>
+                      <option value="Minya">Minya</option>
+                      <option value="Assiut">Assiut</option>
+                      <option value="Sohag">Sohag</option>
+                      <option value="Qena">Qena</option>
+                      <option value="Luxor">Luxor</option>
+                      <option value="Aswan">Aswan</option>
+
+                     
+                      <option value="Matrouh">Matrouh</option>
+                      <option value="Red Sea">Red Sea</option>
+                      <option value="New Valley">New Valley</option>
+                      <option value="North Sinai">North Sinai</option>
+                      <option value="South Sinai">South Sinai</option>
                 </select>
                 {errors.city && (
                   <span className="form-error">{errors.city}</span>
