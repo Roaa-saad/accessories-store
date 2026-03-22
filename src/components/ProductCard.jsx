@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { FaShoppingBag } from "react-icons/fa";
 
-const ProductCard = ({ product, addToCart }) => {
+const ProductCard = ({ product, addToCart, isFree }) => {
   const mainImage =
     product.images?.find((img) => img.is_cover) ||
     product.images?.[0];
@@ -17,11 +17,12 @@ const ProductCard = ({ product, addToCart }) => {
     discountPrice &&
     discountPrice < price;
 
-const optimizedImage = mainImage?.image_url
-  ? mainImage.image_url.includes("/upload/")
-    ? mainImage.image_url.replace("/upload/", "/upload/w_600,f_auto,q_auto/")
-    : mainImage.image_url
-  : null;
+  const optimizedImage = mainImage?.image_url
+    ? mainImage.image_url.includes("/upload/")
+      ? mainImage.image_url.replace("/upload/", "/upload/w_600,f_auto,q_auto/")
+      : mainImage.image_url
+    : null;
+
   const ImageContent = (
     <>
       {mainImage ? (
@@ -50,8 +51,14 @@ const optimizedImage = mainImage?.image_url
         <div className="sold-out-overlay">SOLD OUT</div>
       )}
       
-      {!product.sold_out && hasDiscount && (
+      {!product.sold_out && hasDiscount && !isFree && (
         <div className="sale-badge">SALE</div>
+      )}
+
+      {isFree && (
+        <div className="sale-badge" style={{ background: "#2e7d32" }}>
+          FREE 🎁
+        </div>
       )}
     </>
   );
@@ -86,10 +93,19 @@ const optimizedImage = mainImage?.image_url
       </div>
 
       <div className="price">
-        {hasDiscount ? (
+        {isFree ? (
           <div className="price-with-discount">
             <span className="old-price">
-              {price} 
+              {discountPrice || price} EGP
+            </span>
+            <span className="new-price" style={{ color: "#2e7d32", fontWeight: "600" }}>
+              FREE 🎁
+            </span>
+          </div>
+        ) : hasDiscount ? (
+          <div className="price-with-discount">
+            <span className="old-price">
+              {price} EGP
             </span>
             <span className="new-price">
               {discountPrice} EGP

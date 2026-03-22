@@ -63,12 +63,69 @@ const Home = () => {
     <>
       <Navbar />
       <div className="free-shipping-banner">
-        Free shipping for orders above <span className="free-shipping-amount">999</span>
+        
       </div>
       {/* HERO */}
-      <div className="hero">
-        <img src="/hero.jpg?v=2" alt="Lumie Hero" loading="eager" fetchpriority="high" decoding="async" />
-      </div>
+    <div className="hero" style={{ position: "relative" }}>
+  <img 
+    src="/hero.jpg?v=2" 
+    alt="Lumie Hero" 
+    loading="eager" 
+    fetchpriority="high" 
+    decoding="async" 
+    style={{ width: "100%", display: "block" }}
+  />
+
+  <div
+   style={{
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  textAlign: "center",
+  color: "#ffffffff",
+
+   background: "rgba(255, 255, 255, 0.2)",
+  backdropFilter: "blur(.1px)",
+  WebkitBackdropFilter: "blur(.1px)",
+
+  padding: "20px 40px",
+  borderRadius: "20px",
+
+  width: "80%",
+  maxWidth: "400px",
+
+  boxShadow: "0 8px 30px rgba(0,0,0,0.15)",
+  border: "1px solid rgba(255,255,255,0.3)",
+
+
+  
+}}
+  >
+    <div
+      style={{
+        fontSize: "31px",
+        fontWeight: "700",
+        letterSpacing: "1px",
+        marginBottom: "8px",
+        fontFamily: "'Playfair Display', serif",
+      }}
+    >
+      BUY 4 GET 1 
+    </div>
+
+    <div
+      style={{
+        fontSize: "32px",
+        fontWeight: "600",
+        opacity: 0.95,
+        fontFamily: "'Playfair Display', serif",
+      }}
+    >
+      BUY 7 GET 2 
+    </div>
+  </div>
+</div>
 
       {/* FEATURED PRODUCTS */}
       {featuredProducts.length > 0 && (

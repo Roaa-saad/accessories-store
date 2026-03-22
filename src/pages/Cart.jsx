@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState , useMemo} from "react";
 import { getCart, checkout, removeFromCart } from "../api/api";
 import CartItem from "../components/CartItem";
 import Navbar from "../components/Navbar";
@@ -152,48 +152,116 @@ const getShippingCharge = () => {
 };
 
   const handleCheckout = async () => {
-    if (!cart.length) return;
-    if (!validateForm()) return;
+//     if (!cart.length) return;
+//     if (!validateForm()) return;
 
-    try {
-      const result = await checkout({
-        ...form,
-        total_amount: grandTotal,
-        shipping: shippingChargeFinal
-      });
+//     try {
+//      const result = await checkout({
+//   ...form,
+//   items: processedItems.map(item => ({
+//     product_id: item.product_id,
+//     quantity: 1,
+//     price: item.final_price,
+//     is_free: item.is_free || false
+//   })),
+//   total_amount: grandTotal,
+//   shipping: shippingChargeFinal
+// });
       
-      // ✅ Capture order ID and show thank you
-      setOrderNumber(result.order_id);
-      setOrderSuccess(true);
+//       // ✅ Capture order ID and show thank you
+//       setOrderNumber(result.order_id);
+//       setOrderSuccess(true);
 
-      setCart([]);
-      updateCartCount();
-      setForm({
-        name: "",
-        email: "",
-        address: "",
-        phone: "",
-        city: "",
-        cityDisplay: "",
-        discount_code: "",
-        note: "",
-      });
-      setErrors({});
-    } catch (err) {
-      console.error(err);
-      // Display backend error message if available
-      const errorMessage = err.message || "Failed to place order. Please try again.";
-      alert(errorMessage);
-    }
+//       setCart([]);
+//       updateCartCount();
+//       setForm({
+//         name: "",
+//         email: "",
+//         address: "",
+//         phone: "",
+//         city: "",
+//         cityDisplay: "",
+//         discount_code: "",
+//         note: "",
+//       });
+//       setErrors({});
+//     } catch (err) {
+//       console.error(err);
+//       // Display backend error message if available
+//       const errorMessage = err.message || "Failed to place order. Please try again.";
+//       alert(errorMessage);
+//     }
+const groupedItems = {};
+
+processedItems.forEach(item => {
+  const key = `${item.product_id}_${item.final_price}`;
+
+  if (!groupedItems[key]) {
+    groupedItems[key] = {
+      product_id: item.product_id,
+      price: item.final_price,
+      quantity: 0,
+      is_free: item.is_free || false
+    };
+  }
+
+  groupedItems[key].quantity += 1;
+});
+
+const result = await checkout({
+  ...form,
+  items: Object.values(groupedItems),
+  total_amount: grandTotal,
+  shipping: shippingChargeFinal
+});
   };
 
-  // Calculate prices
-  const subtotal = cart.reduce((sum, item) => {
-    const itemPrice = item.discount_price && item.discount_price > 0 
+const processCartWithFreeItems = () => {
+  let items = [];
+
+  cart.forEach(item => {
+    const price = item.discount_price && item.discount_price > 0 
       ? item.discount_price 
       : item.price;
-    return sum + itemPrice * item.quantity;
-  }, 0);
+
+    for (let i = 0; i < item.quantity; i++) {
+      items.push({
+        ...item,
+        final_price: price,
+        is_free: false
+      });
+    }
+  });
+
+  // ترتيب من الأرخص
+  items.sort((a, b) => a.final_price - b.final_price);
+
+  let freeItemsCount = 0;
+
+  if (items.length >= 9) {
+    freeItemsCount = 2;
+  } else if (items.length >= 5) {
+    freeItemsCount = 1;
+  }
+
+  // نخلي الأرخص free
+  for (let i = 0; i < freeItemsCount; i++) {
+    if (items[i]) {
+      items[i].final_price = 0;
+      items[i].is_free = true;
+    }
+  }
+
+  return items;
+};
+  // Calculate prices
+  const processedItems = useMemo(() => {
+  return processCartWithFreeItems();
+}, [cart]);
+
+const subtotal = processedItems.reduce((sum, item) => {
+  return sum + item.final_price;
+}, 0);
 
   // Calculate discount code discount
   const calculateDiscountCodeDiscount = () => {
@@ -238,7 +306,7 @@ const getShippingCharge = () => {
   const discountCodeAmount = calculateDiscountCodeDiscount();
   const subtotalAfterDiscount = subtotal - discountCodeAmount;
   const shippingCharge = form.city ? getShippingCharge() : 0;
-  const shippingChargeFinal = subtotalAfterDiscount > 999 ? 0 : shippingCharge;
+  const shippingChargeFinal = shippingCharge;
   const grandTotal = subtotalAfterDiscount + shippingChargeFinal;
 
   return (
@@ -277,18 +345,20 @@ const getShippingCharge = () => {
             )}
 
             {!loading &&
-              cart.map((item) => (
-                <div key={item.product_id} className="cart-row">
-                  <CartItem item={item} />
+  processedItems.map((item, index) => (
+    <div key={index} className="cart-row">
+      <CartItem item={item} isFree={item.is_free} />
 
-                  <button
-                    className="remove-btn"
-                    onClick={() => handleRemove(item.product_id)}
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))}
+      <button
+        className="remove-btn"
+        onClick={() => handleRemove(item.product_id)}
+      >
+        Remove
+      </button>
+    </div>
+  ))}
+
+      
 
             {/* TOTAL */}
             {cart.length > 0 && (
@@ -296,6 +366,7 @@ const getShippingCharge = () => {
                 <div style={{ marginBottom: '10px', paddingBottom: '10px', fontSize: '18px' }}>
                   Subtotal: {subtotal.toFixed(2)} EGP
                 </div>
+               
                 
                 {discountCodeAmount > 0 && (
                   <div style={{ marginBottom: '10px', paddingBottom: '10px', color: '#d4633f', fontSize: '18px' }}>

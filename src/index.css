@@ -1,6 +1,6 @@
 /* ===== FREE SHIPPING BANNER ===== */
 /* Animated shimmer gradient using only the navbar color */
-.free-shipping-banner {
+/* .free-shipping-banner {
   width: 100%;
   background: linear-gradient(110deg, var(--blush) 0%, #fbeee7 40%, var(--blush) 80%);
   background-size: 200% 100%;
@@ -41,7 +41,7 @@
   font-weight: 700;
   font-size: 20px;
   margin-left: 2px;
-}
+} */
 :root {
   --blush: hsl(16, 100%, 97%);
   --card-bg: #f4ebe6;

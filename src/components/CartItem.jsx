@@ -5,26 +5,22 @@ const apiUrl = 'https://accessories-backend-production.up.railway.app';
 // Simple SVG placeholder
 const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' fill='%23f4ebe6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%23999'%3ENo Image%3C/text%3E%3C/svg%3E";
 
-const CartItem = ({ item }) => {
+const CartItem = ({ item, isFree }) => {
   if (!item) return null;
 
-  // 🖼️ build image url safely - handle both string and object formats
+  // 🖼️ build image url safely
   let image = PLACEHOLDER_IMAGE;
 
   if (item.images && Array.isArray(item.images) && item.images.length > 0) {
     const firstImage = item.images[0];
     
-    // If image is an object with image_url property
     if (firstImage && typeof firstImage === 'object' && firstImage.image_url) {
       image = firstImage.image_url;
     }
-    // If image is a string
     else if (typeof firstImage === 'string') {
-      // Check if it's already a full URL (starts with http/https)
       if (firstImage.startsWith('http://') || firstImage.startsWith('https://')) {
         image = firstImage;
       } else {
-        // Otherwise it's a filename, prepend the uploads path
         image = `${apiUrl}/uploads/${firstImage}`;
       }
     }
@@ -81,7 +77,26 @@ const CartItem = ({ item }) => {
         </h4>
 
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          {item.discount_price && item.discount_price > 0 ? (
+          
+          {isFree ? (
+            <>
+              <span style={{ 
+                fontSize: "13px", 
+                color: "#999",
+                textDecoration: "line-through"
+              }}>
+                {item.discount_price || item.price} EGP
+              </span>
+
+              <span style={{ 
+                fontSize: "14px", 
+                color: "#2e7d32",
+                fontWeight: 600
+              }}>
+                FREE 
+              </span>
+            </>
+          ) : item.discount_price && item.discount_price > 0 ? (
             <>
               <span style={{ 
                 fontSize: "14px", 
@@ -103,10 +118,11 @@ const CartItem = ({ item }) => {
               {item.price} EGP
             </span>
           )}
+
         </div>
 
         <span style={{ fontSize: "13px", color: "#888" }}>
-          Qty: {item.quantity}
+          Qty: {item.quantity || 1}
         </span>
       </div>
     </div>
