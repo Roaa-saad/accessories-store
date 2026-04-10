@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import AdminSidebar from "../components/AdminSidebar";
+import CartItem from "../components/CartItem";
 import "../styles/admin-dashboard.css";
 
 const apiUrl = 'https://accessories-backend-production.up.railway.app';
@@ -60,6 +61,63 @@ const AdminOrders = () => {
       return subtotal * 0.1; // 10% discount
     }
     return 0; // FREEGIFT or other codes have no discount
+  };
+
+  const processOrderItems = (orderItems) => {
+    let items = [];
+
+    orderItems.forEach(item => {
+      const price =
+        item.discount_price && item.discount_price > 0
+          ? item.discount_price
+          : item.price;
+
+      for (let i = 0; i < item.quantity; i++) {
+        items.push({
+          ...item,
+          name: item.product_name || item.name,
+          original_price: price,
+          final_price: price,
+          discount_amount: 0,
+          isHalfOff: false
+        });
+      }
+    });
+
+    const groups = [];
+    for (let i = 0; i < items.length; i += 3) {
+      groups.push(items.slice(i, i + 3));
+    }
+
+    groups.forEach(group => {
+      if (group.length === 3) {
+        let cheapestIndex = 0;
+        for (let i = 1; i < group.length; i++) {
+          if (group[i].final_price < group[cheapestIndex].final_price) {
+            cheapestIndex = i;
+          }
+        }
+        const discount = group[cheapestIndex].final_price * 0.5;
+        group[cheapestIndex].discount_amount = discount;
+        group[cheapestIndex].final_price -= discount;
+        group[cheapestIndex].isHalfOff = true;
+      }
+    });
+
+    // Regroup
+    const groupedItems = {};
+    groups.flat().forEach(item => {
+      const key = `${item.product_id}_${item.final_price}_${item.isHalfOff}`;
+      if (!groupedItems[key]) {
+        groupedItems[key] = {
+           ...item,
+           quantity: 0,
+        };
+      }
+      groupedItems[key].quantity += 1;
+    });
+
+    return Object.values(groupedItems);
   };
 
   // ✅ UPDATE DELIVERY STATUS
@@ -189,75 +247,48 @@ const AdminOrders = () => {
               </button>
             </div>
 
-            {/* ===== ITEMS ===== */}
-            <div className="order-items">
-              {order.items.map((item) => (
-                <div
-                  key={`${order.order_id}-${item.product_id}`}
-                  className="order-item"
-                >
-                  <img
-                    src={
-                      item.images?.length
-                        ? (typeof item.images[0] === 'object' && item.images[0].image_url)
-                          ? item.images[0].image_url
-                          : (typeof item.images[0] === 'string' && (item.images[0].startsWith('http://') || item.images[0].startsWith('https://')))
-                            ? item.images[0]
-                            : `https://accessories-backend-production.up.railway.app/uploads/${item.images[0]}`
-                        : PLACEHOLDER_IMAGE
-                    }
-                    alt={item.name}
-                  />
-
-                  <div className="order-item-info">
-                    <h4>{item.product_name}</h4>
-                    <p>
-                      {item.quantity} × {' '}
-                      {item.discount_price && item.discount_price > 0 ? (
-                        <>
-                          <span style={{ color: '#d4633f', fontWeight: 600 }}>
-                            {item.discount_price} EGP
-                          </span>
-                          {' '}
-                          <span style={{ textDecoration: 'line-through', color: '#999', fontSize: '13px' }}>
-                            ({item.price} EGP)
-                          </span>
-                        </>
-                      ) : (
-                        <span>{item.price} EGP</span>
-                      )}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* ===== ORDER TOTAL ===== */}
+            {/* ===== ITEMS & TOTAL ===== */}
             {(() => {
-              // Calculate subtotal from items (using the actual price paid at checkout, which includes product discounts)
-              // Note: Backend may return current prices, not historical prices at time of order
-              const subtotal = order.items.reduce((sum, item) => {
-                // Use discount_price if available and greater than 0, otherwise use regular price
-                const itemPrice = (item.discount_price && item.discount_price > 0) 
-                  ? item.discount_price 
-                  : item.price;
-                return sum + (itemPrice * item.quantity);
-              }, 0);
+              const isNewOrder = order.order_id > 62;
               
+              const processedItems = isNewOrder 
+                ? processOrderItems(order.items) 
+                : order.items.map(item => {
+                    const price = item.discount_price && item.discount_price > 0 ? item.discount_price : item.price;
+                    return {
+                      ...item,
+                      name: item.product_name || item.name,
+                      final_price: price,
+                      original_price: price,
+                      isHalfOff: false
+                    };
+                  });
+
+              const subtotal = processedItems.reduce((sum, item) => {
+                return sum + (item.final_price * item.quantity);
+              }, 0);
+
               const discountAmount = getDiscountAmount(subtotal, order.discount_code);
               const subtotalAfterDiscount = subtotal - discountAmount;
               const shippingCost = getShippingCost(order.customer_city);
               const totalAmount = subtotalAfterDiscount + shippingCost;
 
               return (
-                <div className="order-total" style={{
-                  marginTop: '15px',
-                  paddingTop: '15px',
-                  borderTop: '2px solid #e0d5cc'
-                }}>
-                  {/* Subtotal */}
-                  <div style={{ 
-                    display: 'flex', 
+                <>
+                  <div className="order-items" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {processedItems.map((item, idx) => (
+                      <CartItem key={`${order.order_id}-${item.product_id}-${idx}`} item={item} />
+                    ))}
+                  </div>
+
+                  <div className="order-total" style={{
+                    marginTop: '15px',
+                    paddingTop: '15px',
+                    borderTop: '2px solid #e0d5cc'
+                  }}>
+                    {/* Subtotal */}
+                    <div style={{
+                      display: 'flex',
                     justifyContent: 'space-between',
                     marginBottom: '8px',
                     fontSize: '15px',
@@ -306,7 +337,8 @@ const AdminOrders = () => {
                     <span>Total:</span>
                     <span>{totalAmount.toFixed(2)} EGP</span>
                   </div>
-                </div>
+                  </div>
+                </>
               );
             })()}
           </div>

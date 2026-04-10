@@ -102,17 +102,7 @@ const Home = () => {
   
 }}
   >
-    <div
-      style={{
-        fontSize: "31px",
-        fontWeight: "700",
-        letterSpacing: "1px",
-        marginBottom: "8px",
-        fontFamily: "'Playfair Display', serif",
-      }}
-    >
-      BUY 4 GET 1 
-    </div>
+
 
     <div
       style={{
@@ -122,7 +112,7 @@ const Home = () => {
         fontFamily: "'Playfair Display', serif",
       }}
     >
-      BUY 7 GET 2 
+    Buy 2 get 3rd 50% OFF 
     </div>
   </div>
 </div>

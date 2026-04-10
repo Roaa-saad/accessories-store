@@ -73,8 +73,8 @@ const Cart = () => {
     // Address validation: minimum 10 characters
     if (!form.address.trim()) {
       newErrors.address = "Address is required";
-    } else if (form.address.trim().length < 10) {
-      newErrors.address = "Address must be at least 10 characters";
+    } else if (form.address.trim().length < 3) {
+      newErrors.address = "Address must be at least 3 characters";
     }
 
     // City validation
@@ -152,112 +152,116 @@ const getShippingCharge = () => {
 };
 
   const handleCheckout = async () => {
-//     if (!cart.length) return;
-//     if (!validateForm()) return;
+    if (!cart.length) return;
+    if (!validateForm()) return;
 
-//     try {
-//      const result = await checkout({
-//   ...form,
-//   items: processedItems.map(item => ({
-//     product_id: item.product_id,
-//     quantity: 1,
-//     price: item.final_price,
-//     is_free: item.is_free || false
-//   })),
-//   total_amount: grandTotal,
-//   shipping: shippingChargeFinal
-// });
-      
-//       // ✅ Capture order ID and show thank you
-//       setOrderNumber(result.order_id);
-//       setOrderSuccess(true);
-
-//       setCart([]);
-//       updateCartCount();
-//       setForm({
-//         name: "",
-//         email: "",
-//         address: "",
-//         phone: "",
-//         city: "",
-//         cityDisplay: "",
-//         discount_code: "",
-//         note: "",
-//       });
-//       setErrors({});
-//     } catch (err) {
-//       console.error(err);
-//       // Display backend error message if available
-//       const errorMessage = err.message || "Failed to place order. Please try again.";
-//       alert(errorMessage);
-//     }
-const groupedItems = {};
-
-processedItems.forEach(item => {
+const groupedItems = {};processedItems.forEach(item => {
   const key = `${item.product_id}_${item.final_price}`;
 
   if (!groupedItems[key]) {
     groupedItems[key] = {
       product_id: item.product_id,
-      price: item.final_price,
+
+      unit_price_after_discount: item.final_price,
+
       quantity: 0,
-      is_free: item.is_free || false
+      is_free: item.is_free || false,
+
+      discount_amount: item.discount_amount || 0,
+
+      total_price_after_discount: 0
     };
   }
 
   groupedItems[key].quantity += 1;
+
+  groupedItems[key].total_price_after_discount += item.final_price;
 });
 
-const result = await checkout({
-  ...form,
-  items: Object.values(groupedItems),
-  total_amount: grandTotal,
-  shipping: shippingChargeFinal
-});
-  };
+try {
+  const result = await checkout({
+    ...form,
+    items: Object.values(groupedItems),
+    total_amount: grandTotal,
+    shipping: shippingChargeFinal
+  });
 
-const processCartWithFreeItems = () => {
+  if (result) {
+    setOrderNumber(result.order_id || result.orderId || Math.floor(Math.random() * 1000));
+    setOrderSuccess(true);
+    setCart([]);
+    updateCartCount();
+    setForm({
+      name: "",
+      email: "",
+      address: "",
+      phone: "",
+      city: "",
+      cityDisplay: "",
+      discount_code: "",
+      note: "",
+    });
+    setErrors({});
+    window.scrollTo(0, 0);
+  }
+} catch (error) {
+  console.error("Checkout failed:", error);
+  const errorMessage = error.message || "Failed to create order. Please try again.";
+  alert(errorMessage);
+}
+  };const processCartWithFreeItems = () => {
   let items = [];
 
   cart.forEach(item => {
-    const price = item.discount_price && item.discount_price > 0 
-      ? item.discount_price 
-      : item.price;
+    const price =
+      item.discount_price && item.discount_price > 0
+        ? item.discount_price
+        : item.price;
 
     for (let i = 0; i < item.quantity; i++) {
       items.push({
         ...item,
+        original_price: price,
         final_price: price,
-        is_free: false
+        discount_amount: 0,
+        isHalfOff: false
       });
     }
   });
 
-  // ترتيب من الأرخص
-  items.sort((a, b) => a.final_price - b.final_price);
+  // هنشتغل على مجموعات 3
+  const groups = [];
 
-  let freeItemsCount = 0;
-
-  if (items.length >= 9) {
-    freeItemsCount = 2;
-  } else if (items.length >= 5) {
-    freeItemsCount = 1;
+  for (let i = 0; i < items.length; i += 3) {
+    groups.push(items.slice(i, i + 3));
   }
 
-  // نخلي الأرخص free
-  for (let i = 0; i < freeItemsCount; i++) {
-    if (items[i]) {
-      items[i].final_price = 0;
-      items[i].is_free = true;
+  // لكل group: اختار الأرخص وطبّق عليه 50%
+  groups.forEach(group => {
+    if (group.length === 3) {
+      let cheapestIndex = 0;
+
+      for (let i = 1; i < group.length; i++) {
+        if (group[i].final_price < group[cheapestIndex].final_price) {
+          cheapestIndex = i;
+        }
+      }
+
+      const discount = group[cheapestIndex].final_price * 0.5;
+
+      group[cheapestIndex].discount_amount = discount;
+      group[cheapestIndex].final_price -= discount;
+      group[cheapestIndex].isHalfOff = true;
     }
-  }
+  });
 
-  return items;
+  return groups.flat();
 };
   // Calculate prices
   const processedItems = useMemo(() => {
-  return processCartWithFreeItems();
-}, [cart]);
+    return processCartWithFreeItems();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cart]);
 
 const subtotal = processedItems.reduce((sum, item) => {
   return sum + item.final_price;
