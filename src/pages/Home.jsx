@@ -29,7 +29,7 @@ const CATEGORIES = [
   {
     name: "Earrings",
     slug: "earrings",
-    image: "/categories/earrings.webp?v=6",
+    image: "/categories/earrings.webp?v=7",
   },
   {
     name: "Hair Clips",
