@@ -112,7 +112,7 @@ const Home = () => {
         fontFamily: "'Playfair Display', serif",
       }}
     >
-    Buy 2 get 3rd 50% OFF 
+    Free Shipping on orders over 650 EGP 
     </div>
   </div>
 </div>

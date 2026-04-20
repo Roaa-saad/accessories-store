@@ -209,7 +209,9 @@ try {
   const errorMessage = error.message || "Failed to create order. Please try again.";
   alert(errorMessage);
 }
-  };const processCartWithFreeItems = () => {
+  };
+
+  const processCartWithFreeItems = () => {
   let items = [];
 
   cart.forEach(item => {
@@ -223,39 +225,12 @@ try {
         ...item,
         original_price: price,
         final_price: price,
-        discount_amount: 0,
-        isHalfOff: false
+        discount_amount: 0
       });
     }
   });
 
-  // هنشتغل على مجموعات 3
-  const groups = [];
-
-  for (let i = 0; i < items.length; i += 3) {
-    groups.push(items.slice(i, i + 3));
-  }
-
-  // لكل group: اختار الأرخص وطبّق عليه 50%
-  groups.forEach(group => {
-    if (group.length === 3) {
-      let cheapestIndex = 0;
-
-      for (let i = 1; i < group.length; i++) {
-        if (group[i].final_price < group[cheapestIndex].final_price) {
-          cheapestIndex = i;
-        }
-      }
-
-      const discount = group[cheapestIndex].final_price * 0.5;
-
-      group[cheapestIndex].discount_amount = discount;
-      group[cheapestIndex].final_price -= discount;
-      group[cheapestIndex].isHalfOff = true;
-    }
-  });
-
-  return groups.flat();
+  return items;
 };
   // Calculate prices
   const processedItems = useMemo(() => {
@@ -310,7 +285,9 @@ const subtotal = processedItems.reduce((sum, item) => {
   const discountCodeAmount = calculateDiscountCodeDiscount();
   const subtotalAfterDiscount = subtotal - discountCodeAmount;
   const shippingCharge = form.city ? getShippingCharge() : 0;
-  const shippingChargeFinal = shippingCharge;
+  const shippingChargeFinal =
+  subtotalAfterDiscount >= 650 ? 0 : shippingCharge;
+
   const grandTotal = subtotalAfterDiscount + shippingChargeFinal;
 
   return (
@@ -369,6 +346,18 @@ const subtotal = processedItems.reduce((sum, item) => {
               <div className="cart-total">
                 <div style={{ marginBottom: '10px', paddingBottom: '10px', fontSize: '18px' }}>
                   Subtotal: {subtotal.toFixed(2)} EGP
+                  {subtotalAfterDiscount >= 650 && (
+                      <div
+                        style={{
+                          marginBottom: "10px",
+                          color: "#1e7923",
+                          fontWeight: "600",
+                          fontSize: "16px"
+                        }}
+                      >
+                        🎉 Free Shipping Applied
+                      </div>
+                    )}
                 </div>
                
                 

@@ -5,7 +5,7 @@ const apiUrl = 'https://accessories-backend-production.up.railway.app';
 // Simple SVG placeholder
 const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' fill='%23f4ebe6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%23999'%3ENo Image%3C/text%3E%3C/svg%3E";
 
-const CartItem = ({ item, isHalfOff }) => {
+const CartItem = ({ item }) => {
   if (!item) return null;
 
   // 🖼️ build image url safely
@@ -78,30 +78,9 @@ const CartItem = ({ item, isHalfOff }) => {
 
 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
   
-  {item.isHalfOff ? (
-    <>
-      <span style={{ 
-        fontSize: "13px", 
-        color: "#999",
-        textDecoration: "line-through"
-      }}>
-        {item.original_price} EGP
-      </span>
-
-      <span style={{ 
-        fontSize: "14px", 
-        color: "#d4633f",
-        fontWeight: 600
-      }}>
-        {item.final_price.toFixed(2)} EGP (50% OFF)
-      </span>
-    </>
-  ) : (
-    <span style={{ fontSize: "14px", color: "#555" }}>
-      {item.final_price.toFixed(2)} EGP
-    </span>
-  )}
-
+ <span style={{ fontSize: "14px", color: "#555", fontWeight: 500 }}>
+  {item.final_price.toFixed(2)} EGP
+</span>
 </div>
 
         <span style={{ fontSize: "13px", color: "#888" }}>

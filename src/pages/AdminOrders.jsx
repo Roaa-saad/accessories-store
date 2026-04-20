@@ -63,62 +63,23 @@ const AdminOrders = () => {
     return 0; // FREEGIFT or other codes have no discount
   };
 
-  const processOrderItems = (orderItems) => {
-    let items = [];
+    const processOrderItems = (orderItems) => {
+  return orderItems.map(item => {
+    const price =
+      item.discount_price && item.discount_price > 0
+        ? item.discount_price
+        : item.price;
 
-    orderItems.forEach(item => {
-      const price =
-        item.discount_price && item.discount_price > 0
-          ? item.discount_price
-          : item.price;
+    return {
+      ...item,
+      name: item.product_name || item.name,
+      final_price: price,
+      original_price: price,
+      quantity: item.quantity || 1
+    };
+  });
+};
 
-      for (let i = 0; i < item.quantity; i++) {
-        items.push({
-          ...item,
-          name: item.product_name || item.name,
-          original_price: price,
-          final_price: price,
-          discount_amount: 0,
-          isHalfOff: false
-        });
-      }
-    });
-
-    const groups = [];
-    for (let i = 0; i < items.length; i += 3) {
-      groups.push(items.slice(i, i + 3));
-    }
-
-    groups.forEach(group => {
-      if (group.length === 3) {
-        let cheapestIndex = 0;
-        for (let i = 1; i < group.length; i++) {
-          if (group[i].final_price < group[cheapestIndex].final_price) {
-            cheapestIndex = i;
-          }
-        }
-        const discount = group[cheapestIndex].final_price * 0.5;
-        group[cheapestIndex].discount_amount = discount;
-        group[cheapestIndex].final_price -= discount;
-        group[cheapestIndex].isHalfOff = true;
-      }
-    });
-
-    // Regroup
-    const groupedItems = {};
-    groups.flat().forEach(item => {
-      const key = `${item.product_id}_${item.final_price}_${item.isHalfOff}`;
-      if (!groupedItems[key]) {
-        groupedItems[key] = {
-           ...item,
-           quantity: 0,
-        };
-      }
-      groupedItems[key].quantity += 1;
-    });
-
-    return Object.values(groupedItems);
-  };
 
   // ✅ UPDATE DELIVERY STATUS
   const toggleDelivered = async (orderId, currentStatus) => {
@@ -271,7 +232,18 @@ const AdminOrders = () => {
               const discountAmount = getDiscountAmount(subtotal, order.discount_code);
               const subtotalAfterDiscount = subtotal - discountAmount;
               const shippingCost = getShippingCost(order.customer_city);
-              const totalAmount = subtotalAfterDiscount + shippingCost;
+
+                const shippingFinal =
+                  subtotalAfterDiscount >= 650 ? 0 : shippingCost;
+
+                  {shippingFinal === 0 && (
+                      <div style={{ color: "#2e7d32", fontSize: "13px" }}>
+                        🎉 Offer Applied
+                      </div>
+                    )}
+
+                const totalAmount =
+                  subtotalAfterDiscount + shippingFinal;
 
               return (
                 <>
@@ -321,7 +293,9 @@ const AdminOrders = () => {
                     color: '#6b5d52'
                   }}>
                     <span>Shipping:</span>
-                    <span>{shippingCost.toFixed(2)} EGP</span>
+                    <span>{shippingFinal === 0
+                          ? "Free Shipping"
+                          : `${shippingFinal.toFixed(2)} EGP`}</span>
                   </div>
 
                   {/* Total */}
