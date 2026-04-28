@@ -234,7 +234,7 @@ const AdminOrders = () => {
               const shippingCost = getShippingCost(order.customer_city);
 
                 const shippingFinal =
-                  subtotalAfterDiscount >= 650 ? 0 : shippingCost;
+                  subtotalAfterDiscount >= 600? 0 : shippingCost;
 
                   {shippingFinal === 0 && (
                       <div style={{ color: "#2e7d32", fontSize: "13px" }}>

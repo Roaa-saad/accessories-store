@@ -286,7 +286,7 @@ const subtotal = processedItems.reduce((sum, item) => {
   const subtotalAfterDiscount = subtotal - discountCodeAmount;
   const shippingCharge = form.city ? getShippingCharge() : 0;
   const shippingChargeFinal =
-  subtotalAfterDiscount >= 650 ? 0 : shippingCharge;
+  subtotalAfterDiscount >= 900 ? 0 : shippingCharge;
 
   const grandTotal = subtotalAfterDiscount + shippingChargeFinal;
 
