@@ -346,7 +346,7 @@ const subtotal = processedItems.reduce((sum, item) => {
               <div className="cart-total">
                 <div style={{ marginBottom: '10px', paddingBottom: '10px', fontSize: '18px' }}>
                   Subtotal: {subtotal.toFixed(2)} EGP
-                  {subtotalAfterDiscount >= 650 && (
+                  {subtotalAfterDiscount >= 900 && (
                       <div
                         style={{
                           marginBottom: "10px",
