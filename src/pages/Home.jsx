@@ -112,7 +112,7 @@ const Home = () => {
         fontFamily: "'Playfair Display', serif",
       }}
     >
-    Free Shipping on orders over 650 EGP 
+    Free Shipping on orders over 900 EGP 
     </div>
   </div>
 </div>
