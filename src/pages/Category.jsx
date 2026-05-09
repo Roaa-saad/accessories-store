@@ -23,9 +23,9 @@ const CATEGORY_CONFIG = {
     id: 6,
     label: "Earrings",
   },
-  "hair-clips": {
-    id: 7,
-    label: "Hair Clips",
+  "key-chains": {
+    id: 5,
+    label: "Keychains",
   },
   sale: {
     id: 4,

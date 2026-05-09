@@ -407,7 +407,7 @@ const AdminDashboard = () => {
                     <option value="Rings">Rings</option>
                     <option value="Bundles">Bundles</option>
                     <option value="Earrings">Earrings</option>
-                    <option value="Hair Clips">Hair Clips</option>
+                    <option value="Key-chains">Key-chains</option>
                   </select>
                 </div>
 

@@ -32,9 +32,9 @@ const CATEGORIES = [
     image: "/categories/earrings.webp?v=7",
   },
   {
-    name: "Hair Clips",
-    slug: "hair-clips",
-    image: "/categories/hair-clips.webp?v=6",
+    name: "Key-chains",
+    slug: "key-chains",
+    image: "/categories/key-chains.webp?v=1",
   },
 ];
 
