@@ -41,18 +41,24 @@ const Category = () => {
 
   useEffect(() => {
     setLoading(true);
+
     const category = CATEGORY_CONFIG[name];
+
     if (!category) return;
 
-    fetch(`https://accessories-backend-production.up.railway.app/client/categories/${category.id}/products`)
-      .then(res => res.json())
+    fetch(
+      `https://accessories-backend-production.up.railway.app/client/categories/${category.id}/products`
+    )
+      .then((res) => res.json())
       .then((data) => {
         console.log("Category API products:", data);
+
         if (!Array.isArray(data)) {
           setProducts([]);
           setLoading(false);
           return;
         }
+
         setProducts(data);
         setLoading(false);
       })
@@ -72,6 +78,15 @@ const Category = () => {
     }
   };
 
+  // المنتجات المخفية
+  const hiddenProducts =
+    JSON.parse(localStorage.getItem("hiddenProducts")) || [];
+
+  // المنتجات الظاهرة فقط
+  const visibleProducts = products.filter(
+    (p) => !hiddenProducts.includes(p.id)
+  );
+
   return (
     <>
       <Navbar />
@@ -82,15 +97,27 @@ const Category = () => {
 
       <div className="products-page">
         {loading ? (
-          <p style={{ textAlign: "center", opacity: 0.6, gridColumn: "1 / -1" }}>
+          <p
+            style={{
+              textAlign: "center",
+              opacity: 0.6,
+              gridColumn: "1 / -1",
+            }}
+          >
             Loading...
           </p>
-        ) : products.length === 0 ? (
-          <p style={{ textAlign: "center", opacity: 0.6, gridColumn: "1 / -1" }}>
+        ) : visibleProducts.length === 0 ? (
+          <p
+            style={{
+              textAlign: "center",
+              opacity: 0.6,
+              gridColumn: "1 / -1",
+            }}
+          >
             No products yet ✨
           </p>
         ) : (
-          products.map((p) => (
+          visibleProducts.map((p) => (
             <ProductCard
               key={p.id}
               product={p}
