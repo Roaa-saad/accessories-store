@@ -23,27 +23,7 @@ const AdminDashboard = () => {
   const wrapperRefs = useRef({});
   const token = localStorage.getItem("admin_token");
 
-  const [hiddenProducts, setHiddenProducts] = useState(() => {
-  const saved = localStorage.getItem("hiddenProducts");
-  return saved ? JSON.parse(saved) : [];
-});
-
-const toggleHideProduct = (productId) => {
-  let updated;
-
-  if (hiddenProducts.includes(productId)) {
-    updated = hiddenProducts.filter((id) => id !== productId);
-  } else {
-    updated = [...hiddenProducts, productId];
-  }
-
-  setHiddenProducts(updated);
-
-  localStorage.setItem(
-    "hiddenProducts",
-    JSON.stringify(updated)
-  );
-};
+ 
 
   /* ================= LOAD PRODUCTS ================= */
   const loadProducts = async () => {
@@ -243,10 +223,12 @@ const toggleHideProduct = (productId) => {
           discount_price: product.discount_price,
           quantity: product.quantity,
           featured: product.featured, // ⭐ الجديد
+          hidden: product.hidden,
           image_pos_x: product.posX,
           image_pos_y: product.posY,
           image_scale: product.scale,
           category_name: product.category_name, // send category_name
+          
         }),
       }
     );
@@ -328,6 +310,8 @@ const toggleHideProduct = (productId) => {
                   />
                 </div>
 
+
+
                {/* FEATURED */}
 <label className="featured-checkbox">
   <input
@@ -346,8 +330,12 @@ const toggleHideProduct = (productId) => {
 <label className="featured-checkbox">
   <input
     type="checkbox"
-    checked={hiddenProducts.includes(p.id)}
-    onChange={() => toggleHideProduct(p.id)}
+    checked={p.hidden || false}
+onChange={(e) =>
+  updateProduct(p.id, {
+    hidden: e.target.checked,
+  })
+}
   />
   Hide product
 </label>

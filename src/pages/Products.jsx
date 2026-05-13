@@ -85,14 +85,10 @@ const Products = () => {
     }
   };
 
-  // المنتجات المخفية
-  const hiddenProducts =
-    JSON.parse(localStorage.getItem("hiddenProducts")) || [];
-
-  // المنتجات الظاهرة فقط
-  const visibleProducts = products.filter(
-    (p) => !hiddenProducts.includes(p.id)
-  );
+// المنتجات الظاهرة فقط
+const visibleProducts = products.filter(
+  (p) => !p.hidden
+);
 
   return (
     <>

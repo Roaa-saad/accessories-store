@@ -57,7 +57,9 @@ const Home = () => {
   };
 
   // ⭐ Featured products فقط
-  const featuredProducts = products.filter((p) => p.featured);
+  const featuredProducts = products.filter(
+  (p) => p.featured && !p.hidden
+);
 
   return (
     <>
