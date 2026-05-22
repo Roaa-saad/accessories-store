@@ -13,7 +13,7 @@ const CATEGORY_CONFIG = {
   },
   bracelets: {
     id: 3,
-    label: "Bracelets",
+    label: "Bracelets & Bangles",
   },
   rings: {
     id: 1,
