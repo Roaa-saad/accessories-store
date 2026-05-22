@@ -107,7 +107,7 @@ const Navbar = () => {
             Necklaces
           </Link>
           <Link to="/category/bracelets" onClick={() => setOpen(false)}>
-            Bracelets
+            Bracelets & Bangles
           </Link>
           <Link to="/category/rings" onClick={() => setOpen(false)}>
             Rings
