@@ -115,6 +115,36 @@ const AdminOrders = () => {
     }
   };
 
+  const cancelOrder = async (orderId) => {
+  try {
+    const res = await fetch(
+      `${apiUrl}/admin/orders/${orderId}/cancel`,
+      {
+        method: "PUT",
+      }
+    );
+
+    if (!res.ok) {
+      alert("Failed to cancel order ❌");
+      return;
+    }
+
+    setOrders((prev) =>
+      prev.map((o) =>
+        o.order_id === orderId
+          ? {
+              ...o,
+              is_cancelled: true,
+              is_delivered: false,
+            }
+          : o
+      )
+    );
+  } catch (err) {
+    console.error(err);
+  }
+};
+
   return (
     <>
       {/* ===== TOGGLE BUTTON ===== */}
@@ -183,29 +213,45 @@ const AdminOrders = () => {
 
             {/* ===== STATUS ===== */}
             <div className="order-status">
-              <span
-                className={`status-badge ${
-                  order.is_delivered ? "delivered" : "pending"
-                }`}
-              >
-                {order.is_delivered
-                  ? "Delivered ✓"
-                  : "Pending ⏳"}
-              </span>
+                <span
+                  className={`status-badge ${
+                    order.is_cancelled
+                      ? "cancelled"
+                      : order.is_delivered
+                      ? "delivered"
+                      : "pending"
+                  }`}
+                >
+                  {order.is_cancelled
+                    ? "Cancelled ❌"
+                    : order.is_delivered
+                    ? "Delivered ✓"
+                    : "Pending ⏳"}
+                </span>
 
-              <button
-                className="deliver-btn"
-                onClick={() =>
-                  toggleDelivered(
-                    order.order_id,
-                    order.is_delivered
-                  )
-                }
-              >
-                {order.is_delivered
-                  ? "Mark as not delivered"
-                  : "Mark as delivered"}
-              </button>
+           <button
+                  className="deliver-btn"
+                  onClick={() =>
+                    toggleDelivered(
+                      order.order_id,
+                      order.is_delivered
+                    )
+                  }
+                >
+                  {order.is_delivered
+                    ? "Mark as not delivered"
+                    : "Mark as delivered"}
+                </button>
+
+                <button
+                  className="cancel-btn"
+                  onClick={() => cancelOrder(order.order_id)}
+                  disabled={order.is_cancelled}
+                >
+                  {order.is_cancelled
+                    ? "Cancelled"
+                    : "Cancel Order"}
+                </button>
             </div>
 
             {/* ===== ITEMS & TOTAL ===== */}
