@@ -30,28 +30,73 @@ const AdminOrders = () => {
       });
   }, []);
 
-  // Calculate shipping cost based on city
-  const getShippingCost = (city) => {
-    if (!city) return 0;
-    const cityLower = city.toLowerCase();
-    
-    // Cairo & Giza - 65 EGP
-    if (cityLower === 'cairo' || cityLower === 'giza') return 65;
-    
-    // New Cities - 70 EGP
-    if (['6th of october', 'sheikh zayed', 'new cairo', 'heliopolis', 'maadi', 
-         'nasr city', 'zamalek', 'dokki'].includes(cityLower)) return 70;
-    
-    // Delta - 80 EGP
-    if (['alexandria', 'tanta', 'mansoura', 'zagazig', 'damietta', 
-         'port said', 'ismailia'].includes(cityLower)) return 80;
-    
-    // Upper Egypt - 90 EGP
-    if (['luxor', 'aswan', 'sohag', 'qena', 'asyut', 
-         'minya', 'beni suef', 'fayoum'].includes(cityLower)) return 90;
-    
-    return 0;
-  };
+// Calculate shipping cost based on city
+const getShippingCost = (city) => {
+  if (!city) return 85;
+
+  // Cairo & Giza
+  if (
+    city === "Cairo" ||
+    city === "Giza"
+  ) {
+    return 75;
+  }
+
+  // New Cities
+  else if (
+    city === "6th October" ||
+    city === "Sheikh Zayed" ||
+    city === "New Cairo" ||
+    city === "Shorouk" ||
+    city === "Obour" ||
+    city === "Badr" ||
+    city === "New Capital"
+  ) {
+    return 75;
+  }
+
+  // Delta + Canal + Alexandria
+  else if (
+    city === "Alexandria" ||
+    city === "Beheira" ||
+    city === "Kafr El Sheikh" ||
+    city === "Gharbia" ||
+    city === "Tanta" ||
+    city === "Dakahlia" ||
+    city === "Mansoura" ||
+    city === "Damietta" ||
+    city === "Port Said" ||
+    city === "Ismailia" ||
+    city === "Suez" ||
+    city === "Sharqia" ||
+    city === "Zagazig" ||
+    city === "Qalyubia" ||
+    city === "Monufia"
+  ) {
+    return 85;
+  }
+
+  // Upper Egypt + remote areas
+  else if (
+    city === "Fayoum" ||
+    city === "Beni Suef" ||
+    city === "Minya" ||
+    city === "Assiut" ||
+    city === "Sohag" ||
+    city === "Qena" ||
+    city === "Luxor" ||
+    city === "Aswan" ||
+    city === "Red Sea" ||
+    city === "Matrouh" ||
+    city === "New Valley" ||
+    city === "North Sinai" ||
+    city === "South Sinai"
+  ) {
+    return 95;
+  }
+
+  return 85;
+};
 
   // Calculate discount amount based on code
   const getDiscountAmount = (subtotal, discountCode) => {
