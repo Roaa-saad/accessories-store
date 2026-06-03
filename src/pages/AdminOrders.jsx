@@ -332,14 +332,7 @@ const cancelOrder = async (orderId) => {
               const subtotalAfterDiscount = subtotal - discountAmount;
               const shippingCost = getShippingCost(order.customer_city);
 
-                const shippingFinal =
-                  subtotalAfterDiscount >= 600? 0 : shippingCost;
-
-                  {shippingFinal === 0 && (
-                      <div style={{ color: "#2e7d32", fontSize: "13px" }}>
-                        🎉 Offer Applied
-                      </div>
-                    )}
+                const shippingFinal = shippingCost;
 
                 const totalAmount =
                   subtotalAfterDiscount + shippingFinal;
