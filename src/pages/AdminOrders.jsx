@@ -115,7 +115,7 @@ const AdminOrders = () => {
     }
   };
 
-  const cancelOrder = async (orderId) => {
+const cancelOrder = async (orderId) => {
   try {
     const res = await fetch(
       `${apiUrl}/admin/orders/${orderId}/cancel`,
@@ -125,9 +125,17 @@ const AdminOrders = () => {
     );
 
     if (!res.ok) {
-      alert("Failed to cancel order ❌");
+      const error = await res.json();
+
+      console.log("Cancel Error:", error);
+
+      alert(error.detail || "Failed to cancel order ❌");
+
       return;
     }
+
+    const data = await res.json();
+    console.log("Success:", data);
 
     setOrders((prev) =>
       prev.map((o) =>
@@ -141,7 +149,7 @@ const AdminOrders = () => {
       )
     );
   } catch (err) {
-    console.error(err);
+    console.error("Cancel Error:", err);
   }
 };
 
