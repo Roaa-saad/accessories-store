@@ -230,28 +230,28 @@ const AdminOrders = () => {
                 </span>
 
            <button
-                  className="deliver-btn"
-                  onClick={() =>
-                    toggleDelivered(
-                      order.order_id,
-                      order.is_delivered
-                    )
-                  }
-                >
-                  {order.is_delivered
-                    ? "Mark as not delivered"
-                    : "Mark as delivered"}
-                </button>
+                className="deliver-btn"
+                onClick={() =>
+                  toggleDelivered(
+                    order.order_id,
+                    order.is_delivered
+                  )
+                }
+              >
+                {order.is_delivered
+                  ? "Mark as not delivered"
+                  : "Mark as delivered"}
+              </button>
 
-                <button
-                  className="cancel-btn"
-                  onClick={() => cancelOrder(order.order_id)}
-                  disabled={order.is_cancelled}
-                >
-                  {order.is_cancelled
-                    ? "Cancelled"
-                    : "Cancel Order"}
-                </button>
+              <button
+                className="cancel-btn"
+                onClick={() => cancelOrder(order.order_id)}
+                disabled={order.is_cancelled}
+              >
+                {order.is_cancelled
+                  ? "Cancelled"
+                  : "Cancel Order"}
+              </button>
             </div>
 
             {/* ===== ITEMS & TOTAL ===== */}
