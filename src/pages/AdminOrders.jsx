@@ -155,6 +155,7 @@ const getShippingCost = (city) => {
             : o
         )
       );
+      window.dispatchEvent(new Event("ordersUpdated"));
     } catch (err) {
       console.error(err);
     }
@@ -193,6 +194,7 @@ const cancelOrder = async (orderId) => {
           : o
       )
     );
+    window.dispatchEvent(new Event("ordersUpdated"));
   } catch (err) {
     console.error("Cancel Error:", err);
   }

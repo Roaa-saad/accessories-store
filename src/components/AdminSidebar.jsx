@@ -15,19 +15,31 @@ const AdminSidebar = ({ onClose }) => {
           headers: { Authorization: `Bearer ${token}` }
         }
       );
-      const pending = response.data.filter(order => !order.is_delivered).length;
+      const pending = response.data.filter(
+          order => !order.is_delivered && !order.is_cancelled
+        ).length;
       setPendingOrders(pending);
     } catch (error) {
       console.error("Failed to fetch orders:", error);
     }
   };
 
-  useEffect(() => {
+useEffect(() => {
+  fetchPendingOrders();
+
+  const interval = setInterval(fetchPendingOrders, 30000);
+
+  const handleUpdate = () => {
     fetchPendingOrders();
-    // Refresh every 30 seconds
-    const interval = setInterval(fetchPendingOrders, 30000);
-    return () => clearInterval(interval);
-  }, []);
+  };
+
+  window.addEventListener("ordersUpdated", handleUpdate);
+
+  return () => {
+    clearInterval(interval);
+    window.removeEventListener("ordersUpdated", handleUpdate);
+  };
+}, []);
 
   const logout = () => {
     localStorage.removeItem("admin_token");
