@@ -299,10 +299,9 @@ const cancelOrder = async (orderId) => {
               <button
                 className="cancel-btn"
                 onClick={() => cancelOrder(order.order_id)}
-                disabled={order.is_cancelled}
               >
                 {order.is_cancelled
-                  ? "Cancelled"
+                  ? "Restore Order"
                   : "Cancel Order"}
               </button>
             </div>
