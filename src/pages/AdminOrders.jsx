@@ -187,7 +187,7 @@ const cancelOrder = async (orderId) => {
         o.order_id === orderId
           ? {
               ...o,
-              is_cancelled: true,
+              is_cancelled: !o.is_cancelled,
               is_delivered: false,
             }
           : o
