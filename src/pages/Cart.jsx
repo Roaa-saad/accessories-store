@@ -89,68 +89,105 @@ const Cart = () => {
   // Shipping charges based on city
 const getShippingCharge = () => {
   const city = form.city;
-  
+
   // Cairo & Giza
-  if (city === 'Cairo' || city === 'Giza') {
+  if (
+    city === "Cairo" ||
+    city === "Giza"
+  ) {
     return 75;
-  } 
-  
+  }
+
   // New Cities
   else if (
-    city === '6th October' ||
-    city === 'Sheikh Zayed' ||
-    city === 'New Cairo' ||
-    city === 'Shorouk' ||
-    city === 'Obour' ||
-    city === 'Badr' ||
-    city === 'New Capital'
+    city === "6th October" ||
+    city === "Sheikh Zayed" ||
+    city === "New Cairo" ||
+    city === "Shorouk" ||
+    city === "Obour" ||
+    city === "Badr" ||
+    city === "New Capital"
   ) {
     return 75;
-  } 
-  
+  }
+
   // Delta + Canal + Alexandria
   else if (
-    city === 'Alexandria' ||
-    city === 'Beheira' ||
-    city === 'Kafr El Sheikh' ||
-    city === 'Gharbia' ||
-    city === 'Tanta' ||
-    city === 'Dakahlia' ||
-    city === 'Mansoura' ||
-    city === 'Damietta' ||
-    city === 'Port Said' ||
-    city === 'Ismailia' ||
-    city === 'Suez' ||
-    city === 'Sharqia' ||
-    city === 'Zagazig' ||
-    city === 'Qalyubia' ||
-    city === 'Monufia'
+    city === "Alexandria" ||
+    city === "Beheira" ||
+    city === "Kafr El Sheikh" ||
+    city === "Gharbia" ||
+    city === "Tanta" ||
+    city === "Dakahlia" ||
+    city === "Mansoura" ||
+    city === "Damietta" ||
+    city === "Port Said" ||
+    city === "Ismailia" ||
+    city === "Suez" ||
+    city === "Sharqia" ||
+    city === "Zagazig" ||
+    city === "Qalyubia" ||
+    city === "Monufia"
   ) {
     return 85;
-  } 
-  
-  // Upper Egypt + remote areas
+  }
+
+  // Upper Egypt
   else if (
-    city === 'Fayoum' ||
-    city === 'Beni Suef' ||
-    city === 'Minya' ||
-    city === 'Assiut' ||
-    city === 'Sohag' ||
-    city === 'Qena' ||
-    city === 'Luxor' ||
-    city === 'Aswan' ||
-    city === 'Red Sea' ||
-    city === 'Matrouh' ||
-    city === 'New Valley' ||
-    city === 'North Sinai' ||
-    city === 'South Sinai'
+    city === "Fayoum" ||
+    city === "Beni Suef" ||
+    city === "Minya" ||
+    city === "Assiut" ||
+    city === "Sohag" ||
+    city === "Qena"
   ) {
     return 95;
   }
 
-  return 85; // default shipping لو محافظة مش موجودة
-};
+  // Hurghada
+  else if (
+    city === "Hurghada"
+  ) {
+    return 125;
+  }
 
+  // Aswan
+  else if (
+    city === "Aswan"
+  ) {
+    return 125;
+  }
+
+  // Marsa Matrouh
+  else if (
+    city === "Matrouh" ||
+    city === "Marsa Matrouh"
+  ) {
+    return 130;
+  }
+
+  // North Coast + New Valley
+  else if (
+    city === "North Coast" ||
+    city === "New Valley"
+  ) {
+    return 135;
+  }
+
+  // Red Sea + Arish + Sharm
+  else if (
+    city === "Red Sea" ||
+    city === "Sharm El Sheikh" ||
+    city === "Arish" ||
+    city === "El Arish" ||
+    city === "North Sinai" ||
+    city === "South Sinai"
+  ) {
+    return 145;
+  }
+
+  return 85;
+};
   const handleCheckout = async () => {
     if (!cart.length) return;
     if (!validateForm()) return;

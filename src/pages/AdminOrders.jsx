@@ -76,28 +76,62 @@ const getShippingCost = (city) => {
     return 85;
   }
 
-  // Upper Egypt + remote areas
+  // Upper Egypt
   else if (
     city === "Fayoum" ||
     city === "Beni Suef" ||
     city === "Minya" ||
     city === "Assiut" ||
     city === "Sohag" ||
-    city === "Qena" ||
-    city === "Luxor" ||
-    city === "Aswan" ||
-    city === "Red Sea" ||
-    city === "Matrouh" ||
-    city === "New Valley" ||
-    city === "North Sinai" ||
-    city === "South Sinai"
+    city === "Qena"
   ) {
     return 95;
   }
 
+  // Hurghada
+  else if (
+    city === "Hurghada"
+  ) {
+    return 125;
+  }
+
+  // Aswan
+  else if (
+    city === "Aswan"
+  ) {
+    return 125;
+  }
+
+  // Marsa Matrouh
+  else if (
+    city === "Matrouh" ||
+    city === "Marsa Matrouh"
+  ) {
+    return 130;
+  }
+
+  // North Coast + New Valley
+  else if (
+    city === "North Coast" ||
+    city === "New Valley"
+  ) {
+    return 135;
+  }
+
+  // Red Sea + Arish + Sharm
+  else if (
+    city === "Red Sea" ||
+    city === "Sharm El Sheikh" ||
+    city === "Arish" ||
+    city === "El Arish" ||
+    city === "North Sinai" ||
+    city === "South Sinai"
+  ) {
+    return 145;
+  }
+
   return 85;
 };
-
   // Calculate discount amount based on code
   const getDiscountAmount = (subtotal, discountCode) => {
     if (!discountCode) return 0;
