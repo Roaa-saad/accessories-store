@@ -1,18 +1,19 @@
 .announcement-bar {
+  position: relative;
+  z-index: 1001;
   width: 100%;
   overflow: hidden;
   background: #8b7355;
   color: #ffffff;
   border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-  position: relative;
-  z-index: 1001;
 }
 
 .announcement-track {
   display: flex;
   width: max-content;
   min-width: 200%;
-  animation: announcement-scroll 25s linear infinite;
+  animation: announcement-scroll var(--announcement-duration, 25s) linear
+    infinite;
   will-change: transform;
 }
 

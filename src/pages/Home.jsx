@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getProducts, addToCart } from "../api/api";
 import Navbar from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
+import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
@@ -65,56 +66,16 @@ const Home = () => {
     <>
       <Navbar />
       {/* HERO */}
-    <div className="hero" style={{ position: "relative" }}>
-  <img 
-    src="/hero.jpg?v=2" 
-    alt="Lumie Hero" 
-    loading="eager" 
-    fetchpriority="high" 
-    decoding="async" 
-    style={{ width: "100%", display: "block" }}
-  />
-
-  <div
-   style={{
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  textAlign: "center",
-  color: "#ffffffff",
-
-   background: "rgba(255, 255, 255, 0.2)",
-  backdropFilter: "blur(.1px)",
-  WebkitBackdropFilter: "blur(.1px)",
-
-  padding: "20px 40px",
-  borderRadius: "20px",
-
-  width: "80%",
-  maxWidth: "400px",
-
-  boxShadow: "0 8px 30px rgba(0,0,0,0.15)",
-  border: "1px solid rgba(255,255,255,0.3)",
-
-
-  
-}}
-  >
-
-
-    <div
-      style={{
-        fontSize: "32px",
-        fontWeight: "600",
-        opacity: 0.95,
-        fontFamily: "'Playfair Display', serif",
-      }}
-    >
-    Free Shipping on orders over 900 EGP 
-    </div>
-  </div>
-</div>
+      <div className="hero" style={{ position: "relative" }}>
+        <img
+          src="/hero.jpg?v=2"
+          alt="Lumie Hero"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          style={{ width: "100%", display: "block" }}
+        />
+      </div>
 
       {/* FEATURED PRODUCTS */}
       {featuredProducts.length > 0 && (
@@ -174,6 +135,8 @@ const Home = () => {
         <img src="/gift.jpg" alt="Gift" loading="lazy" />
         <span>Every order is carefully wrapped, just for you.</span>
       </div>
+
+      <Footer />
     </>
   );
 };

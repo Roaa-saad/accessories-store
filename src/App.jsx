@@ -13,6 +13,7 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminAddProduct from "./pages/AdminAddProduct";
 import AdminOrders from "./pages/AdminOrders";
+import AdminAnnouncement from "./pages/AdminAnnouncement";
 
 /* ===== PROTECTED ROUTE ===== */
 import AdminRoute from "./components/AdminRoute";
@@ -47,6 +48,16 @@ const App = () => {
           element={
             <AdminRoute>
               <AdminAddProduct />
+            </AdminRoute>
+          }
+        />
+
+
+        <Route
+          path="/admin/announcement"
+          element={
+            <AdminRoute>
+              <AdminAnnouncement />
             </AdminRoute>
           }
         />
