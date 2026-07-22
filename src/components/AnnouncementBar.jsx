@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { getPublicAnnouncement } from "../api/announcementApi";
+import { getPublicAnnouncements } from "../api/announcementApi";
 import "./AnnouncementBar.css";
 
 const REFRESH_INTERVAL = 30000;
 
-const AnnouncementGroup = ({ messages, hidden = false }) => (
+const AnnouncementGroup = ({ announcements, hidden = false }) => (
   <div className="announcement-group" aria-hidden={hidden}>
-    {messages.map((message, index) => (
-      <div className="announcement-item" key={`${message}-${index}`}>
-        <span>{message}</span>
+    {announcements.map((announcement) => (
+      <div className="announcement-item" key={announcement.id}>
+        <span>{announcement.content}</span>
         <span className="announcement-separator" aria-hidden="true">
           ✦
         </span>
@@ -18,30 +18,29 @@ const AnnouncementGroup = ({ messages, hidden = false }) => (
 );
 
 const AnnouncementBar = () => {
-  const [settings, setSettings] = useState(null);
+  const [announcements, setAnnouncements] = useState([]);
 
-  const loadAnnouncement = useCallback(async () => {
+  const loadAnnouncements = useCallback(async () => {
     try {
-      const data = await getPublicAnnouncement();
-      setSettings(data);
+      const data = await getPublicAnnouncements();
+      setAnnouncements(data.filter((item) => item.is_active));
     } catch (error) {
-      // Keep the last successful value if a temporary request fails.
       console.error("Failed to load announcement bar:", error);
     }
   }, []);
 
   useEffect(() => {
-    loadAnnouncement();
+    loadAnnouncements();
 
     const intervalId = window.setInterval(
-      loadAnnouncement,
+      loadAnnouncements,
       REFRESH_INTERVAL
     );
 
-    const handleAnnouncementUpdate = () => loadAnnouncement();
+    const handleAnnouncementUpdate = () => loadAnnouncements();
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
-        loadAnnouncement();
+        loadAnnouncements();
       }
     };
 
@@ -65,22 +64,20 @@ const AnnouncementBar = () => {
         handleVisibilityChange
       );
     };
-  }, [loadAnnouncement]);
+  }, [loadAnnouncements]);
 
-  const messages = useMemo(
-    () =>
-      (settings?.content || "")
-        .split("\n")
-        .map((message) => message.trim())
-        .filter(Boolean),
-    [settings?.content]
+  const totalCharacters = useMemo(
+    () => announcements.reduce(
+      (total, item) => total + item.content.length,
+      0
+    ),
+    [announcements]
   );
 
-  if (!settings?.is_active || messages.length === 0) {
+  if (announcements.length === 0) {
     return null;
   }
 
-  const totalCharacters = messages.join("").length;
   const animationDuration = Math.max(18, totalCharacters * 0.16);
 
   return (
@@ -90,8 +87,8 @@ const AnnouncementBar = () => {
       style={{ "--announcement-duration": `${animationDuration}s` }}
     >
       <div className="announcement-track">
-        <AnnouncementGroup messages={messages} />
-        <AnnouncementGroup messages={messages} hidden />
+        <AnnouncementGroup announcements={announcements} />
+        <AnnouncementGroup announcements={announcements} hidden />
       </div>
     </section>
   );

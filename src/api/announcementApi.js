@@ -27,13 +27,19 @@ announcementClient.interceptors.response.use(
 const getErrorMessage = (error, fallback) =>
   error?.response?.data?.detail || error?.message || fallback;
 
-export const getPublicAnnouncement = async () => {
+const getAdminHeaders = () => ({
+  Authorization: `Bearer ${localStorage.getItem("admin_token") || ""}`,
+});
+
+export const getPublicAnnouncements = async () => {
   try {
     const response = await announcementClient.get("/announcement", {
       params: { _t: Date.now() },
     });
 
-    return response.data;
+    return Array.isArray(response.data?.announcements)
+      ? response.data.announcements
+      : [];
   } catch (error) {
     throw new Error(
       getErrorMessage(error, "Failed to load the announcement bar")
@@ -41,44 +47,82 @@ export const getPublicAnnouncement = async () => {
   }
 };
 
-export const getAdminAnnouncement = async () => {
-  const token = localStorage.getItem("admin_token");
-
+export const getAdminAnnouncements = async () => {
   try {
-    const response = await announcementClient.get("/admin/announcement", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const response = await announcementClient.get("/admin/announcements", {
+      headers: getAdminHeaders(),
       params: { _t: Date.now() },
     });
 
-    return response.data;
+    return Array.isArray(response.data?.announcements)
+      ? response.data.announcements
+      : [];
   } catch (error) {
     throw new Error(
-      getErrorMessage(error, "Failed to load announcement settings")
+      getErrorMessage(error, "Failed to load announcements")
     );
   }
 };
 
-export const updateAdminAnnouncement = async (payload) => {
-  const token = localStorage.getItem("admin_token");
-
+export const createAdminAnnouncement = async (payload) => {
   try {
-    const response = await announcementClient.put(
-      "/admin/announcement",
+    const response = await announcementClient.post(
+      "/admin/announcements",
       payload,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
+      { headers: getAdminHeaders() }
     );
 
     return response.data;
   } catch (error) {
     throw new Error(
-      getErrorMessage(error, "Failed to update announcement settings")
+      getErrorMessage(error, "Failed to create announcement")
+    );
+  }
+};
+
+export const updateAdminAnnouncement = async (id, payload) => {
+  try {
+    const response = await announcementClient.put(
+      `/admin/announcements/${id}`,
+      payload,
+      { headers: getAdminHeaders() }
+    );
+
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      getErrorMessage(error, "Failed to update announcement")
+    );
+  }
+};
+
+export const toggleAdminAnnouncement = async (id) => {
+  try {
+    const response = await announcementClient.patch(
+      `/admin/announcements/${id}/toggle`,
+      {},
+      { headers: getAdminHeaders() }
+    );
+
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      getErrorMessage(error, "Failed to change announcement visibility")
+    );
+  }
+};
+
+export const deleteAdminAnnouncement = async (id) => {
+  try {
+    const response = await announcementClient.delete(
+      `/admin/announcements/${id}`,
+      { headers: getAdminHeaders() }
+    );
+
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      getErrorMessage(error, "Failed to delete announcement")
     );
   }
 };
