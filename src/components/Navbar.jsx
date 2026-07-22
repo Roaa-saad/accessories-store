@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { FaShoppingBag } from "react-icons/fa";
 import { useCart } from "../context/CartContext";
+import AnnouncementBar from "./AnnouncementBar";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -10,6 +11,8 @@ const Navbar = () => {
 
   return (
     <>
+      <AnnouncementBar />
+
       {/* ================= NAVBAR ================= */}
       <div className="navbar">
         {/* Menu */}

@@ -64,9 +64,6 @@ const Home = () => {
   return (
     <>
       <Navbar />
-      <div className="free-shipping-banner">
-        
-      </div>
       {/* HERO */}
     <div className="hero" style={{ position: "relative" }}>
   <img 

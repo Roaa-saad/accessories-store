@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// const API_URL = 'https://accessories-backend-production.up.railway.app';
 const API_URL = 'https://accessories-backend-production.up.railway.app';
 
 const API = axios.create({
