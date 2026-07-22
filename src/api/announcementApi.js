@@ -9,6 +9,21 @@ const announcementClient = axios.create({
   timeout: 15000,
 });
 
+announcementClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error?.response?.status === 401) {
+      localStorage.removeItem("admin_token");
+
+      if (window.location.pathname !== "/admin/login") {
+        window.location.href = "/admin/login";
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 const getErrorMessage = (error, fallback) =>
   error?.response?.data?.detail || error?.message || fallback;
 
