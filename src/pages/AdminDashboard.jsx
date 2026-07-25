@@ -29,7 +29,7 @@ const AdminDashboard = () => {
   /* ================= LOAD PRODUCTS ================= */
   const loadProducts = async () => {
     const data = await fetch(
-      `${apiUrl}/client/products`
+      `${apiUrl}/admin/products`
     ).then((r) => r.json());
 
     const processedProducts = data.map((p) => ({
