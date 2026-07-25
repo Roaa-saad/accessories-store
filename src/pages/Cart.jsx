@@ -1,4 +1,4 @@
-import React, { useEffect, useState , useMemo} from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { getCart, checkout, removeFromCart, validateCoupon } from "../api/api";
 import CartItem from "../components/CartItem";
 import Navbar from "../components/Navbar";
@@ -23,6 +23,8 @@ const Cart = () => {
   const [errors, setErrors] = useState({});
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [orderNumber, setOrderNumber] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const checkoutAttemptRef = useRef({ fingerprint: "", token: "" });
   const [discountMessage, setDiscountMessage] = useState({ text: "", type: "" });
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [applyingCoupon, setApplyingCoupon] = useState(false);
@@ -193,7 +195,7 @@ const getShippingCharge = () => {
   return 85;
 };
   const handleCheckout = async () => {
-    if (!cart.length) return;
+    if (isSubmitting || !cart.length) return;
     if (!validateForm()) return;
 
     const enteredCode = form.discount_code.trim().toUpperCase();
@@ -231,12 +233,36 @@ const groupedItems = {};processedItems.forEach(item => {
   groupedItems[key].total_price_after_discount += item.final_price;
 });
 
+const checkoutFingerprint = JSON.stringify({
+  name: form.name.trim(),
+  email: form.email.trim().toLowerCase(),
+  phone: form.phone.replace(/\D/g, ""),
+  address: form.address.trim(),
+  city: form.city,
+  discount_code: form.discount_code.trim().toUpperCase(),
+  note: form.note.trim(),
+  items: Object.values(groupedItems),
+  total_amount: grandTotal,
+});
+
+if (checkoutAttemptRef.current.fingerprint !== checkoutFingerprint) {
+  checkoutAttemptRef.current = {
+    fingerprint: checkoutFingerprint,
+    token:
+      typeof crypto !== "undefined" && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `${Date.now()}_${Math.random().toString(36).slice(2)}`,
+  };
+}
+
+setIsSubmitting(true);
 try {
   const result = await checkout({
     ...form,
     items: Object.values(groupedItems),
     total_amount: grandTotal,
-    shipping: shippingChargeFinal
+    shipping: shippingChargeFinal,
+    checkout_token: checkoutAttemptRef.current.token
   });
 
   if (result) {
@@ -257,12 +283,15 @@ try {
     setErrors({});
     setAppliedCoupon(null);
     setDiscountMessage({ text: "", type: "" });
+    checkoutAttemptRef.current = { fingerprint: "", token: "" };
     window.scrollTo(0, 0);
   }
 } catch (error) {
   console.error("Checkout failed:", error);
   const errorMessage = error.message || "Failed to create order. Please try again.";
   alert(errorMessage);
+} finally {
+  setIsSubmitting(false);
 }
   };
 
@@ -597,8 +626,13 @@ const subtotal = processedItems.reduce((sum, item) => {
                   rows="3"
                 />
 
-                <button className="confirm-btn" onClick={handleCheckout}>
-                  Confirm Order
+                <button
+                  className="confirm-btn"
+                  type="button"
+                  onClick={handleCheckout}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Placing Order..." : "Confirm Order"}
                 </button>
               </div>
             )}

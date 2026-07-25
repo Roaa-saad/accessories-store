@@ -267,6 +267,7 @@ const AdminOrders = () => {
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loadError, setLoadError] = useState("");
+  const [deletingOrderId, setDeletingOrderId] = useState(null);
   const token = localStorage.getItem("admin_token");
 
   useEffect(() => {
@@ -350,6 +351,38 @@ const AdminOrders = () => {
       window.dispatchEvent(new Event("ordersUpdated"));
     } catch (error) {
       console.error("Cancel Error:", error);
+    }
+  };
+
+  const deleteOrder = async (orderId) => {
+    const confirmed = window.confirm(
+      `Permanently delete order #${String(orderId).padStart(3, "0")}?\n\nThis removes the order record only and does not change product stock.`
+    );
+
+    if (!confirmed) return;
+
+    setDeletingOrderId(orderId);
+    try {
+      const response = await fetch(`${apiUrl}/admin/orders/${orderId}`, {
+        method: "DELETE",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        alert(error.detail || "Failed to delete order ❌");
+        return;
+      }
+
+      setOrders((current) =>
+        current.filter((order) => order.order_id !== orderId)
+      );
+      window.dispatchEvent(new Event("ordersUpdated"));
+    } catch (error) {
+      console.error("Delete Error:", error);
+      alert("Failed to delete order ❌");
+    } finally {
+      setDeletingOrderId(null);
     }
   };
 
@@ -473,18 +506,35 @@ const AdminOrders = () => {
                 >
                   {order.is_cancelled ? "Restore Order" : "Cancel Order"}
                 </button>
+
+                <button
+                  className="delete-order-btn"
+                  type="button"
+                  onClick={() => deleteOrder(order.order_id)}
+                  disabled={deletingOrderId === order.order_id}
+                >
+                  {deletingOrderId === order.order_id
+                    ? "Deleting..."
+                    : "Delete Order"}
+                </button>
               </div>
 
               <div
                 className="order-items"
                 style={{ display: "flex", flexDirection: "column", gap: "10px" }}
               >
-                {totals.processedItems.map((item, index) => (
-                  <CartItem
-                    key={`${order.order_id}-${item.product_id}-${index}`}
-                    item={item}
-                  />
-                ))}
+                {totals.processedItems.length === 0 ? (
+                  <div className="empty-order-warning">
+                    This order has no products. You can delete it using the button above.
+                  </div>
+                ) : (
+                  totals.processedItems.map((item, index) => (
+                    <CartItem
+                      key={`${order.order_id}-${item.product_id}-${index}`}
+                      item={item}
+                    />
+                  ))
+                )}
               </div>
 
               <div

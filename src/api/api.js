@@ -188,6 +188,7 @@ export const checkout = async (data) => {
     quantity: item.quantity,
     price: item.discount_price && item.discount_price > 0 ? item.discount_price : item.price
   }))));
+  formData.append('checkout_token', data.checkout_token || '');
   
   const response = await fetch(
     "https://accessories-backend-production.up.railway.app/client/checkout",

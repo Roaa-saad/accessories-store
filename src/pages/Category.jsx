@@ -2,35 +2,17 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
-import { getProducts, addToCart } from "../api/api";
+import { getCategories, addToCart } from "../api/api";
 import { useCart } from "../context/CartContext";
 
 /* ================= CATEGORY CONFIG ================= */
 const CATEGORY_CONFIG = {
-  necklaces: {
-    id: 2,
-    label: "Necklaces",
-  },
-  bracelets: {
-    id: 3,
-    label: "Bracelets & Bangles",
-  },
-  rings: {
-    id: 1,
-    label: "Rings",
-  },
-  earrings: {
-    id: 6,
-    label: "Earrings",
-  },
-  "key-chains": {
-    id: 5,
-    label: "Keychains",
-  },
-  sale: {
-    id: 4,
-    label: "Bundles",
-  },
+  necklaces: { label: "Necklaces", aliases: ["necklace", "necklaces"] },
+  bracelets: { label: "Bracelets & Bangles", aliases: ["bracelet", "bracelets", "bangles"] },
+  rings: { label: "Rings", aliases: ["ring", "rings"] },
+  earrings: { label: "Earrings", aliases: ["earring", "earrings"] },
+  "key-chains": { label: "Keychains", aliases: ["keychain", "keychains", "key chains", "key-chains"] },
+  sale: { label: "Bundles", aliases: ["bundle", "bundles", "sale"] },
 };
 
 const Category = () => {
@@ -44,12 +26,25 @@ const Category = () => {
 
     const category = CATEGORY_CONFIG[name];
 
-    if (!category) return;
+    if (!category) {
+      setProducts([]);
+      setLoading(false);
+      return;
+    }
 
-    fetch(
-      `https://accessories-backend-production.up.railway.app/client/categories/${category.id}/products`
-    )
-      .then((res) => res.json())
+    getCategories()
+      .then((categories) => {
+        const match = categories.find((item) =>
+          category.aliases.includes(String(item.name || "").trim().toLowerCase())
+        );
+        if (!match) return [];
+        return fetch(
+          `https://accessories-backend-production.up.railway.app/client/categories/${match.id}/products`
+        ).then((res) => {
+          if (!res.ok) throw new Error("Failed to load category products");
+          return res.json();
+        });
+      })
       .then((data) => {
         console.log("Category API products:", data);
 

@@ -22,7 +22,7 @@ const isTokenExpired = (token) => {
     }
 
     return payload.exp * 1000 <= Date.now();
-  } catch (error) {
+  } catch {
     return true;
   }
 };
