@@ -14,6 +14,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminAddProduct from "./pages/AdminAddProduct";
 import AdminOrders from "./pages/AdminOrders";
 import AdminAnnouncement from "./pages/AdminAnnouncement";
+import AdminCoupons from "./pages/AdminCoupons";
 
 /* ===== PROTECTED ROUTE ===== */
 import AdminRoute from "./components/AdminRoute";
@@ -58,6 +59,16 @@ const App = () => {
           element={
             <AdminRoute>
               <AdminAnnouncement />
+            </AdminRoute>
+          }
+        />
+
+
+        <Route
+          path="/admin/coupons"
+          element={
+            <AdminRoute>
+              <AdminCoupons />
             </AdminRoute>
           }
         />

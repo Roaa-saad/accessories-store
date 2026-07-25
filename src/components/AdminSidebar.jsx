@@ -65,6 +65,10 @@ const AdminSidebar = ({ onClose }) => {
           Announcement Bar
         </NavLink>
 
+        <NavLink to="/admin/coupons" onClick={onClose}>
+          Coupons
+        </NavLink>
+
         <NavLink
           to="/admin/orders"
           onClick={onClose}

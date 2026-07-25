@@ -151,6 +151,25 @@ export const getCart = async () => {
   }));
 };
 
+
+// ================= COUPONS =================
+export const validateCoupon = async (code, subtotal) => {
+  try {
+    const response = await API.post("/client/validate-coupon", {
+      code: String(code || "").trim(),
+      subtotal: Number(subtotal || 0),
+    });
+
+    return response.data;
+  } catch (error) {
+    const message =
+      error?.response?.data?.detail ||
+      error?.message ||
+      "Invalid coupon code";
+    throw new Error(message);
+  }
+};
+
 // ================= CHECKOUT =================
 export const checkout = async (data) => {
   const cart = getCartFromStorage();

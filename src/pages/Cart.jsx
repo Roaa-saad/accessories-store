@@ -1,5 +1,5 @@
 import React, { useEffect, useState , useMemo} from "react";
-import { getCart, checkout, removeFromCart } from "../api/api";
+import { getCart, checkout, removeFromCart, validateCoupon } from "../api/api";
 import CartItem from "../components/CartItem";
 import Navbar from "../components/Navbar";
 import { useCart } from "../context/CartContext";
@@ -23,7 +23,9 @@ const Cart = () => {
   const [errors, setErrors] = useState({});
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [orderNumber, setOrderNumber] = useState(null);
-  const [discountMessage, setDiscountMessage] = useState({ text: '', type: '' }); // 'valid' or 'invalid'
+  const [discountMessage, setDiscountMessage] = useState({ text: "", type: "" });
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [applyingCoupon, setApplyingCoupon] = useState(false);
 
   useEffect(() => {
     fetchCart();
@@ -39,6 +41,8 @@ const Cart = () => {
   const handleRemove = async (id) => {
     await removeFromCart(id);
     setCart((prev) => prev.filter((item) => item.product_id !== id));
+    setAppliedCoupon(null);
+    setDiscountMessage({ text: "", type: "" });
     updateCartCount();
   };
 
@@ -192,6 +196,18 @@ const getShippingCharge = () => {
     if (!cart.length) return;
     if (!validateForm()) return;
 
+    const enteredCode = form.discount_code.trim().toUpperCase();
+    if (
+      enteredCode &&
+      (!appliedCoupon || appliedCoupon.code !== enteredCode)
+    ) {
+      setDiscountMessage({
+        text: "Please apply the coupon before confirming the order.",
+        type: "invalid",
+      });
+      return;
+    }
+
 const groupedItems = {};processedItems.forEach(item => {
   const key = `${item.product_id}_${item.final_price}`;
 
@@ -239,6 +255,8 @@ try {
       note: "",
     });
     setErrors({});
+    setAppliedCoupon(null);
+    setDiscountMessage({ text: "", type: "" });
     window.scrollTo(0, 0);
   }
 } catch (error) {
@@ -279,48 +297,39 @@ const subtotal = processedItems.reduce((sum, item) => {
   return sum + item.final_price;
 }, 0);
 
-  // Calculate discount code discount
-  const calculateDiscountCodeDiscount = () => {
-    const code = form.discount_code?.trim().toUpperCase();
-    if (!code) return 0;
-    
-    if (code === 'BACKTOLUMIE') {
-      return subtotal * 0.10; // 10% discount
-    } else if (code === 'FREEGIFT') {
-      return 0; // Free gift, no price discount
-    }
-    return 0;
-  };
+  const handleApplyCoupon = async () => {
+    const code = form.discount_code.trim().toUpperCase();
 
-  // Validate discount code and set message
-  const validateDiscountCode = (code) => {
-    const upperCode = code.trim().toUpperCase();
-    
-    if (!upperCode) {
-      setDiscountMessage({ text: '', type: '' });
+    if (!code) {
+      setAppliedCoupon(null);
+      setDiscountMessage({ text: "Enter a coupon code first.", type: "invalid" });
       return;
     }
-    
-    if (upperCode === 'FREEGIFT') {
-      setDiscountMessage({ 
-        text: '✓ Valid code! You will get a free gift', 
-        type: 'valid' 
+
+    setApplyingCoupon(true);
+    setDiscountMessage({ text: "", type: "" });
+
+    try {
+      const result = await validateCoupon(code, subtotal);
+      setAppliedCoupon(result);
+      setForm((current) => ({ ...current, discount_code: result.code }));
+      setDiscountMessage({
+        text: `✓ ${result.message}`,
+        type: "valid",
       });
-    } else if (upperCode === 'BACKTOLUMIE') {
-      setDiscountMessage({ 
-        text: '✓ 10% discount applied', 
-        type: 'valid' 
+    } catch (error) {
+      setAppliedCoupon(null);
+      setDiscountMessage({
+        text: `✗ ${error.message || "Invalid coupon code"}`,
+        type: "invalid",
       });
-    } else {
-      setDiscountMessage({ 
-        text: '✗ Invalid code', 
-        type: 'invalid' 
-      });
+    } finally {
+      setApplyingCoupon(false);
     }
   };
 
-  const discountCodeAmount = calculateDiscountCodeDiscount();
-  const subtotalAfterDiscount = subtotal - discountCodeAmount;
+  const discountCodeAmount = Number(appliedCoupon?.discount_amount || 0);
+  const subtotalAfterDiscount = Math.max(subtotal - discountCodeAmount, 0);
   const shippingCharge = form.city ? getShippingCharge() : 0;
   const shippingChargeFinal =
   subtotalAfterDiscount >= 900 ? 0 : shippingCharge;
@@ -545,14 +554,29 @@ const subtotal = processedItems.reduce((sum, item) => {
                   <span className="form-error">{errors.phone}</span>
                 )}
 
-                <input
-                  placeholder="Discount Code (optional)"
-                  value={form.discount_code}
-                  onChange={(e) => {
-                    setForm({ ...form, discount_code: e.target.value });
-                    validateDiscountCode(e.target.value);
-                  }}
-                />
+                <div className="coupon-apply-row">
+                  <input
+                    placeholder="Discount Code (optional)"
+                    value={form.discount_code}
+                    onChange={(event) => {
+                      setForm({
+                        ...form,
+                        discount_code: event.target.value.toUpperCase(),
+                      });
+                      setAppliedCoupon(null);
+                      setDiscountMessage({ text: "", type: "" });
+                    }}
+                  />
+
+                  <button
+                    type="button"
+                    className="apply-coupon-btn"
+                    onClick={handleApplyCoupon}
+                    disabled={applyingCoupon}
+                  >
+                    {applyingCoupon ? "Applying..." : "Apply"}
+                  </button>
+                </div>
                 {discountMessage.text && (
                   <p style={{
                     fontSize: '15px',

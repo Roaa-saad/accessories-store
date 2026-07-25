@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import ProductCard from "../components/ProductCard";
 import AdminSidebar from "../components/AdminSidebar";
 import ReorderImages from "../components/ReorderImages";
@@ -20,6 +20,7 @@ const AdminDashboard = () => {
   const [products, setProducts] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeProductId, setActiveProductId] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const wrapperRefs = useRef({});
   const token = localStorage.getItem("admin_token");
 
@@ -57,7 +58,11 @@ const AdminDashboard = () => {
       scale: p.image_scale ?? 1,
       discount_price: p.discount_price ?? null,
       featured: p.featured ?? false, // ⭐ الجديد
-      category_name: p.category_name || p.category?.label || '', // ensure category_name is always set
+      category_name:
+        p.category_name ||
+        p.category?.name ||
+        p.category?.label ||
+        "Uncategorized",
     }));
 
     console.log('Processed products with images:', processedProducts.map(p => ({ 
@@ -72,6 +77,24 @@ const AdminDashboard = () => {
   useEffect(() => {
     loadProducts();
   }, []);
+
+
+  const categoryNames = useMemo(() => {
+    const names = products
+      .map((product) => product.category_name || "Uncategorized")
+      .filter(Boolean);
+
+    return ["All", ...Array.from(new Set(names)).sort((a, b) => a.localeCompare(b))];
+  }, [products]);
+
+  const filteredProducts = useMemo(() => {
+    if (selectedCategory === "All") return products;
+
+    return products.filter(
+      (product) =>
+        (product.category_name || "Uncategorized") === selectedCategory
+    );
+  }, [products, selectedCategory]);
 
   /* ================= WHEEL ZOOM ================= */
   useEffect(() => {
@@ -270,10 +293,44 @@ const AdminDashboard = () => {
       </div>
 
       <main className="admin-content">
-        <h2 className="section-title">Admin Home Preview</h2>
+        <h2 className="section-title">Products by Category</h2>
 
-        <div className="products-scroll">
-          {products.map((p) => {
+        <div className="admin-category-tabs" role="tablist" aria-label="Product categories">
+          {categoryNames.map((category) => {
+            const count =
+              category === "All"
+                ? products.length
+                : products.filter(
+                    (product) =>
+                      (product.category_name || "Uncategorized") === category
+                  ).length;
+
+            return (
+              <button
+                key={category}
+                type="button"
+                className={`admin-category-tab ${
+                  selectedCategory === category ? "active" : ""
+                }`}
+                onClick={() => setSelectedCategory(category)}
+              >
+                <span>{category}</span>
+                <strong>{count}</strong>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="admin-category-heading">
+          <h3>{selectedCategory}</h3>
+          <span>{filteredProducts.length} product{filteredProducts.length === 1 ? "" : "s"}</span>
+        </div>
+
+        {filteredProducts.length === 0 ? (
+          <div className="admin-category-empty">No products in this category.</div>
+        ) : (
+          <div className="products-scroll admin-products-by-category">
+          {filteredProducts.map((p) => {
             const cover = p.images?.find((i) => i.is_cover) || p.images?.[0];
 
             return (
@@ -422,12 +479,13 @@ onChange={(e) =>
                     onChange={e => updateProduct(p.id, { category_name: e.target.value })}
                   >
                     <option value="">Select Category</option>
-                    <option value="Necklaces">Necklaces</option>
-                    <option value="Bracelets">Bracelets</option>
-                    <option value="Rings">Rings</option>
-                    <option value="Bundles">Bundles</option>
-                    <option value="Earrings">Earrings</option>
-                    <option value="Key-chains">Key-chains</option>
+                    {categoryNames
+                      .filter((category) => category !== "All")
+                      .map((category) => (
+                        <option key={category} value={category}>
+                          {category}
+                        </option>
+                      ))}
                   </select>
                 </div>
 
@@ -450,7 +508,8 @@ onChange={(e) =>
               </div>
             );
           })}
-        </div>
+          </div>
+        )}
       </main>
     </>
   );
