@@ -2,18 +2,60 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
-import { getCategories, addToCart } from "../api/api";
+import { getProducts, addToCart } from "../api/api";
 import { useCart } from "../context/CartContext";
 
 /* ================= CATEGORY CONFIG ================= */
 const CATEGORY_CONFIG = {
-  necklaces: { label: "Necklaces", aliases: ["necklace", "necklaces"] },
-  bracelets: { label: "Bracelets & Bangles", aliases: ["bracelet", "bracelets", "bangles"] },
-  rings: { label: "Rings", aliases: ["ring", "rings"] },
-  earrings: { label: "Earrings", aliases: ["earring", "earrings"] },
-  "key-chains": { label: "Keychains", aliases: ["keychain", "keychains", "key chains", "key-chains"] },
-  sale: { label: "Bundles", aliases: ["bundle", "bundles", "sale"] },
+  necklaces: { label: "Necklaces", canonicalName: "necklaces" },
+  bracelets: { label: "Bracelets & Bangles", canonicalName: "bracelets" },
+  rings: { label: "Rings", canonicalName: "rings" },
+  earrings: { label: "Earrings", canonicalName: "earrings" },
+  "key-chains": { label: "Keychains", canonicalName: "keychains" },
+  sale: { label: "Bundles", canonicalName: "sale" },
 };
+
+/*
+ * Convert database category variations to one stable value.
+ * Existing database rows are intentionally not changed.
+ */
+function normalizeCategoryName(value) {
+  const normalized = String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+
+  const aliases = {
+    necklace: "necklaces",
+    necklaces: "necklaces",
+    bracelet: "bracelets",
+    bracelets: "bracelets",
+    bangle: "bracelets",
+    bangles: "bracelets",
+    ring: "rings",
+    rings: "rings",
+    earing: "earrings",
+    earings: "earrings",
+    earring: "earrings",
+    earrings: "earrings",
+    keychain: "keychains",
+    keychains: "keychains",
+    bundle: "sale",
+    bundles: "sale",
+    sale: "sale",
+  };
+
+  return aliases[normalized] || normalized;
+}
+
+function getProductCategoryName(product) {
+  return (
+    product?.category?.name ||
+    product?.category_name ||
+    product?.category ||
+    ""
+  );
+}
 
 const Category = () => {
   const { name } = useParams();
@@ -22,45 +64,44 @@ const Category = () => {
   const { updateCartCount, showAddedNotification } = useCart();
 
   useEffect(() => {
-    setLoading(true);
-
+    let cancelled = false;
     const category = CATEGORY_CONFIG[name];
+
+    setLoading(true);
 
     if (!category) {
       setProducts([]);
       setLoading(false);
-      return;
+      return undefined;
     }
 
-    getCategories()
-      .then((categories) => {
-        const match = categories.find((item) =>
-          category.aliases.includes(String(item.name || "").trim().toLowerCase())
-        );
-        if (!match) return [];
-        return fetch(
-          `https://accessories-backend-production.up.railway.app/client/categories/${match.id}/products`
-        ).then((res) => {
-          if (!res.ok) throw new Error("Failed to load category products");
-          return res.json();
-        });
-      })
-      .then((data) => {
-        console.log("Category API products:", data);
+    getProducts()
+      .then((allProducts) => {
+        if (cancelled) return;
 
-        if (!Array.isArray(data)) {
-          setProducts([]);
-          setLoading(false);
-          return;
-        }
+        const categoryProducts = Array.isArray(allProducts)
+          ? allProducts.filter(
+              (product) =>
+                normalizeCategoryName(getProductCategoryName(product)) ===
+                category.canonicalName
+            )
+          : [];
 
-        setProducts(data);
-        setLoading(false);
+        setProducts(categoryProducts);
       })
       .catch((err) => {
-        console.error("API error:", err);
-        setLoading(false);
+        if (!cancelled) {
+          console.error("Category products error:", err);
+          setProducts([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, [name]);
 
   const handleAddToCart = async (productId) => {
@@ -73,18 +114,13 @@ const Category = () => {
     }
   };
 
-
-const visibleProducts = products.filter(
-  (p) => !p.hidden
-);
+  const visibleProducts = products.filter((product) => !product.hidden);
 
   return (
     <>
       <Navbar />
 
-      <h2 className="section-title">
-        {CATEGORY_CONFIG[name]?.label}
-      </h2>
+      <h2 className="section-title">{CATEGORY_CONFIG[name]?.label}</h2>
 
       <div className="products-page">
         {loading ? (
@@ -108,10 +144,10 @@ const visibleProducts = products.filter(
             No products yet ✨
           </p>
         ) : (
-          visibleProducts.map((p) => (
+          visibleProducts.map((product) => (
             <ProductCard
-              key={p.id}
-              product={p}
+              key={product.id}
+              product={product}
               addToCart={handleAddToCart}
             />
           ))

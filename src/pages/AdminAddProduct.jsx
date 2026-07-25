@@ -66,54 +66,78 @@ const AdminAddProduct = () => {
   /* ================= SUBMIT ================= */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
-    const data = new FormData();
-    data.append("name", form.name);
-    data.append("description", form.description);
-    data.append("price", Number(form.price));
-    data.append("quantity", Number(form.quantity));
-    data.append("category_name", form.category_name);
-    data.append("featured", form.featured); // ⭐ الجديد
+    const token = localStorage.getItem("admin_token");
 
-    // ✅ discount (optional)
-    if (form.discount_price !== "") {
-      data.append(
-        "discount_price",
-        Number(form.discount_price)
-      );
-    }
-
-    images.forEach((img) => {
-      data.append("images", img);
-    });
-
-    const res = await fetch(`${apiUrl}/admin/add`, {
-      method: "POST",
-      body: data,
-    });
-
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error("Backend error:", errorText);
-      alert(`Error: ${errorText || "Something went wrong 😢"}`);
-      setLoading(false);
+    if (!token) {
+      alert("Your admin session has expired. Please log in again.");
+      window.location.href = "/admin/login";
       return;
     }
 
-    alert("Product added successfully ✨");
+    setLoading(true);
 
-    setForm({
-      name: "",
-      description: "",
-      price: "",
-      discount_price: "",
-      quantity: "",
-      category_name: "",
-      featured: false,
-    });
-    setImages([]);
-    setLoading(false);
+    try {
+      const data = new FormData();
+      data.append("name", form.name);
+      data.append("description", form.description);
+      data.append("price", Number(form.price));
+      data.append("quantity", Number(form.quantity));
+      data.append("category_name", form.category_name);
+      data.append("featured", form.featured); // ⭐ الجديد
+
+      // ✅ discount (optional)
+      if (form.discount_price !== "") {
+        data.append(
+          "discount_price",
+          Number(form.discount_price)
+        );
+      }
+
+      images.forEach((img) => {
+        data.append("images", img);
+      });
+
+      const res = await fetch(`${apiUrl}/admin/add`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: data,
+      });
+
+      if (res.status === 401) {
+        localStorage.removeItem("admin_token");
+        alert("Your admin session has expired. Please log in again.");
+        window.location.href = "/admin/login";
+        return;
+      }
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("Backend error:", errorText);
+        alert(`Error: ${errorText || "Something went wrong 😢"}`);
+        return;
+      }
+
+      alert("Product added successfully ✨");
+
+      setForm({
+        name: "",
+        description: "",
+        price: "",
+        discount_price: "",
+        quantity: "",
+        category_name: "",
+        featured: false,
+      });
+      setImages([]);
+    } catch (error) {
+      console.error("Failed to add product:", error);
+      alert("Failed to connect to the server. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
