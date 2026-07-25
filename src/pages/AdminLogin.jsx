@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const apiUrl =
+  import.meta.env.VITE_API_URL ||
+  "https://accessories-backend-production.up.railway.app";
+
 const AdminLogin = () => {
   const [form, setForm] = useState({
     email: "",
@@ -10,7 +14,9 @@ const AdminLogin = () => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    const res = await fetch("https://accessories-backend-production.up.railway.app/admin/login", {
+    localStorage.removeItem("admin_token");
+
+    const res = await fetch(`${apiUrl}/admin/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form), // { email, password }

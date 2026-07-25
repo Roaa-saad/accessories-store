@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AdminSidebar from "../components/AdminSidebar";
 import CartItem from "../components/CartItem";
 import "../styles/admin-dashboard.css";
@@ -268,13 +269,27 @@ const AdminOrders = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loadError, setLoadError] = useState("");
   const [deletingOrderId, setDeletingOrderId] = useState(null);
+  const navigate = useNavigate();
   const token = localStorage.getItem("admin_token");
+
+  const handleUnauthorized = useCallback(
+    (response) => {
+      if (response.status !== 401) return false;
+
+      localStorage.removeItem("admin_token");
+      navigate("/admin/login", { replace: true });
+      return true;
+    },
+    [navigate]
+  );
 
   useEffect(() => {
     fetch(`${apiUrl}/admin/orders`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     })
       .then(async (response) => {
+        if (handleUnauthorized(response)) return null;
+
         if (!response.ok) {
           const error = await response.json().catch(() => ({}));
           throw new Error(error.detail || "Failed to load orders");
@@ -282,6 +297,7 @@ const AdminOrders = () => {
         return response.json();
       })
       .then((data) => {
+        if (data === null) return;
         setOrders(Array.isArray(data) ? data : []);
         setLoadError("");
       })
@@ -290,7 +306,7 @@ const AdminOrders = () => {
         setLoadError(error.message || "Failed to load orders");
       })
       .finally(() => setLoading(false));
-  }, [token]);
+  }, [token, handleUnauthorized]);
 
   const toggleDelivered = async (orderId, currentStatus) => {
     try {
@@ -305,6 +321,8 @@ const AdminOrders = () => {
           body: `delivered=${!currentStatus}`,
         }
       );
+
+      if (handleUnauthorized(response)) return;
 
       if (!response.ok) {
         alert("Failed to update order ❌");
@@ -330,6 +348,8 @@ const AdminOrders = () => {
         method: "PUT",
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
+
+      if (handleUnauthorized(response)) return;
 
       if (!response.ok) {
         const error = await response.json().catch(() => ({}));
@@ -367,6 +387,8 @@ const AdminOrders = () => {
         method: "DELETE",
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
+
+      if (handleUnauthorized(response)) return;
 
       if (!response.ok) {
         const error = await response.json().catch(() => ({}));

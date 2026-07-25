@@ -1,12 +1,12 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 
 const AdminSidebar = ({ onClose }) => {
   const navigate = useNavigate();
   const [pendingOrders, setPendingOrders] = useState(0);
 
-  const fetchPendingOrders = async () => {
+  const fetchPendingOrders = useCallback(async () => {
     try {
       const token = localStorage.getItem("admin_token");
       const response = await axios.get(
@@ -22,9 +22,15 @@ const AdminSidebar = ({ onClose }) => {
 
       setPendingOrders(pending);
     } catch (error) {
+      if (error?.response?.status === 401) {
+        localStorage.removeItem("admin_token");
+        navigate("/admin/login", { replace: true });
+        return;
+      }
+
       console.error("Failed to fetch orders:", error);
     }
-  };
+  }, [navigate]);
 
   useEffect(() => {
     fetchPendingOrders();
@@ -41,7 +47,7 @@ const AdminSidebar = ({ onClose }) => {
       clearInterval(interval);
       window.removeEventListener("ordersUpdated", handleUpdate);
     };
-  }, []);
+  }, [fetchPendingOrders]);
 
   const logout = () => {
     localStorage.removeItem("admin_token");

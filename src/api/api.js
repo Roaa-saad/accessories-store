@@ -6,9 +6,6 @@ const API_URL = 'https://accessories-backend-production.up.railway.app';
 const API = axios.create({
   baseURL: API_URL,
   timeout: 30000,
-  headers: {
-    'Cache-Control': 'public, max-age=300'
-  }
 });
 
 // ================= UTILITY: Fix HTTP to HTTPS =================
