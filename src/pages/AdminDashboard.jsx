@@ -24,13 +24,21 @@ const AdminDashboard = () => {
   const wrapperRefs = useRef({});
   const token = localStorage.getItem("admin_token");
 
- 
-
   /* ================= LOAD PRODUCTS ================= */
   const loadProducts = async () => {
-    const data = await fetch(
-      `${apiUrl}/client/products`
-    ).then((r) => r.json());
+    const res = await fetch(`${apiUrl}/admin/products`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
+
+if (!res.ok) {
+  console.error(await res.text());
+  alert("Session expired");
+  return;
+}
+
+const data = await res.json();
 
     const processedProducts = data.map((p) => ({
       ...p,
