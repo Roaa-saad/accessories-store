@@ -9,7 +9,7 @@ const apiUrl =
   "https://accessories-backend-production.up.railway.app";
 
 const getShippingCost = (city) => {
-  if (!city) return 85;
+  if (!city) return 90;
 
   if (
     [
@@ -24,12 +24,11 @@ const getShippingCost = (city) => {
       "New Capital",
     ].includes(city)
   ) {
-    return 75;
+    return 90;
   }
 
   if (
     [
-      "Alexandria",
       "Beheira",
       "Kafr El Sheikh",
       "Gharbia",
@@ -46,12 +45,13 @@ const getShippingCost = (city) => {
       "Monufia",
     ].includes(city)
   ) {
-    return 85;
+    return 90;
   }
 
   if (["Fayoum", "Beni Suef", "Minya", "Assiut", "Sohag", "Qena"].includes(city)) {
-    return 95;
+    return 90;
   }
+  if (["Alexandria"].includes(city)) return 85;
 
   if (["Hurghada", "Aswan"].includes(city)) return 125;
   if (["Matrouh", "Marsa Matrouh"].includes(city)) return 130;
@@ -70,7 +70,7 @@ const getShippingCost = (city) => {
     return 145;
   }
 
-  return 85;
+  return 90;
 };
 
 const getLegacyDiscountAmount = (subtotal, discountCode) => {
