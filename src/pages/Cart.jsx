@@ -101,7 +101,7 @@ const getShippingCharge = () => {
     city === "Cairo" ||
     city === "Giza"
   ) {
-    return 75;
+    return 90;
   }
 
   // New Cities
@@ -114,12 +114,11 @@ const getShippingCharge = () => {
     city === "Badr" ||
     city === "New Capital"
   ) {
-    return 75;
+    return 90;
   }
 
   // Delta + Canal + Alexandria
   else if (
-    city === "Alexandria" ||
     city === "Beheira" ||
     city === "Kafr El Sheikh" ||
     city === "Gharbia" ||
@@ -135,9 +134,11 @@ const getShippingCharge = () => {
     city === "Qalyubia" ||
     city === "Monufia"
   ) {
-    return 85;
+    return 90;
   }
-
+else if (city === "Alexandria") {
+  return 85;
+}
   // Upper Egypt
   else if (
     city === "Fayoum" ||
@@ -192,7 +193,7 @@ const getShippingCharge = () => {
     return 145;
   }
 
-  return 85;
+  return 90;
 };
   const handleCheckout = async () => {
     if (isSubmitting || !cart.length) return;
