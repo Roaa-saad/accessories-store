@@ -19,13 +19,11 @@ const getShippingCost = (city) => {
       "Sheikh Zayed",
       "New Cairo",
       "Shorouk",
-      "Obour",
-      "Badr",
-      "New Capital",
     ].includes(city)
   ) {
-    return 90;
+    return 75;
   }
+  
 
   if (
     [
@@ -51,7 +49,9 @@ const getShippingCost = (city) => {
   if (["Fayoum", "Beni Suef", "Minya", "Assiut", "Sohag", "Qena"].includes(city)) {
     return 90;
   }
-  if (["Alexandria"].includes(city)) return 85;
+  if (["Alexandria","Obour",
+      "Badr",
+      "New Capital",].includes(city)) return 85;
 
   if (["Hurghada", "Aswan"].includes(city)) return 125;
   if (["Matrouh", "Marsa Matrouh"].includes(city)) return 130;
