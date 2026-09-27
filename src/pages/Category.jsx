@@ -11,7 +11,7 @@ const CATEGORY_CONFIG = {
   bracelets: { label: "Bracelets & Bangles", canonicalName: "bracelets" },
   rings: { label: "Rings", canonicalName: "rings" },
   earrings: { label: "Earrings", canonicalName: "earrings" },
-  "key-chains": { label: "Keychains", canonicalName: "keychains" },
+  "key-chains": { label: "Gem Drops", canonicalName: "keychains" },
   sale: { label: "Bundles", canonicalName: "sale" },
 };
 
