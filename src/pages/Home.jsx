@@ -33,7 +33,7 @@ const CATEGORIES = [
     image: "/categories/earrings.webp?v=7",
   },
   {
-    name: "Key-chains",
+    name: "Gem Drops",
     slug: "key-chains",
     image: "/categories/key-chains.webp?v=1",
   },
