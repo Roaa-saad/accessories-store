@@ -35,7 +35,7 @@ const CATEGORIES = [
   {
     name: "Gem Drops",
     slug: "key-chains",
-    image: "/categories/key-chains.webp?v=1",
+    image: "/categories/Gem.webp?v=1",
   },
 ];
 
@@ -68,7 +68,7 @@ const Home = () => {
       {/* HERO */}
       <div className="hero" style={{ position: "relative" }}>
         <img
-          src="/hero.jpg?v=2"
+          src="/home.jpg?v=2"
           alt="Lumie Hero"
           loading="eager"
           fetchPriority="high"
