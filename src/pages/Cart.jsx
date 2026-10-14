@@ -99,13 +99,17 @@ const getShippingCharge = () => {
   // Cairo & Giza
   if (
     city === "Cairo" ||
-    city === "Giza"||
+    city === "Giza"
+  ) {
+    return 75;
+  }
+    else if (
     city === "6th October" ||
     city === "Sheikh Zayed" ||
     city === "New Cairo" ||
     city === "Shorouk" 
   ) {
-    return 75;
+    return 80;
   }
 
   // New Cities
@@ -114,7 +118,7 @@ const getShippingCharge = () => {
     city === "Badr" ||
     city === "New Capital"
   ) {
-    return 85;
+    return 80;
   }
 
   // Delta + Canal + Alexandria
@@ -137,7 +141,7 @@ const getShippingCharge = () => {
     return 90;
   }
 else if (city === "Alexandria") {
-  return 85;
+  return 90;
 }
   // Upper Egypt
   else if (
