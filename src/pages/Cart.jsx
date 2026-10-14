@@ -522,16 +522,16 @@ const subtotal = processedItems.reduce((sum, item) => {
                       <option value="Cairo">Cairo</option>
                       <option value="Giza">Giza</option>
 
-{/*                       
+                      
                       <option value="6th October">6th October</option>
                       <option value="Sheikh Zayed">Sheikh Zayed</option>
                       <option value="New Cairo">New Cairo</option>
                       <option value="Shorouk">Shorouk</option>
                       <option value="Obour">Obour</option>
                       <option value="Badr">Badr</option>
-                      <option value="New Capital">New Capital</option> */}
+                      <option value="New Capital">New Capital</option>
 
-                     
+
                       <option value="Alexandria">Alexandria</option>
                       <option value="Beheira">Beheira</option>
                       <option value="Kafr El Sheikh">Kafr El Sheikh</option>
