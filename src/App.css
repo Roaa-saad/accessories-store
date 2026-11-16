@@ -315,3 +315,51 @@ body {
     font-size: 13px;
   }
 }
+
+
+/* Fix Coupon Apply Button */
+.cart-page .coupon-apply-row {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.cart-page .coupon-apply-row input {
+  flex: 1;
+  width: 0 !important;
+  min-width: 0;
+  height: 48px;
+  margin: 0 !important;
+}
+
+.cart-page .coupon-apply-row button.apply-coupon-btn {
+  width: 105px !important;
+  min-width: 105px;
+  height: 48px !important;
+  flex: 0 0 105px;
+  margin: 0 !important;
+  padding: 0 12px !important;
+
+  background: #b99a6b !important;
+  color: #fff !important;
+  border: 1px solid #b99a6b !important;
+  border-radius: 8px !important;
+
+  font-size: 14px !important;
+  font-weight: 600;
+  line-height: 1 !important;
+  white-space: nowrap;
+}
+
+.cart-page .coupon-apply-row button.apply-coupon-btn:hover {
+  background: #a48659 !important;
+}
+
+@media (max-width: 480px) {
+  .cart-page .coupon-apply-row button.apply-coupon-btn {
+    width: 85px !important;
+    min-width: 85px;
+    flex-basis: 85px;
+  }
+}
