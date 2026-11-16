@@ -609,10 +609,29 @@ const subtotal = processedItems.reduce((sum, item) => {
                   <option value="Other">Other</option>
                 </select>
 
-                <div className="coupon-apply-row">
+
+                <div
+                  className="coupon-apply-row"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    width: "100%",
+                    margin: "12px 0",
+                  }}
+                >
                   <input
                     placeholder="Discount Code (optional)"
                     value={form.discount_code}
+                    style={{
+                      flex: 1,
+                      width: "auto",
+                      minWidth: 0,
+                      height: "48px",
+                      margin: 0,
+                      padding: "0 14px",
+                      boxSizing: "border-box",
+                    }}
                     onChange={(event) => {
                       setForm({
                         ...form,
@@ -625,9 +644,27 @@ const subtotal = processedItems.reduce((sum, item) => {
 
                   <button
                     type="button"
-                    className="apply-coupon-btn"
                     onClick={handleApplyCoupon}
                     disabled={applyingCoupon}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flex: "0 0 105px",
+                      width: "105px",
+                      height: "48px",
+                      margin: 0,
+                      padding: "0 12px",
+                      boxSizing: "border-box",
+                      backgroundColor: "#b99a6b",
+                      color: "#ffffff",
+                      border: "1px solid #b99a6b",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      fontWeight: 600,
+                      cursor: applyingCoupon ? "not-allowed" : "pointer",
+                      whiteSpace: "nowrap",
+                    }}
                   >
                     {applyingCoupon ? "Applying..." : "Apply"}
                   </button>
