@@ -179,6 +179,7 @@ export const checkout = async (data) => {
   formData.append('customer_city', data.city);
   formData.append('discount_code', data.discount_code || '');
   formData.append('notes', data.note || '');
+  formData.append('source', data.source || '');
   formData.append('total_amount', data.total_amount.toString());
   formData.append('cart_items', JSON.stringify(cart.map(item => ({
     product_id: item.product_id,

@@ -18,6 +18,8 @@ const Cart = () => {
     cityDisplay: "",
     discount_code: "",
     note: "",
+    source: "",
+
   });
 
   const [errors, setErrors] = useState({});
@@ -246,6 +248,7 @@ const checkoutFingerprint = JSON.stringify({
   city: form.city,
   discount_code: form.discount_code.trim().toUpperCase(),
   note: form.note.trim(),
+  source: form.source,
   items: Object.values(groupedItems),
   total_amount: grandTotal,
 });
@@ -284,6 +287,8 @@ try {
       cityDisplay: "",
       discount_code: "",
       note: "",
+      source: "",
+
     });
     setErrors({});
     setAppliedCoupon(null);
@@ -587,6 +592,22 @@ const subtotal = processedItems.reduce((sum, item) => {
                 {errors.phone && (
                   <span className="form-error">{errors.phone}</span>
                 )}
+
+                <select
+                  value={form.source}
+                  onChange={(e) =>
+                    setForm({ ...form, source: e.target.value })
+                  }
+                >
+                  <option value="">How did you hear about us? (Optional)</option>
+                  <option value="Instagram">Instagram</option>
+                  <option value="TikTok">TikTok</option>
+                  <option value="Facebook">Facebook</option>
+                  <option value="Google Search">Google Search</option>
+                  <option value="Friend / Family">Friend / Family</option>
+                  <option value="Influencer">Influencer</option>
+                  <option value="Other">Other</option>
+                </select>
 
                 <div className="coupon-apply-row">
                   <input

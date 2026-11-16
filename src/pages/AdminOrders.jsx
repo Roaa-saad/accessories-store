@@ -187,6 +187,7 @@ const downloadOrdersExcel = (orders) => {
     "Shipping",
     "Total",
     "Notes",
+    "Source",
   ];
 
   const rows = [];
@@ -221,6 +222,7 @@ const downloadOrdersExcel = (orders) => {
         totals.shippingAmount,
         totals.totalAmount,
         order.notes || "",
+        order.source || "",
       ]);
     });
   });
@@ -488,6 +490,14 @@ const AdminOrders = () => {
                     order.notes
                   ) : (
                     <span style={{ color: "#b7a78c" }}>No note</span>
+                  )}
+                </div>
+                <div className="order-source">
+                  <strong>Found us through:</strong>{" "}
+                  {order.source ? (
+                    order.source
+                  ) : (
+                    <span style={{ color: "#b7a78c" }}>Not specified</span>
                   )}
                 </div>
               </div>
