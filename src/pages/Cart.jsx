@@ -603,9 +603,8 @@ const subtotal = processedItems.reduce((sum, item) => {
                   <option value="Instagram">Instagram</option>
                   <option value="TikTok">TikTok</option>
                   <option value="Facebook">Facebook</option>
-                  <option value="Google Search">Google Search</option>
-                  <option value="Friend / Family">Friend / Family</option>
-                  <option value="Influencer">Influencer</option>
+                  <option value="Ads">Ads</option>
+                  <option value="Friend">Friend</option>
                   <option value="Other">Other</option>
                 </select>
 
