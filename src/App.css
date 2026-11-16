@@ -258,3 +258,60 @@ body {
 .cart-page button:hover {
   background: #d8bfc0; 
 }
+
+/* Coupon Apply Button */
+.coupon-apply-row {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  width: 100%;
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+.coupon-apply-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.apply-coupon-btn {
+  min-width: 105px;
+  padding: 0 22px;
+  border: 1px solid #b99a6b;
+  border-radius: 6px;
+  background: #b99a6b;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.apply-coupon-btn:hover {
+  background: #a48659;
+  border-color: #a48659;
+  transform: translateY(-1px);
+}
+
+.apply-coupon-btn:active {
+  transform: translateY(0);
+}
+
+.apply-coupon-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 480px) {
+  .coupon-apply-row {
+    gap: 8px;
+  }
+
+  .apply-coupon-btn {
+    min-width: 85px;
+    padding: 0 14px;
+    font-size: 13px;
+  }
+}
