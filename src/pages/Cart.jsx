@@ -347,17 +347,17 @@ try {
     for (let quantity = 1; quantity <= items.length; quantity++) {
       maxFree[quantity] = maxFree[quantity - 1];
 
-      if (quantity >= 4) {
+      if (quantity >= 5) {
         maxFree[quantity] = Math.max(
           maxFree[quantity],
-          maxFree[quantity - 4] + 1
+          maxFree[quantity - 5] + 1
         );
       }
 
-      if (quantity >= 7) {
+      if (quantity >= 9) {
         maxFree[quantity] = Math.max(
           maxFree[quantity],
-          maxFree[quantity - 7] + 2
+          maxFree[quantity - 9] + 2
         );
       }
     }
