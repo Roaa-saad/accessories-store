@@ -1,4 +1,3 @@
-
 import React from "react";
 
 const apiUrl = "https://accessories-backend-production.up.railway.app";
@@ -24,8 +23,13 @@ const CartItem = ({ item }) => {
   }
 
   const finalPrice = Number(item.final_price ?? item.price ?? 0);
-  const originalPrice = Number(item.original_price ?? 0);
-  const isFree = item.is_free === true || finalPrice === 0;
+  const originalPrice = Number(item.original_price ?? item.price ?? 0);
+
+  // A zero-priced product is not automatically a promotion item.
+  // It is marked FREE only when the cart logic explicitly marks it free,
+  // or when a priced item has been reduced to zero.
+  const isFree =
+    item.is_free === true || (originalPrice > 0 && finalPrice === 0);
 
   return (
     <div
@@ -96,9 +100,8 @@ const CartItem = ({ item }) => {
           </span>
         )}
 
-        <span style={{ fontSize: "13px", color: "#888" }}>
-          Qty: {item.quantity || 1}
-        </span>
+        {/* Cart.jsx expands quantities into individual items before rendering. */}
+        <span style={{ fontSize: "13px", color: "#888" }}>Qty: 1</span>
       </div>
     </div>
   );
