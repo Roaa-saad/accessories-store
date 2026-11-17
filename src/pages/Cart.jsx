@@ -7,8 +7,8 @@ import { useCart } from "../context/CartContext";
 const BUY_X_GET_Y = {
   enabled: true,
   offers: [
-    { buyQuantity: 3, freeQuantity: 1 }, // 4 items total: 3 paid + 1 free
-    { buyQuantity: 5, freeQuantity: 2 }, // 7 items total: 5 paid + 2 free
+    { buyQuantity: 4, freeQuantity: 1 }, // 4 items total: 3 paid + 1 free
+    { buyQuantity: 7, freeQuantity: 2 }, // 7 items total: 5 paid + 2 free
   ],
 };
 const Cart = () => {

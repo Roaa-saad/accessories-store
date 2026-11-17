@@ -128,11 +128,11 @@ const processOrderItems = (orderItems = [], applyOffer = true) => {
   const maxFree = Array(unitItems.length + 1).fill(0);
   for (let quantity = 1; quantity <= unitItems.length; quantity += 1) {
     maxFree[quantity] = maxFree[quantity - 1];
-    if (quantity >= 4) {
-      maxFree[quantity] = Math.max(maxFree[quantity], maxFree[quantity - 4] + 1);
+    if (quantity >= 5) {
+      maxFree[quantity] = Math.max(maxFree[quantity], maxFree[quantity - 5] + 1);
     }
-    if (quantity >= 7) {
-      maxFree[quantity] = Math.max(maxFree[quantity], maxFree[quantity - 7] + 2);
+    if (quantity >= 9) {
+      maxFree[quantity] = Math.max(maxFree[quantity], maxFree[quantity - 9] + 2);
     }
   }
 
