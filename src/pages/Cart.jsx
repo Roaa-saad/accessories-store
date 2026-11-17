@@ -231,7 +231,11 @@ const groupedItems = {};processedItems.forEach(item => {
     groupedItems[key] = {
       product_id: item.product_id,
 
+      // Send the final unit price explicitly. Free promotional items reach
+      // the backend with price: 0; the offer calculation remains frontend-only.
+      price: item.final_price,
       unit_price_after_discount: item.final_price,
+      original_price: item.original_price,
 
       quantity: 0,
       is_free: item.is_free || false,
@@ -481,7 +485,7 @@ try {
             {!loading &&
   processedItems.map((item, index) => (
     <div key={index} className="cart-row">
-      <CartItem item={item} isFree={item.is_free} />
+      <CartItem item={item} isFree={item.is_free} displayQuantity={1} />
 
       <button
         className="remove-btn"

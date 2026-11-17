@@ -80,15 +80,16 @@ const processOrderItems = (orderItems = []) =>
   orderItems.map((item) => {
     const quantity = Math.max(Number(item.quantity) || 1, 1);
 
-    // Checkout may send unit_price_after_discount; older orders may use price.
-    // The free promotional product is intentionally sent to the backend at 0.
-    const storedPrice = Number(
-      item.price ??
-      item.unit_price_after_discount ??
-      (item.total_price_after_discount !== undefined
-        ? Number(item.total_price_after_discount) / quantity
-        : 0)
-    );
+    // A free item must stay zero even if the backend also returns a regular price.
+    const storedPrice = item.is_free === true
+      ? 0
+      : Number(
+          item.unit_price_after_discount ??
+          item.price ??
+          (item.total_price_after_discount !== undefined
+            ? Number(item.total_price_after_discount) / quantity
+            : 0)
+        );
 
     const discountPerItem = Number(item.discount_amount || 0);
     const originalPrice = Number(
@@ -96,7 +97,8 @@ const processOrderItems = (orderItems = []) =>
       (discountPerItem > 0 ? storedPrice + discountPerItem : storedPrice)
     );
 
-    const isFree = item.is_free === true || storedPrice === 0;
+    const isFree =
+      item.is_free === true || (storedPrice === 0 && originalPrice > 0);
 
     return {
       ...item,
@@ -111,53 +113,75 @@ const processOrderItems = (orderItems = []) =>
 const getOrderTotals = (order) => {
   const processedItems = processOrderItems(order.items);
 
-  // The Buy X Get Y offer is applied in the frontend only. Do not recalculate
-  // an offer discount in Admin from the free product's zero price.
-  const calculatedSubtotal = processedItems.reduce(
+  // Subtotal before the frontend Buy X Get Y offer.
+  const subtotal = processedItems.reduce(
+    (sum, item) => sum + item.original_price * item.quantity,
+    0
+  );
+
+  // Read the free-item markers sent from Cart. The offer itself is not
+  // recalculated here; this is only the value represented by free order lines.
+  const freeItems = processedItems.filter((item) => item.is_free);
+  const freeCount = freeItems.reduce((sum, item) => sum + item.quantity, 0);
+  const buyXGetYDiscount = freeItems.reduce(
+    (sum, item) => sum + item.original_price * item.quantity,
+    0
+  );
+
+  const itemsTotalAfterOffer = processedItems.reduce(
     (sum, item) => sum + item.final_price * item.quantity,
     0
   );
 
-  const subtotal =
-    order.subtotal_amount !== null && order.subtotal_amount !== undefined
-      ? Number(order.subtotal_amount)
-      : calculatedSubtotal;
+  const savedShipping =
+    order.shipping_amount ?? order.shipping;
 
-  const buyXGetYDiscount =
-    order.buy_x_get_y_discount !== null &&
-    order.buy_x_get_y_discount !== undefined
-      ? Number(order.buy_x_get_y_discount)
+  const shippingAmount =
+    savedShipping !== null && savedShipping !== undefined
+      ? Number(savedShipping)
+      : getShippingCost(order.customer_city);
+
+  // Cart sends total_amount after the frontend offer and coupon. If the API
+  // doesn't return a separate coupon discount, derive its displayed value
+  // from the saved final total and shipping.
+  const savedTotal =
+    order.total_amount !== null && order.total_amount !== undefined
+      ? Number(order.total_amount)
+      : null;
+
+  const derivedCouponDiscount =
+    savedTotal !== null
+      ? Math.max(
+          itemsTotalAfterOffer + shippingAmount - savedTotal,
+          0
+        )
       : 0;
 
   const discountAmount =
     order.discount_amount !== null && order.discount_amount !== undefined
       ? Number(order.discount_amount)
-      : getLegacyDiscountAmount(
-          Math.max(subtotal - buyXGetYDiscount, 0),
-          order.discount_code
-        );
+      : order.discount_code
+        ? Math.max(
+            derivedCouponDiscount ||
+              getLegacyDiscountAmount(itemsTotalAfterOffer, order.discount_code),
+            0
+          )
+        : 0;
 
   const subtotalAfterDiscount = Math.max(
-    subtotal - buyXGetYDiscount - discountAmount,
+    itemsTotalAfterOffer - discountAmount,
     0
   );
 
-  const shippingAmount =
-    order.shipping_amount !== null && order.shipping_amount !== undefined
-      ? Number(order.shipping_amount)
-      : subtotalAfterDiscount >= 900
-        ? 0
-        : getShippingCost(order.customer_city);
-
-  // Use the total saved by the backend whenever it is available.
   const totalAmount =
-    order.total_amount !== null && order.total_amount !== undefined
-      ? Number(order.total_amount)
+    savedTotal !== null
+      ? savedTotal
       : subtotalAfterDiscount + shippingAmount;
 
   return {
     processedItems,
     subtotal,
+    freeCount,
     buyXGetYDiscount,
     discountAmount,
     shippingAmount,
@@ -624,7 +648,11 @@ const AdminOrders = () => {
 
                 {totals.buyXGetYDiscount > 0 && (
                   <div className="order-total-row order-discount-total">
-                    <span>Buy X Get Y Offer:</span>
+                    <span>
+                      {totals.freeCount >= 2
+                        ? "Buy 7 Get 2 Free:"
+                        : "Buy 4 Get 1 Free:"}
+                    </span>
                     <span>-{totals.buyXGetYDiscount.toFixed(2)} EGP</span>
                   </div>
                 )}
@@ -646,7 +674,7 @@ const AdminOrders = () => {
                 </div>
 
                 <div className="order-total-row order-grand-total">
-                  <span>Total:</span>
+                  <span>Total after discount:</span>
                   <span>{totals.totalAmount.toFixed(2)} EGP</span>
                 </div>
               </div>
