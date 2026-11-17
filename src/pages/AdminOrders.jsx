@@ -79,7 +79,7 @@ const getLegacyDiscountAmount = (subtotal, discountCode) => {
 // Apply the exact same Buy X Get Y rules used in Cart.jsx.
 // Orders from the API contain the original product lines, so the admin
 // recalculates the free items locally without changing the backend.
-const processOrderItems = (orderItems = []) => {
+const processOrderItems = (orderItems = [], applyOffer = true) => {
   const unitItems = [];
 
   orderItems.forEach((item) => {
@@ -102,6 +102,26 @@ const processOrderItems = (orderItems = []) => {
       });
     }
   });
+
+  // Historical orders (up to #583) must remain exactly as originally placed.
+  // Only orders #584 and newer are eligible for the frontend offer calculation.
+  if (!applyOffer) {
+    const groupedPaidItems = new Map();
+    unitItems.forEach((item) => {
+      const key = `${item.product_id}_${item.original_price}`;
+      if (!groupedPaidItems.has(key)) {
+        groupedPaidItems.set(key, {
+          ...item,
+          final_price: item.original_price,
+          is_free: false,
+          discount_amount: 0,
+          quantity: 0,
+        });
+      }
+      groupedPaidItems.get(key).quantity += 1;
+    });
+    return [...groupedPaidItems.values()];
+  }
 
   // Same dynamic-programming calculation as the cart:
   // 4 total items => 1 free; 7 total items => 2 free.
@@ -147,12 +167,16 @@ const processOrderItems = (orderItems = []) => {
 };
 
 const getOrderTotals = (order) => {
-  const processedItems = processOrderItems(order.items);
+  const isNewOfferOrder = Number(order.order_id) >= 584;
+  const processedItems = processOrderItems(order.items, isNewOfferOrder);
 
-  const subtotal = processedItems.reduce(
+  const calculatedSubtotal = processedItems.reduce(
     (sum, item) => sum + item.original_price * item.quantity,
     0
   );
+  const subtotal = isNewOfferOrder
+    ? calculatedSubtotal
+    : Number(order.subtotal_amount ?? calculatedSubtotal);
 
   const freeItems = processedItems.filter((item) => item.is_free);
   const freeCount = freeItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -172,12 +196,15 @@ const getOrderTotals = (order) => {
       ? Number(savedShipping)
       : getShippingCost(order.customer_city);
 
-  // discount_amount from the API is treated as the coupon/extra discount.
-  // Do not use saved total_amount here: the API example contains the pre-offer
-  // total, while this page is recalculating the offer locally.
+  // Older orders keep their saved totals unchanged. New orders calculate
+  // the Buy X Get Y offer locally in the admin page.
   const discountAmount = Math.max(Number(order.discount_amount || 0), 0);
-  const subtotalAfterDiscount = Math.max(itemsTotalAfterOffer - discountAmount, 0);
-  const totalAmount = subtotalAfterDiscount + shippingAmount;
+  const subtotalAfterDiscount = isNewOfferOrder
+    ? Math.max(itemsTotalAfterOffer - discountAmount, 0)
+    : Math.max(subtotal - discountAmount, 0);
+  const totalAmount = isNewOfferOrder
+    ? subtotalAfterDiscount + shippingAmount
+    : Number(order.total_amount ?? subtotalAfterDiscount + shippingAmount);
 
   return {
     processedItems,
@@ -189,7 +216,6 @@ const getOrderTotals = (order) => {
     totalAmount,
   };
 };
-
 const normalizeWhatsAppPhone = (value) => {
   let digits = String(value || "").replace(/\D/g, "");
 
