@@ -516,7 +516,9 @@ try {
                 
                 {buyXGetYDiscount > 0 && (
                   <div style={{ marginBottom: '10px', paddingBottom: '10px', color: '#2e7d32', fontSize: '18px' }}>
-                    Buy 4 Get 1 / Buy 7 Get 2: -{buyXGetYDiscount.toFixed(2)} EGP
+                    {processedItems.length >= 9
+                      ? "Buy 7 Get 2 Free"
+                      : "Buy 4 Get 1 Free"}
                   </div>
                 )}
 
