@@ -7,8 +7,8 @@ import { useCart } from "../context/CartContext";
 const BUY_X_GET_Y = {
   enabled: true,
   offers: [
-    { buyQuantity: 4, freeQuantity: 1 },
-    { buyQuantity: 7, freeQuantity: 2 },
+    { buyQuantity: 3, freeQuantity: 1 }, // 4 items total: 3 paid + 1 free
+    { buyQuantity: 5, freeQuantity: 2 }, // 7 items total: 5 paid + 2 free
   ],
 };
 const Cart = () => {
@@ -337,23 +337,23 @@ try {
     }
 
     // Find the maximum number of free items from combinations of:
-    // 4 paid + 1 free, or 7 paid + 2 free.
+    // 3 paid + 1 free (4 items total), or 5 paid + 2 free (7 items total).
     const maxFree = Array(items.length + 1).fill(0);
 
     for (let quantity = 1; quantity <= items.length; quantity++) {
       maxFree[quantity] = maxFree[quantity - 1];
 
-      if (quantity >= 5) {
+      if (quantity >= 4) {
         maxFree[quantity] = Math.max(
           maxFree[quantity],
-          maxFree[quantity - 5] + 1
+          maxFree[quantity - 4] + 1
         );
       }
 
-      if (quantity >= 9) {
+      if (quantity >= 7) {
         maxFree[quantity] = Math.max(
           maxFree[quantity],
-          maxFree[quantity - 9] + 2
+          maxFree[quantity - 7] + 2
         );
       }
     }
@@ -516,7 +516,7 @@ try {
                 
                 {buyXGetYDiscount > 0 && (
                   <div style={{ marginBottom: '10px', paddingBottom: '10px', color: '#2e7d32', fontSize: '18px' }}>
-                    {processedItems.length >= 9
+                    {processedItems.length >= 7
                       ? "Buy 7 Get 2 Free"
                       : "Buy 4 Get 1 Free"}
                   </div>
