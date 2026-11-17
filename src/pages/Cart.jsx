@@ -4,6 +4,13 @@ import CartItem from "../components/CartItem";
 import Navbar from "../components/Navbar";
 import { useCart } from "../context/CartContext";
 
+const BUY_X_GET_Y = {
+  enabled: true,
+  offers: [
+    { buyQuantity: 4, freeQuantity: 1 },
+    { buyQuantity: 7, freeQuantity: 2 },
+  ],
+};
 const Cart = () => {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -306,35 +313,96 @@ try {
   };
 
   const processCartWithFreeItems = () => {
-  let items = [];
+    let items = [];
 
-  cart.forEach(item => {
-    const price =
-      item.discount_price && item.discount_price > 0
-        ? item.discount_price
-        : item.price;
+    cart.forEach((item) => {
+      const price =
+        item.discount_price && Number(item.discount_price) > 0
+          ? Number(item.discount_price)
+          : Number(item.price);
 
-    for (let i = 0; i < item.quantity; i++) {
-      items.push({
-        ...item,
-        original_price: price,
-        final_price: price,
-        discount_amount: 0
-      });
+      for (let i = 0; i < item.quantity; i++) {
+        items.push({
+          ...item,
+          original_price: price,
+          final_price: price,
+          discount_amount: 0,
+          is_free: false,
+        });
+      }
+    });
+
+    if (!BUY_X_GET_Y.enabled || items.length === 0) {
+      return items;
     }
-  });
 
-  return items;
-};
+    // Find the maximum number of free items from combinations of:
+    // 4 paid + 1 free, or 7 paid + 2 free.
+    const maxFree = Array(items.length + 1).fill(0);
+
+    for (let quantity = 1; quantity <= items.length; quantity++) {
+      maxFree[quantity] = maxFree[quantity - 1];
+
+      if (quantity >= 5) {
+        maxFree[quantity] = Math.max(
+          maxFree[quantity],
+          maxFree[quantity - 5] + 1
+        );
+      }
+
+      if (quantity >= 9) {
+        maxFree[quantity] = Math.max(
+          maxFree[quantity],
+          maxFree[quantity - 9] + 2
+        );
+      }
+    }
+
+    const freeCount = maxFree[items.length];
+
+    if (freeCount === 0) {
+      return items;
+    }
+
+    // The cheapest items become free.
+    const cheapestIndexes = [...items.keys()]
+      .sort((a, b) => items[a].original_price - items[b].original_price)
+      .slice(0, freeCount);
+
+    const freeIndexes = new Set(cheapestIndexes);
+
+    return items.map((item, index) => {
+      const isFree = freeIndexes.has(index);
+
+      return {
+        ...item,
+        is_free: isFree,
+        final_price: isFree ? 0 : item.original_price,
+        discount_amount: isFree ? item.original_price : 0,
+      };
+    });
+  };
+
   // Calculate prices
   const processedItems = useMemo(() => {
     return processCartWithFreeItems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart]);
 
-const subtotal = processedItems.reduce((sum, item) => {
-  return sum + item.final_price;
-}, 0);
+  const originalSubtotal = processedItems.reduce(
+    (sum, item) => sum + item.original_price,
+    0
+  );
+
+  const buyXGetYDiscount = processedItems.reduce(
+    (sum, item) => sum + item.discount_amount,
+    0
+  );
+
+  const subtotal = processedItems.reduce(
+    (sum, item) => sum + item.final_price,
+    0
+  );
 
   const handleApplyCoupon = async () => {
     const code = form.discount_code.trim().toUpperCase();
@@ -430,7 +498,7 @@ const subtotal = processedItems.reduce((sum, item) => {
             {cart.length > 0 && (
               <div className="cart-total">
                 <div style={{ marginBottom: '10px', paddingBottom: '10px', fontSize: '18px' }}>
-                  Subtotal: {subtotal.toFixed(2)} EGP
+                  Subtotal: {originalSubtotal.toFixed(2)} EGP
                   {subtotalAfterDiscount >= 950 && (
                       <div
                         style={{
@@ -446,6 +514,12 @@ const subtotal = processedItems.reduce((sum, item) => {
                 </div>
                
                 
+                {buyXGetYDiscount > 0 && (
+                  <div style={{ marginBottom: '10px', paddingBottom: '10px', color: '#2e7d32', fontSize: '18px' }}>
+                    Buy 4 Get 1 / Buy 7 Get 2: -{buyXGetYDiscount.toFixed(2)} EGP
+                  </div>
+                )}
+
                 {discountCodeAmount > 0 && (
                   <div style={{ marginBottom: '10px', paddingBottom: '10px', color: '#d4633f', fontSize: '18px' }}>
                     Discount ({form.discount_code?.toUpperCase()}): -{discountCodeAmount.toFixed(2)} EGP

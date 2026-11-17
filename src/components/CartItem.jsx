@@ -1,30 +1,31 @@
+
 import React from "react";
 
-const apiUrl = 'https://accessories-backend-production.up.railway.app';
+const apiUrl = "https://accessories-backend-production.up.railway.app";
 
-// Simple SVG placeholder
-const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' fill='%23f4ebe6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%23999'%3ENo Image%3C/text%3E%3C/svg%3E";
+const PLACEHOLDER_IMAGE =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' fill='%23f4ebe6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%23999'%3ENo Image%3C/text%3E%3C/svg%3E";
 
 const CartItem = ({ item }) => {
   if (!item) return null;
 
-  // 🖼️ build image url safely
   let image = PLACEHOLDER_IMAGE;
 
-  if (item.images && Array.isArray(item.images) && item.images.length > 0) {
+  if (Array.isArray(item.images) && item.images.length > 0) {
     const firstImage = item.images[0];
-    
-    if (firstImage && typeof firstImage === 'object' && firstImage.image_url) {
+
+    if (firstImage && typeof firstImage === "object" && firstImage.image_url) {
       image = firstImage.image_url;
-    }
-    else if (typeof firstImage === 'string') {
-      if (firstImage.startsWith('http://') || firstImage.startsWith('https://')) {
-        image = firstImage;
-      } else {
-        image = `${apiUrl}/uploads/${firstImage}`;
-      }
+    } else if (typeof firstImage === "string") {
+      image = firstImage.startsWith("http")
+        ? firstImage
+        : `${apiUrl}/uploads/${firstImage}`;
     }
   }
+
+  const finalPrice = Number(item.final_price ?? item.price ?? 0);
+  const originalPrice = Number(item.original_price ?? 0);
+  const isFree = item.is_free === true || finalPrice === 0;
 
   return (
     <div
@@ -39,10 +40,9 @@ const CartItem = ({ item }) => {
         boxShadow: "0 6px 20px rgba(0,0,0,0.04)",
       }}
     >
-      {/* IMAGE */}
       <img
         src={image}
-        alt={item.name}
+        alt={item.name || "Product"}
         loading="lazy"
         decoding="async"
         onError={(e) => {
@@ -58,30 +58,43 @@ const CartItem = ({ item }) => {
         }}
       />
 
-      {/* INFO */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "4px",
-        }}
-      >
-        <h4
-          style={{
-            margin: 0,
-            fontSize: "15px",
-            fontWeight: 500,
-          }}
-        >
+      <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+        <h4 style={{ margin: 0, fontSize: "15px", fontWeight: 500 }}>
           {item.name}
         </h4>
 
-<div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-  
- <span style={{ fontSize: "14px", color: "#555", fontWeight: 500 }}>
-  {item.final_price.toFixed(2)} EGP
-</span>
-</div>
+        {isFree ? (
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            {originalPrice > 0 && (
+              <span
+                style={{
+                  fontSize: "13px",
+                  color: "#999",
+                  textDecoration: "line-through",
+                }}
+              >
+                {originalPrice.toFixed(2)} EGP
+              </span>
+            )}
+
+            <span
+              style={{
+                fontSize: "13px",
+                fontWeight: 700,
+                color: "#27845b",
+                background: "#eaf5ee",
+                padding: "4px 9px",
+                borderRadius: "6px",
+              }}
+            >
+              FREE 🎁
+            </span>
+          </div>
+        ) : (
+          <span style={{ fontSize: "14px", color: "#555", fontWeight: 500 }}>
+            {finalPrice.toFixed(2)} EGP
+          </span>
+        )}
 
         <span style={{ fontSize: "13px", color: "#888" }}>
           Qty: {item.quantity || 1}

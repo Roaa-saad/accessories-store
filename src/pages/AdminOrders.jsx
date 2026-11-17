@@ -82,16 +82,17 @@ const getLegacyDiscountAmount = (subtotal, discountCode) => {
 
 const processOrderItems = (orderItems = []) =>
   orderItems.map((item) => {
-    const price =
-      item.discount_price && item.discount_price > 0
-        ? item.discount_price
-        : Number(item.price || 0);
+    const storedPrice = Number(item.price ?? 0);
+    const originalPrice = Number(item.original_price ?? storedPrice);
+    const isFree =
+      item.is_free === true || (storedPrice === 0 && originalPrice > 0);
 
     return {
       ...item,
       name: item.product_name || item.name || `Product #${item.product_id}`,
-      final_price: price,
-      original_price: price,
+      final_price: isFree ? 0 : storedPrice,
+      original_price: originalPrice,
+      is_free: isFree,
       quantity: item.quantity || 1,
     };
   });
@@ -99,7 +100,7 @@ const processOrderItems = (orderItems = []) =>
 const getOrderTotals = (order) => {
   const processedItems = processOrderItems(order.items);
   const calculatedSubtotal = processedItems.reduce(
-    (sum, item) => sum + item.final_price * item.quantity,
+    (sum, item) => sum + item.original_price * item.quantity,
     0
   );
 
@@ -108,12 +109,28 @@ const getOrderTotals = (order) => {
       ? Number(order.subtotal_amount)
       : calculatedSubtotal;
 
+  const buyXGetYDiscount =
+    order.buy_x_get_y_discount !== null &&
+    order.buy_x_get_y_discount !== undefined
+      ? Number(order.buy_x_get_y_discount)
+      : processedItems.reduce(
+          (sum, item) =>
+            sum + (item.is_free ? item.original_price * item.quantity : 0),
+          0
+        );
+
   const discountAmount =
     order.discount_amount !== null && order.discount_amount !== undefined
       ? Number(order.discount_amount)
-      : getLegacyDiscountAmount(subtotal, order.discount_code);
+      : getLegacyDiscountAmount(
+          Math.max(subtotal - buyXGetYDiscount, 0),
+          order.discount_code
+        );
 
-  const subtotalAfterDiscount = Math.max(subtotal - discountAmount, 0);
+  const subtotalAfterDiscount = Math.max(
+    subtotal - buyXGetYDiscount - discountAmount,
+    0
+  );
 
   const shippingAmount =
     order.shipping_amount !== null && order.shipping_amount !== undefined
@@ -130,6 +147,7 @@ const getOrderTotals = (order) => {
   return {
     processedItems,
     subtotal,
+    buyXGetYDiscount,
     discountAmount,
     shippingAmount,
     totalAmount,
@@ -181,9 +199,11 @@ const downloadOrdersExcel = (orders) => {
     "Product",
     "Quantity",
     "Unit Price",
+    "Is Free",
     "Subtotal",
     "Coupon Code",
-    "Discount",
+    "Buy X Get Y Discount",
+    "Coupon Discount",
     "Shipping",
     "Total",
     "Notes",
@@ -201,7 +221,13 @@ const downloadOrdersExcel = (orders) => {
         : "Pending";
     const items = totals.processedItems.length
       ? totals.processedItems
-      : [{ product_id: "", name: "", quantity: "", final_price: "" }];
+      : [{
+          product_id: "",
+          name: "",
+          quantity: "",
+          final_price: "",
+          is_free: false,
+        }];
 
     items.forEach((item) => {
       rows.push([
@@ -216,8 +242,10 @@ const downloadOrdersExcel = (orders) => {
         item.name,
         item.quantity,
         item.final_price,
+        item.is_free ? "YES" : "NO",
         totals.subtotal,
         order.discount_code || "",
+        totals.buyXGetYDiscount,
         totals.discountAmount,
         totals.shippingAmount,
         totals.totalAmount,
@@ -233,7 +261,7 @@ const downloadOrdersExcel = (orders) => {
       (row) =>
         `<Row>${row
           .map((value, index) =>
-            [0, 7, 9, 10, 11, 13, 14, 15].includes(index) && value !== ""
+            [0, 7, 9, 10, 12, 14, 15, 16, 17].includes(index) && value !== ""
               ? excelCell(Number(value), "Number")
               : excelCell(value)
           )
@@ -581,6 +609,13 @@ const AdminOrders = () => {
                   <span>Subtotal:</span>
                   <span>{totals.subtotal.toFixed(2)} EGP</span>
                 </div>
+
+                {totals.buyXGetYDiscount > 0 && (
+                  <div className="order-total-row order-discount-total">
+                    <span>Buy X Get Y Offer:</span>
+                    <span>-{totals.buyXGetYDiscount.toFixed(2)} EGP</span>
+                  </div>
+                )}
 
                 {order.discount_code && (
                   <div className="order-total-row order-discount-total">
