@@ -11,18 +11,15 @@ const apiUrl =
 const getShippingCost = (city) => {
   if (!city) return 90;
 
+  if (["Cairo", "Giza"].includes(city)) return 75;
+
   if (
-    [
-      "Cairo",
-      "Giza",
-      "6th October",
-      "Sheikh Zayed",
-      "New Cairo",
-      "Shorouk",
-    ].includes(city)
+    ["6th October", "Sheikh Zayed", "New Cairo", "Shorouk"].includes(city)
   ) {
-    return 75;
+    return 80;
   }
+
+  if (["Obour", "Badr", "New Capital"].includes(city)) return 80;
   
 
   if (
@@ -46,12 +43,11 @@ const getShippingCost = (city) => {
     return 90;
   }
 
+  if (["Alexandria"].includes(city)) return 90;
+
   if (["Fayoum", "Beni Suef", "Minya", "Assiut", "Sohag", "Qena"].includes(city)) {
-    return 90;
+    return 95;
   }
-  if (["Alexandria","Obour",
-      "Badr",
-      "New Capital",].includes(city)) return 85;
 
   if (["Hurghada", "Aswan"].includes(city)) return 125;
   if (["Matrouh", "Marsa Matrouh"].includes(city)) return 130;
@@ -82,10 +78,25 @@ const getLegacyDiscountAmount = (subtotal, discountCode) => {
 
 const processOrderItems = (orderItems = []) =>
   orderItems.map((item) => {
-    const storedPrice = Number(item.price ?? 0);
-    const originalPrice = Number(item.original_price ?? storedPrice);
-    const isFree =
-      item.is_free === true || (storedPrice === 0 && originalPrice > 0);
+    const quantity = Math.max(Number(item.quantity) || 1, 1);
+
+    // Checkout may send unit_price_after_discount; older orders may use price.
+    // The free promotional product is intentionally sent to the backend at 0.
+    const storedPrice = Number(
+      item.price ??
+      item.unit_price_after_discount ??
+      (item.total_price_after_discount !== undefined
+        ? Number(item.total_price_after_discount) / quantity
+        : 0)
+    );
+
+    const discountPerItem = Number(item.discount_amount || 0);
+    const originalPrice = Number(
+      item.original_price ??
+      (discountPerItem > 0 ? storedPrice + discountPerItem : storedPrice)
+    );
+
+    const isFree = item.is_free === true || storedPrice === 0;
 
     return {
       ...item,
@@ -93,14 +104,17 @@ const processOrderItems = (orderItems = []) =>
       final_price: isFree ? 0 : storedPrice,
       original_price: originalPrice,
       is_free: isFree,
-      quantity: item.quantity || 1,
+      quantity,
     };
   });
 
 const getOrderTotals = (order) => {
   const processedItems = processOrderItems(order.items);
+
+  // The Buy X Get Y offer is applied in the frontend only. Do not recalculate
+  // an offer discount in Admin from the free product's zero price.
   const calculatedSubtotal = processedItems.reduce(
-    (sum, item) => sum + item.original_price * item.quantity,
+    (sum, item) => sum + item.final_price * item.quantity,
     0
   );
 
@@ -113,11 +127,7 @@ const getOrderTotals = (order) => {
     order.buy_x_get_y_discount !== null &&
     order.buy_x_get_y_discount !== undefined
       ? Number(order.buy_x_get_y_discount)
-      : processedItems.reduce(
-          (sum, item) =>
-            sum + (item.is_free ? item.original_price * item.quantity : 0),
-          0
-        );
+      : 0;
 
   const discountAmount =
     order.discount_amount !== null && order.discount_amount !== undefined
@@ -139,6 +149,7 @@ const getOrderTotals = (order) => {
         ? 0
         : getShippingCost(order.customer_city);
 
+  // Use the total saved by the backend whenever it is available.
   const totalAmount =
     order.total_amount !== null && order.total_amount !== undefined
       ? Number(order.total_amount)
@@ -592,6 +603,7 @@ const AdminOrders = () => {
                     <CartItem
                       key={`${order.order_id}-${item.product_id}-${index}`}
                       item={item}
+                      displayQuantity={item.quantity || 1}
                     />
                   ))
                 )}

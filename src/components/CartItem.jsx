@@ -5,7 +5,7 @@ const apiUrl = "https://accessories-backend-production.up.railway.app";
 const PLACEHOLDER_IMAGE =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' fill='%23f4ebe6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%23999'%3ENo Image%3C/text%3E%3C/svg%3E";
 
-const CartItem = ({ item }) => {
+const CartItem = ({ item, displayQuantity }) => {
   if (!item) return null;
 
   let image = PLACEHOLDER_IMAGE;
@@ -100,8 +100,9 @@ const CartItem = ({ item }) => {
           </span>
         )}
 
-        {/* Cart.jsx expands quantities into individual items before rendering. */}
-        <span style={{ fontSize: "13px", color: "#888" }}>Qty: 1</span>
+        <span style={{ fontSize: "13px", color: "#888" }}>
+          Qty: {displayQuantity ?? item.quantity ?? 1}
+        </span>
       </div>
     </div>
   );
